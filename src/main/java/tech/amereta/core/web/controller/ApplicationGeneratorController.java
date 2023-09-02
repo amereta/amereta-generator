@@ -17,7 +17,7 @@ public class ApplicationGeneratorController {
     @Autowired
     private ApplicationGeneratorService applicationGeneratorService;
 
-    @PostMapping(value = "", produces = "application/zip")
+    @PostMapping(value = "/generate", produces = "application/zip")
     public ResponseEntity<StreamingResponseBody> generate(@RequestBody ApplicationDescription applicationDescription) {
         return ResponseEntity
                 .ok()

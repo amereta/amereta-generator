@@ -26,16 +26,18 @@ public class SpringBootSourceCodeGenerator {
 
     private List<JavaCompilationUnit> generateObjects() {
         final List<JavaCompilationUnit> compilationUnits = new ArrayList<>();
-        springBootApplication.getTypes().forEach(type -> {
-            SpringTypeGenerator generator = createGenerator(type);
-            assert generator != null;
-            compilationUnits.add(
-                    JavaCompilationUnit.builder()
-                            .packageName(generatePackageName(type))
-                            .name(StringFormatter.toPascalCase(type.getName(), type.getType().toString()))
-                            .typeDeclarations(List.of(generator.generateTypeDeclaration()))
-                            .build());
-        });
+        if (springBootApplication.getTypes() != null) {
+            springBootApplication.getTypes().forEach(type -> {
+                SpringTypeGenerator generator = createGenerator(type);
+                assert generator != null;
+                compilationUnits.add(
+                        JavaCompilationUnit.builder()
+                                .packageName(generatePackageName(type))
+                                .name(StringFormatter.toPascalCase(type.getName(), type.getType().toString()))
+                                .typeDeclarations(List.of(generator.generateTypeDeclaration()))
+                                .build());
+            });
+        }
         return compilationUnits;
     }
 
