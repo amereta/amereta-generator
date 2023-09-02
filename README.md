@@ -1,1 +1,1 @@
-# ameretat-core
+# amereta-core
