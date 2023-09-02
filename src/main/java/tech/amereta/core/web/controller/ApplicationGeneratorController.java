@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import tech.amereta.core.domain.model.ApplicationDescription;
+import tech.amereta.core.domain.description.ApplicationDescription;
 import tech.amereta.core.service.web.ApplicationGeneratorService;
 
 @RestController

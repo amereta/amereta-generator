@@ -3,7 +3,7 @@ package tech.amereta.core.service.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import tech.amereta.core.domain.model.ApplicationDescription;
+import tech.amereta.core.domain.description.ApplicationDescription;
 
 import java.io.OutputStream;
 

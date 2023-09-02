@@ -1,6 +1,6 @@
 package tech.amereta.core.service.web;
 
-import tech.amereta.core.domain.model.ApplicationDescription;
+import tech.amereta.core.domain.description.ApplicationDescription;
 
 import java.io.OutputStream;
 

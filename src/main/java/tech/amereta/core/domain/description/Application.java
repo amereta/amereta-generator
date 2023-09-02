@@ -1,4 +1,4 @@
-package tech.amereta.core.domain.model;
+package tech.amereta.core.domain.description;
 
 public interface Application {
 
