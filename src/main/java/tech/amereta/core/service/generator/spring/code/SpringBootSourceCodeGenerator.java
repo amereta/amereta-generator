@@ -6,7 +6,7 @@ import tech.amereta.core.domain.description.java.JavaTypeDescription;
 import tech.amereta.core.service.generator.spring.code.type.SpringDAOGenerator;
 import tech.amereta.core.service.generator.spring.code.type.SpringRepositoryGenerator;
 import tech.amereta.core.service.generator.spring.code.type.SpringTypeGenerator;
-import tech.amereta.core.service.writer.java.source.JavaCompilationUnit;
+import tech.amereta.core.util.code.java.source.JavaCompilationUnit;
 import tech.amereta.core.util.StringFormatter;
 
 import java.util.ArrayList;

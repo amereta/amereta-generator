@@ -1,16 +1,16 @@
 package tech.amereta.core.service.generator.spring.code;
 
-import tech.amereta.core.service.writer.java.declaration.JavaMethodDeclaration;
-import tech.amereta.core.service.writer.java.expression.JavaMethodInvocationExpression;
-import tech.amereta.core.service.writer.java.expression.JavaValueExpression;
-import tech.amereta.core.service.writer.java.expression.JavaVariableExpression;
-import tech.amereta.core.service.writer.java.expression.util.JavaMethodInvoke;
-import tech.amereta.core.service.writer.java.source.JavaCompilationUnit;
-import tech.amereta.core.service.writer.java.source.JavaTypeDeclaration;
-import tech.amereta.core.service.writer.java.statement.JavaExpressionStatement;
-import tech.amereta.core.service.writer.java.util.JavaAnnotation;
-import tech.amereta.core.service.writer.java.util.JavaModifier;
-import tech.amereta.core.service.writer.java.util.JavaType;
+import tech.amereta.core.util.code.java.declaration.JavaMethodDeclaration;
+import tech.amereta.core.util.code.java.expression.JavaMethodInvocationExpression;
+import tech.amereta.core.util.code.java.expression.JavaValueExpression;
+import tech.amereta.core.util.code.java.expression.JavaVariableExpression;
+import tech.amereta.core.util.code.java.expression.util.JavaMethodInvoke;
+import tech.amereta.core.util.code.java.source.JavaCompilationUnit;
+import tech.amereta.core.util.code.java.source.JavaTypeDeclaration;
+import tech.amereta.core.util.code.java.statement.JavaExpressionStatement;
+import tech.amereta.core.util.code.java.util.JavaAnnotation;
+import tech.amereta.core.util.code.java.util.JavaModifier;
+import tech.amereta.core.util.code.java.util.JavaType;
 import tech.amereta.core.util.StringFormatter;
 
 import java.lang.reflect.Modifier;

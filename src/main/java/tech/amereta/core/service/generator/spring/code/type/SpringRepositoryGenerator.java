@@ -5,11 +5,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import tech.amereta.core.service.writer.java.declaration.JavaFieldDeclaration;
-import tech.amereta.core.service.writer.java.declaration.JavaMethodDeclaration;
-import tech.amereta.core.service.writer.java.source.JavaTypeDeclaration;
-import tech.amereta.core.service.writer.java.util.JavaAnnotation;
-import tech.amereta.core.service.writer.java.util.JavaType;
+import tech.amereta.core.util.code.java.declaration.JavaFieldDeclaration;
+import tech.amereta.core.util.code.java.declaration.JavaMethodDeclaration;
+import tech.amereta.core.util.code.java.source.JavaTypeDeclaration;
+import tech.amereta.core.util.code.java.util.JavaAnnotation;
+import tech.amereta.core.util.code.java.util.JavaType;
 import tech.amereta.core.domain.description.java.type.JavaRepositoryTypeDescription;
 import tech.amereta.core.util.StringFormatter;
 
