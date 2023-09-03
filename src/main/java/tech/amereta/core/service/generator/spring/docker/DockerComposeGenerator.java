@@ -19,7 +19,7 @@ public class DockerComposeGenerator implements ISoyConfiguration {
 
     @Override
     public String getName() {
-        return "website.amereta.generator.dockerCompose";
+        return "amereta.generator.dockerCompose";
     }
 
     @Override
@@ -29,7 +29,7 @@ public class DockerComposeGenerator implements ISoyConfiguration {
 
         FileUtils.copyInputStreamToFile(
                 Objects.requireNonNull(
-                        getClass().getClassLoader().getResourceAsStream("templates/docker-compose.yml.soy")), tempFile);
+                        getClass().getClassLoader().getResourceAsStream("templates/soy/docker-compose.yml.soy")), tempFile);
 
         return tempFile;
     }

@@ -17,7 +17,7 @@ public class DockerfileGenerator implements ISoyConfiguration {
 
     @Override
     public String getName() {
-        return "website.amereta.generator.dockerfile";
+        return "amereta.generator.dockerfile";
     }
 
     @Override
@@ -27,7 +27,7 @@ public class DockerfileGenerator implements ISoyConfiguration {
 
         FileUtils.copyInputStreamToFile(
                 Objects.requireNonNull(
-                        getClass().getClassLoader().getResourceAsStream("templates/Dockerfile.soy")), tempFile);
+                        getClass().getClassLoader().getResourceAsStream("templates/soy/Dockerfile.soy")), tempFile);
 
         return tempFile;
     }

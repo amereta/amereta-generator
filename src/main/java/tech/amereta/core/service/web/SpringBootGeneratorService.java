@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.amereta.core.domain.description.ApplicationDescription;
 import tech.amereta.core.domain.description.SpringBootApplicationDescription;
-import tech.amereta.core.service.generator.spring.code.SpringBootSourceCodeGenerator;
+import tech.amereta.core.service.generator.spring.SpringBootSourceCodeGenerator;
 import tech.amereta.core.service.generator.spring.docker.DockerComposeGenerator;
 import tech.amereta.core.service.generator.spring.docker.DockerfileGenerator;
 import tech.amereta.core.service.generator.spring.pom.PomFileGenerator;
@@ -30,7 +30,8 @@ public class SpringBootGeneratorService implements ApplicationGenerator {
                                 SpringBootSourceCodeGenerator.builder()
                                         .springBootApplication((SpringBootApplicationDescription) applicationDescription.getApplication())
                                         .build()
-                                        .generate())
+                                        .generate()
+                        )
                         .staticCompilationUnits(generateStaticUnits(applicationDescription))
                         .build(),
                 outputStream
@@ -40,10 +41,11 @@ public class SpringBootGeneratorService implements ApplicationGenerator {
     private List<ISoyConfiguration> generateStaticUnits(final ApplicationDescription applicationDescription) throws IOException {
         return List.of(
 //                generateApplicationPropertiesFile(applicationDescription),
-                generatePomFile(applicationDescription),
+                generatePomFile(applicationDescription)
 //                generateAmeretaDotConf(applicationDescription),
-                generateDockerfile(applicationDescription),
-                generateDockerCompose(applicationDescription));
+//                generateDockerfile(applicationDescription),
+//                generateDockerCompose(applicationDescription)
+        );
     }
 
 //        private ISoyConfiguration generateApplicationPropertiesFile(ApplicationDescription application) {
@@ -60,6 +62,7 @@ public class SpringBootGeneratorService implements ApplicationGenerator {
                 .javaVersion(application.getJavaVersion())
                 .springVersion(application.getSpringVersion())
                 .name(application.getName())
+                .packageName(application.getPackageName())
                 .description(application.getDescription())
                 .build();
     }
@@ -69,22 +72,22 @@ public class SpringBootGeneratorService implements ApplicationGenerator {
 //                .yml(new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)).writeValueAsString(application))//
 //                .build();
 //    }
+//
+//    private ISoyConfiguration generateDockerfile(ApplicationDescription application) {
+//        return DockerfileGenerator.builder()
+//                .javaVersion(getApplication(application).getJavaVersion())
+//                .build();
+//    }
+//
+//    private ISoyConfiguration generateDockerCompose(ApplicationDescription applicationDescription) {
+//        final SpringBootApplicationDescription application = getApplication(applicationDescription);
+//        return DockerComposeGenerator.builder()
+//                .name(application.getName())
+//                .port(application.getPort())
+//                .build();
+//    }
 
-    private ISoyConfiguration generateDockerfile(ApplicationDescription application) {
-        return DockerfileGenerator.builder()
-                .javaVersion(getApplication(application).getJavaVersion())
-                .build();
-    }
-
-    private ISoyConfiguration generateDockerCompose(ApplicationDescription applicationDescription) {
-        final SpringBootApplicationDescription application = getApplication(applicationDescription);
-        return DockerComposeGenerator.builder()
-                .name(application.getName())
-                .port(application.getPort())
-                .build();
-    }
-
-    private SpringBootApplicationDescription getApplication(ApplicationDescription applicationDescription) {
+    private SpringBootApplicationDescription getApplication(final ApplicationDescription applicationDescription) {
         return (SpringBootApplicationDescription) applicationDescription.getApplication();
     }
 }

@@ -17,7 +17,7 @@ public class AmeretaDotConfFileGenerator implements ISoyConfiguration {
 
     @Override
     public String getName() {
-        return "website.amereta.generator.conf";
+        return "amereta.generator.conf";
     }
 
     @Override
@@ -27,7 +27,7 @@ public class AmeretaDotConfFileGenerator implements ISoyConfiguration {
 
         FileUtils.copyInputStreamToFile(
                 Objects.requireNonNull(
-                        getClass().getClassLoader().getResourceAsStream("templates/amereta.conf.soy")), tempFile);
+                        getClass().getClassLoader().getResourceAsStream("templates/soy/amereta.conf.soy")), tempFile);
 
         return tempFile;
     }

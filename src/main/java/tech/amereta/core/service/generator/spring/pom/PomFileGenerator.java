@@ -13,14 +13,17 @@ import java.util.Objects;
 @Builder
 public class PomFileGenerator implements ISoyConfiguration {
 
+    // TODO: the output file needs indents reformation
+
     private String javaVersion;
     private String springVersion;
     private String name;
+    private String packageName;
     private String description;
 
     @Override
     public String getName() {
-        return "website.amereta.generator.pom";
+        return "amereta.generator.pom";
     }
 
     @Override
@@ -30,17 +33,18 @@ public class PomFileGenerator implements ISoyConfiguration {
 
         FileUtils.copyInputStreamToFile(//
                 Objects.requireNonNull(//
-                        getClass().getClassLoader().getResourceAsStream("templates/pom.xml.soy")), tempFile);
+                        getClass().getClassLoader().getResourceAsStream("templates/soy/pom.xml.soy")), tempFile);
 
         return tempFile;
     }
 
     @Override
     public Map<String, Object> getParameters() {
-        return Map.of(//
-                "java", javaVersion,//
-                "spring", springVersion,//
-                "name", name,//
+        return Map.of(
+                "java", javaVersion,
+                "spring", springVersion,
+                "name", name,
+                "packageName", packageName,
                 "description", description);
     }
 

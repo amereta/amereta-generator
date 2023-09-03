@@ -1,5 +1,6 @@
 package tech.amereta.core.service.generator.spring.code;
 
+import tech.amereta.core.domain.description.SpringBootApplicationDescription;
 import tech.amereta.core.util.code.java.declaration.JavaMethodDeclaration;
 import tech.amereta.core.util.code.java.expression.JavaMethodInvocationExpression;
 import tech.amereta.core.util.code.java.expression.JavaValueExpression;
@@ -18,14 +19,14 @@ import java.util.List;
 
 public class MainClassGenerator {
 
-    public static JavaCompilationUnit generate(String name) {
+    public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
         return JavaCompilationUnit.builder()
-                .packageName("website.amereta.".concat(name.toLowerCase()))
-                .name(StringFormatter.toPascalCase(name.concat("Application")))
+                .packageName(applicationDescription.getPackageName() + "." + applicationDescription.getName().toLowerCase())
+                .name(StringFormatter.toPascalCase(applicationDescription.getName().concat("Application")))
                 .typeDeclarations(List.of(
                         JavaTypeDeclaration.builder()
                                 .type(JavaType.CLASS)
-                                .name(StringFormatter.toPascalCase(name.concat("Application")))
+                                .name(StringFormatter.toPascalCase(applicationDescription.getName().concat("Application")))
                                 .modifiers(JavaModifier.builder()
                                         .type(JavaModifier.TYPE_MODIFIERS)
                                         .modifiers(Modifier.PUBLIC)
@@ -56,7 +57,7 @@ public class MainClassGenerator {
                                                                                         .method("run")
                                                                                         .arguments(List.of(
                                                                                                 JavaValueExpression.builder()
-                                                                                                        .value(StringFormatter.toPascalCase(name.concat("Application")))
+                                                                                                        .value(StringFormatter.toPascalCase(applicationDescription.getName().concat("Application")))
                                                                                                         .type(Class.class)
                                                                                                         .build(),
                                                                                                 JavaVariableExpression.builder()
