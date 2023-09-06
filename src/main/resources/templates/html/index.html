@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Smoothy</title>
+    <title>Amereta</title>
+    <link rel="icon" type="image/png" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <style>
       * {
@@ -137,9 +138,9 @@
       <div class="form-right-decoration"></div>
       <div class="circle"></div>
       <div class="form-inner">
-        <h1>Generate an Smoothy...</h1>
-        <textarea id="config" placeholder="Your smoothy application configuration..." rows="15"></textarea>
-        <button type="button" onclick="generate()">Generate</button>
+        <h1>Generate an Amereta application...</h1>
+        <textarea id="config" placeholder="Your amereta application configuration..." rows="15"></textarea>
+        <button type="button" onclick="generate();">Generate</button>
       </div>
     </form>
   </body>
@@ -148,13 +149,13 @@
       var config = document.getElementById("config").value;
       var name;
       if (isJson(config)) {
-        name = JSON.parse(config).name;
+        name = JSON.parse(config).application.name;
       } else {
-        name = jsyaml.load(config).name;
+        name = jsyaml.load(config).application.name;
       }
       let timerInterval
       Swal.fire({
-        title: 'Smoothy Is Blending...',
+        title: 'Amereta doing her magic...',
         html: 'Your application will be ready in <b></b>.',
         timer: 6000,
         timerProgressBar: true,
@@ -172,7 +173,7 @@
             if (this.status == 200) {
               Swal.fire(
                 'Ready!',
-                'Enjoy Your Smoothy :D',
+                'Enjoy Your Amereta Application :D',
                 'success'
               );
               var blob = new Blob([this.response], {type: "application/zip"});
@@ -190,7 +191,7 @@
               });
             }
         };
-        xhr.open("POST", location.protocol + "//" + location.host + "/generate", true);
+        xhr.open("POST", location.protocol + "//" + location.host + "/api/generate", true);
         if (isJson(config)) {
           xhr.setRequestHeader("Content-Type", "application/json");
         } else {
