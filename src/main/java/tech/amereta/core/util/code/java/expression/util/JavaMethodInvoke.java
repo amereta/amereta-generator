@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import tech.amereta.core.util.code.Expression;
+import tech.amereta.core.util.code.formatting.IndentingWriter;
+import tech.amereta.core.util.code.formatting.SimpleIndentStrategy;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,14 +17,17 @@ public final class JavaMethodInvoke {
 
     @Builder.Default
     private final List<Expression> arguments = new LinkedList<>();
+    @Builder.Default
+    private final Boolean breakLine = false;
     private final String method;
 
     public String render() {
-        return "." + getUnqualifiedName(method)
+        return printTabIfBreakLine()
+                + "."
+                + getUnqualifiedName(method)
                 + "("
                 + arguments.stream().map(Expression::render).collect(Collectors.joining(", "))
                 + ")";
-                //+ printTabIfBreakLine();
     }
 
     public Set<String> imports() {
@@ -36,8 +41,7 @@ public final class JavaMethodInvoke {
         return name.split("\\.")[name.split("\\.").length - 2] + "." + name.split("\\.")[name.split("\\.").length - 1];
     }
 
-//    private String printTabIfBreakLine() {
-//        return (breakLine) ? "//\n" + "    " + "    " : ""; //TODO: give indentation strategy
-//    }
-
+    private String printTabIfBreakLine() {
+        return (breakLine) ? "\n" + IndentingWriter.DEFAULT_INDENT : "";
+    }
 }
