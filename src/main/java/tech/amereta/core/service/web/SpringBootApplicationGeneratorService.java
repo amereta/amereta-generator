@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import tech.amereta.core.domain.description.ApplicationDescription;
 import tech.amereta.core.domain.description.SpringBootApplicationDescription;
 import tech.amereta.core.service.generator.spring.ApplicationPropertiesGenerator;
-import tech.amereta.core.service.generator.spring.PomGenerator;
 import tech.amereta.core.service.generator.spring.MainClassGenerator;
+import tech.amereta.core.service.generator.spring.PomGenerator;
 import tech.amereta.core.util.code.java.JavaSourceCodeWriter;
 import tech.amereta.core.util.code.java.source.JavaCompilationUnit;
 import tech.amereta.core.util.code.java.source.JavaSourceCode;
@@ -61,6 +61,7 @@ public final class SpringBootApplicationGeneratorService implements ApplicationG
         return List.of(
                 ApplicationPropertiesGenerator.builder()
                         .name(applicationDescription.getName())
+                        .port(applicationDescription.getPort())
                         .build()
         );
     }

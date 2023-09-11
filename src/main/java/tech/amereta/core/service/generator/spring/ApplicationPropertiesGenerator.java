@@ -14,6 +14,7 @@ import java.util.Objects;
 public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
 
     private String name;
+    private String port;
 
     @Override
     public String getName() {
@@ -35,7 +36,8 @@ public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
     @Override
     public Map<String, Object> getParameters() {
         return Map.of(
-                "name", name
+                "name", name,
+                "port", port
         );
     }
 

@@ -2,8 +2,13 @@
 {template properties kind="text"}
 
 {@param name: string}
+{@param port: string}
 
 {literal}
+server:
+    port: {/literal}{$port}{literal}
+    compression:
+        enabled: true
 spring:
     application:
         name: {/literal}{$name}{literal}
