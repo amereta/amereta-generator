@@ -34,7 +34,8 @@ public final class SpringBootApplicationGeneratorService implements ApplicationG
 
     private List<JavaCompilationUnit> generateCompilationUnits(final SpringBootApplicationDescription applicationDescription) {
         final List<JavaCompilationUnit> compilationUnits = new ArrayList<>();
-        compilationUnits.add(MainClassGenerator.generate(applicationDescription));
+        compilationUnits.add(AmeretaAnnotationGenerator.generate(applicationDescription));
+        compilationUnits.add(MainGenerator.generate(applicationDescription));
         compilationUnits.add(ApplicationConfigurationGenerator.generate(applicationDescription));
         compilationUnits.add(SecurityConfigurationGenerator.generate(applicationDescription));
         return compilationUnits;

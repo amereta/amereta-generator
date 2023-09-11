@@ -5,7 +5,7 @@ public enum JavaType {
     CLASS("class"),
     INTERFACE("interface"),
     ENUM("enum"),
-    ANNOTATION("annotation"),
+    ANNOTATION("@interface"),
     RECORD("record");
 
     private final String type;

@@ -15,7 +15,7 @@ import tech.amereta.core.util.code.java.util.JavaType;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public class SecurityConfigurationGenerator extends AbstractSourceCodeGenerator {
+public final class SecurityConfigurationGenerator extends AbstractSourceCodeGenerator {
 
     private static final String CLASS_NAME = "SecurityConfiguration";
 
