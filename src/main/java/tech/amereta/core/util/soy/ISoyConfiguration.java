@@ -28,7 +28,7 @@ public interface ISoyConfiguration {
     /**
      * @return target file path
      */
-    Path getPath() throws IOException;
+    Path getPath();
 
     default String render() throws IOException {
         return SoyTemplateGenerator.render(this);

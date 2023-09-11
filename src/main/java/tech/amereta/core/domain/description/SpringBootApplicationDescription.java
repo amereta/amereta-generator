@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import tech.amereta.core.domain.description.java.JavaTypeDescription;
 import tech.amereta.core.domain.description.java.type.JavaDAOTypeDescription;
 import tech.amereta.core.domain.description.java.type.JavaRepositoryTypeDescription;
-import tech.amereta.core.service.web.SpringBootGeneratorService;
+import tech.amereta.core.service.web.SpringBootApplicationGeneratorService;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -53,5 +53,5 @@ public class SpringBootApplicationDescription implements Application {
 
     @Builder.Default
     @JsonIgnore
-    private Class<?> generator = SpringBootGeneratorService.class;
+    private Class<?> generator = SpringBootApplicationGeneratorService.class;
 }

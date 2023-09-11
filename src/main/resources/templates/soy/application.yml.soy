@@ -1,0 +1,11 @@
+{namespace amereta.generator}
+{template properties kind="text"}
+
+{@param name: string}
+
+{literal}
+spring:
+    application:
+        name: {/literal}{$name}{literal}
+{/literal}
+{/template}

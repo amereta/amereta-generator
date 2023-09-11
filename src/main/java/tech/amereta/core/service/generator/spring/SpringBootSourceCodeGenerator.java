@@ -15,7 +15,7 @@ import java.util.List;
 
 // TODO: the functions must be in an abstract class
 @Builder
-public class SpringBootSourceCodeGenerator {
+public final class SpringBootSourceCodeGenerator {
 
     private SpringBootApplicationDescription springBootApplication;
 

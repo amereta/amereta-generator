@@ -17,7 +17,7 @@ import tech.amereta.core.util.StringFormatter;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public class MainClassGenerator {
+public final class MainClassGenerator {
 
     public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
         return JavaCompilationUnit.builder()

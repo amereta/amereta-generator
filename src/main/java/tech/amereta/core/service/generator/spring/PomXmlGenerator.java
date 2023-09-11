@@ -1,4 +1,4 @@
-package tech.amereta.core.service.generator.spring.pom;
+package tech.amereta.core.service.generator.spring;
 
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Builder
-public class PomFileGenerator implements ISoyConfiguration {
+public final class PomXmlGenerator implements ISoyConfiguration {
 
     // TODO: the output file needs indents reformation
 
@@ -49,7 +49,7 @@ public class PomFileGenerator implements ISoyConfiguration {
     }
 
     @Override
-    public Path getPath() throws IOException {
+    public Path getPath() {
         return Path.of("pom.xml");
     }
 
