@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.amereta.core.domain.description.ApplicationDescription;
 import tech.amereta.core.domain.description.SpringBootApplicationDescription;
+import tech.amereta.core.service.generator.spring.ApplicationConfigurationGenerator;
 import tech.amereta.core.service.generator.spring.ApplicationPropertiesGenerator;
 import tech.amereta.core.service.generator.spring.MainClassGenerator;
 import tech.amereta.core.service.generator.spring.PomGenerator;
@@ -37,6 +38,7 @@ public final class SpringBootApplicationGeneratorService implements ApplicationG
     private List<JavaCompilationUnit> generateCompilationUnits(final SpringBootApplicationDescription applicationDescription) {
         final List<JavaCompilationUnit> compilationUnits = new ArrayList<>();
         compilationUnits.add(MainClassGenerator.generate(applicationDescription));
+        compilationUnits.add(ApplicationConfigurationGenerator.generate(applicationDescription));
         return compilationUnits;
     }
 

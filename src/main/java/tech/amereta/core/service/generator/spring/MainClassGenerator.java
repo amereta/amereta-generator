@@ -17,16 +17,18 @@ import tech.amereta.core.util.StringFormatter;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public final class MainClassGenerator {
+public final class MainClassGenerator extends AbstractSourceCodeGenerator {
 
     public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
+        final String className = StringFormatter.toPascalCase(applicationDescription.getName().concat("Application"));
+
         return JavaCompilationUnit.builder()
-                .packageName(applicationDescription.getPackageName() + "." + applicationDescription.getName().toLowerCase())
-                .name(StringFormatter.toPascalCase(applicationDescription.getName().concat("Application")))
+                .packageName(basePackage(applicationDescription))
+                .name(className)
                 .typeDeclarations(List.of(
                         JavaTypeDeclaration.builder()
                                 .type(JavaType.CLASS)
-                                .name(StringFormatter.toPascalCase(applicationDescription.getName().concat("Application")))
+                                .name(className)
                                 .modifiers(JavaModifier.builder()
                                         .type(JavaModifier.TYPE_MODIFIERS)
                                         .modifiers(Modifier.PUBLIC)
@@ -57,7 +59,7 @@ public final class MainClassGenerator {
                                                                                         .method("run")
                                                                                         .arguments(List.of(
                                                                                                 JavaValueExpression.builder()
-                                                                                                        .value(StringFormatter.toPascalCase(applicationDescription.getName().concat("Application")))
+                                                                                                        .value(className)
                                                                                                         .type(Class.class)
                                                                                                         .build(),
                                                                                                 JavaVariableExpression.builder()
