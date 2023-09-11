@@ -30,8 +30,6 @@ public final class JavaMethodDeclaration implements Declaration {
     private final List<Statement> statements = new LinkedList<>();
     @Default
     private final List<String> exceptions = new LinkedList<>();
-    @Default
-    private final boolean isThrows = false;
     private final String name;
     private final String returnType;
     private final JavaModifier modifiers;
@@ -62,7 +60,7 @@ public final class JavaMethodDeclaration implements Declaration {
                         return ((parameter.modifiers != null) ? parameter.modifiers.render() + " "  : "") + renderGenericParameter(parameter);
                 })
                 .collect(Collectors.joining(", ")));
-        if (isThrows()) {
+        if (!this.exceptions.isEmpty()) {
             writer.print(") throws ");
             writer.print(renderExceptions());
             writer.println(" {");

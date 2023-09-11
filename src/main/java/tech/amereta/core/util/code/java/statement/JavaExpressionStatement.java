@@ -1,6 +1,7 @@
 package tech.amereta.core.util.code.java.statement;
 
 import lombok.Builder;
+import lombok.Setter;
 import tech.amereta.core.util.code.Expression;
 import tech.amereta.core.util.code.Statement;
 
@@ -24,5 +25,4 @@ public record JavaExpressionStatement(Expression expression) implements Statemen
     public Set<String> imports() {
         return this.expression.imports();
     }
-
 }

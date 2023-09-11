@@ -2,12 +2,14 @@ package tech.amereta.core.service.generator.spring;
 
 import tech.amereta.core.domain.description.SpringBootApplicationDescription;
 import tech.amereta.core.util.code.java.declaration.JavaMethodDeclaration;
+import tech.amereta.core.util.code.java.expression.JavaLambdaExpression;
 import tech.amereta.core.util.code.java.expression.JavaMethodInvocationExpression;
 import tech.amereta.core.util.code.java.expression.JavaValueExpression;
 import tech.amereta.core.util.code.java.expression.util.JavaMethodInvoke;
 import tech.amereta.core.util.code.java.source.JavaCompilationUnit;
 import tech.amereta.core.util.code.java.source.JavaTypeDeclaration;
 import tech.amereta.core.util.code.java.statement.JavaExpressionStatement;
+import tech.amereta.core.util.code.java.statement.JavaReturnStatement;
 import tech.amereta.core.util.code.java.util.JavaAnnotation;
 import tech.amereta.core.util.code.java.util.JavaModifier;
 import tech.amereta.core.util.code.java.util.JavaType;
@@ -31,22 +33,21 @@ public final class SecurityConfigurationGenerator extends AbstractSourceCodeGene
                                         .type(JavaModifier.TYPE_MODIFIERS)
                                         .modifiers(Modifier.PUBLIC)
                                         .build())
-                                .extendedClassName("org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter")
                                 .annotations(List.of(
                                         JavaAnnotation.builder()
-                                                .name("org.springframework.context.annotation.Configuration")
+                                                .name("org.springframework.security.config.annotation.web.configuration.EnableWebSecurity")
                                                 .build(),
                                         JavaAnnotation.builder()
-                                                .name("org.springframework.security.config.annotation.web.configuration.EnableWebSecurity")
+                                                .name("org.springframework.context.annotation.Configuration")
                                                 .build()))
                                 .methodDeclarations(List.of(
                                         JavaMethodDeclaration.builder()
-                                                .name("configure")
+                                                .name("filterChain")
                                                 .modifiers(JavaModifier.builder()
                                                         .type(JavaModifier.METHOD_MODIFIERS)
-                                                        .modifiers(Modifier.PROTECTED)
+                                                        .modifiers(Modifier.PUBLIC)
                                                         .build())
-                                                .returnType("void")
+                                                .returnType("org.springframework.security.web.SecurityFilterChain")
                                                 .parameters(List.of(
                                                         JavaMethodDeclaration.Parameter.builder()
                                                                 .type("org.springframework.security.config.annotation.web.builders.HttpSecurity")
@@ -54,41 +55,96 @@ public final class SecurityConfigurationGenerator extends AbstractSourceCodeGene
                                                                 .build()))
                                                 .annotations(List.of(
                                                         JavaAnnotation.builder()
-                                                                .name("override")
+                                                                .name("org.springframework.context.annotation.Bean")
                                                                 .build()
                                                 ))
+                                                .exceptions(List.of("java.lang.Exception"))
                                                 .statements(List.of(
                                                         JavaExpressionStatement.builder()
                                                                 .expression(JavaMethodInvocationExpression.builder()
                                                                         .target("http")
                                                                         .invokes(List.of(
                                                                                 JavaMethodInvoke.builder()
-                                                                                        .method("antMatchers")
+                                                                                        .method("csrf")
+                                                                                        .breakLine(true)
                                                                                         .arguments(List.of(
-                                                                                                JavaValueExpression.builder()
-                                                                                                        .value("/amereta")
-                                                                                                        .type(String.class)
+                                                                                                JavaMethodInvocationExpression.builder()
+                                                                                                        .target("org.springframework.security.config.Customizer")
+                                                                                                        .invokes(List.of(
+                                                                                                                JavaMethodInvoke.builder()
+                                                                                                                        .method("withDefaults")
+                                                                                                                        .build()))
                                                                                                         .build()))
-                                                                                        .breakLine(true)
                                                                                         .build(),
                                                                                 JavaMethodInvoke.builder()
-                                                                                        .method("permitAll")
-                                                                                        .build(),
-                                                                                JavaMethodInvoke.builder()
-                                                                                        .method("and")
+                                                                                        .method("authorizeHttpRequests")
                                                                                         .breakLine(true)
+                                                                                        .arguments(List.of(
+                                                                                                JavaLambdaExpression.builder()
+                                                                                                        .consumer(List.of("authorize"))
+                                                                                                        .statements(List.of(
+                                                                                                                JavaExpressionStatement.builder()
+                                                                                                                        .expression(JavaMethodInvocationExpression.builder()
+                                                                                                                                .target("authorize")
+                                                                                                                                .invokes(List.of(
+                                                                                                                                        JavaMethodInvoke.builder()
+                                                                                                                                                .method("requestMatchers")
+                                                                                                                                                .breakLine(true)
+                                                                                                                                                .arguments(List.of(
+                                                                                                                                                        JavaValueExpression.builder()
+                                                                                                                                                                .value("org.springframework.http.HttpMethod.OPTIONS")
+                                                                                                                                                                .type(Enum.class)
+                                                                                                                                                                .build(),
+                                                                                                                                                        JavaValueExpression.builder()
+                                                                                                                                                                .value("/**")
+                                                                                                                                                                .type(String.class)
+                                                                                                                                                                .build()))
+                                                                                                                                                .build(),
+                                                                                                                                        JavaMethodInvoke.builder()
+                                                                                                                                                .method("permitAll")
+                                                                                                                                                .build(),
+                                                                                                                                        JavaMethodInvoke.builder()
+                                                                                                                                                .method("anyRequest")
+                                                                                                                                                .breakLine(true)
+                                                                                                                                                .build(),
+                                                                                                                                        JavaMethodInvoke.builder()
+                                                                                                                                                .method("authenticated")
+                                                                                                                                                .build()))
+                                                                                                                                .build())
+                                                                                                                        .build()))
+                                                                                                        .build()))
                                                                                         .build(),
                                                                                 JavaMethodInvoke.builder()
                                                                                         .method("sessionManagement")
                                                                                         .breakLine(true)
-                                                                                        .build(),
-                                                                                JavaMethodInvoke.builder()
-                                                                                        .method("sessionCreationPolicy")
                                                                                         .arguments(List.of(
-                                                                                                JavaValueExpression.builder()
-                                                                                                        .value("org.springframework.security.config.http.SessionCreationPolicy.STATELESS")
-                                                                                                        .type(Enum.class)
+                                                                                                JavaLambdaExpression.builder()
+                                                                                                        .consumer(List.of("manager"))
+                                                                                                        .statements(List.of(
+                                                                                                                JavaExpressionStatement.builder()
+                                                                                                                        .expression(JavaMethodInvocationExpression.builder()
+                                                                                                                                .target("manager")
+                                                                                                                                .invokes(List.of(
+                                                                                                                                        JavaMethodInvoke.builder()
+                                                                                                                                                .method("sessionCreationPolicy")
+                                                                                                                                                .arguments(List.of(
+                                                                                                                                                        JavaValueExpression.builder()
+                                                                                                                                                                .value("org.springframework.security.config.http.SessionCreationPolicy.STATELESS")
+                                                                                                                                                                .type(Enum.class)
+                                                                                                                                                                .build()))
+                                                                                                                                                .build()))
+                                                                                                                                .build())
+                                                                                                                        .build()))
                                                                                                         .build()))
+                                                                                        .build()))
+                                                                        .build())
+                                                                .build(),
+                                                        JavaReturnStatement.builder()
+                                                                .expression(JavaMethodInvocationExpression.builder()
+                                                                        .target("http")
+                                                                        .invokes(List.of(
+                                                                                JavaMethodInvoke.builder()
+                                                                                        .method("build")
                                                                                         .build()))
                                                                         .build())
                                                                 .build()))
