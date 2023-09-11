@@ -26,6 +26,7 @@ public final class SpringBootApplicationGeneratorService implements ApplicationG
         sourceWriter.writeSourceTo(
                 JavaSourceCode.builder()
                         .compilationUnits(generateCompilationUnits(springBootApplicationDescription))
+                        .testCompilationUnits(generateTestCompilationUnits(springBootApplicationDescription))
                         .staticCompilationUnits(generateStaticUnits(springBootApplicationDescription))
                         .build(),
                 outputStream
@@ -38,6 +39,12 @@ public final class SpringBootApplicationGeneratorService implements ApplicationG
         compilationUnits.add(MainGenerator.generate(applicationDescription));
         compilationUnits.add(ApplicationConfigurationGenerator.generate(applicationDescription));
         compilationUnits.add(SecurityConfigurationGenerator.generate(applicationDescription));
+        return compilationUnits;
+    }
+
+    private List<JavaCompilationUnit> generateTestCompilationUnits(final SpringBootApplicationDescription applicationDescription) {
+        final List<JavaCompilationUnit> compilationUnits = new ArrayList<>();
+        compilationUnits.add(MainTestGenerator.generate(applicationDescription));
         return compilationUnits;
     }
 
