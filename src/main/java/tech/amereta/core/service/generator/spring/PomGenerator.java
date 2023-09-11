@@ -11,9 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Builder
-public final class PomXmlGenerator implements ISoyConfiguration {
-
-    // TODO: the output file needs indents reformation
+public final class PomGenerator implements ISoyConfiguration {
 
     private String javaVersion;
     private String springVersion;

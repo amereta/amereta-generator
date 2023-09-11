@@ -1,4 +1,4 @@
-package tech.amereta.core.service.generator.spring.code.type;
+package tech.amereta.core.service.generator.spring.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

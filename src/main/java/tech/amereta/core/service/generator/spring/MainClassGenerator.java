@@ -1,4 +1,4 @@
-package tech.amereta.core.service.generator.spring.code;
+package tech.amereta.core.service.generator.spring;
 
 import tech.amereta.core.domain.description.SpringBootApplicationDescription;
 import tech.amereta.core.util.code.java.declaration.JavaMethodDeclaration;
