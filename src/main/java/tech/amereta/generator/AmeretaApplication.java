@@ -1,4 +1,4 @@
-package tech.amereta.core;
+package tech.amereta.generator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
