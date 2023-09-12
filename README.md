@@ -1,1 +1,1 @@
-# amereta-core
+# Amereta Generator
