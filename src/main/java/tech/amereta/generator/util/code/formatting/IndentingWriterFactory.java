@@ -14,8 +14,8 @@ import java.util.function.Function;
 @Builder
 public final class IndentingWriterFactory {
 
-	@Default
-	private final Map<String, Function<Integer, String>> indentingStrategies = new HashMap<>();
+    @Default
+    private final Map<String, Function<Integer, String>> indentingStrategies = new HashMap<>();
     private final Function<Integer, String> defaultIndentingStrategy;
 
     /**

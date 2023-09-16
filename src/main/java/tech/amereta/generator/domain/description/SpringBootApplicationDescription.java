@@ -8,10 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tech.amereta.generator.domain.description.java.JavaTypeDescription;
-import tech.amereta.generator.domain.description.java.type.JavaDAOTypeDescription;
-import tech.amereta.generator.domain.description.java.type.JavaRepositoryTypeDescription;
-import tech.amereta.generator.service.web.SpringBootApplicationGeneratorService;
+import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleDescription;
+import tech.amereta.generator.domain.description.java.module.model.JavaModelModuleDescription;
+import tech.amereta.generator.service.spring.SpringBootApplicationGeneratorService;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpringBootApplicationDescription implements Application {
+public class SpringBootApplicationDescription implements AbstractApplication {
 
     @NotNull
     private String name;
@@ -41,15 +40,15 @@ public class SpringBootApplicationDescription implements Application {
     @Builder.Default
     private String port = "8080";
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,//
-            property = "type",//
-            visible = true)
-    @JsonSubTypes({
-            @JsonSubTypes.Type(value = JavaDAOTypeDescription.class, name = "DAO"),
-            @JsonSubTypes.Type(value = JavaRepositoryTypeDescription.class, name = "REPOSITORY")
-    }
+    @JsonTypeInfo(
+            use = JsonTypeInfo.Id.NAME,
+            property = "module",
+            visible = true
     )
-    private List<JavaTypeDescription> types;
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = JavaModelModuleDescription.class, name = "MODEL")
+    })
+    private List<AbstractJavaModuleDescription> modules;
 
     @Builder.Default
     @JsonIgnore

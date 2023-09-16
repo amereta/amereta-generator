@@ -13,11 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ApplicationDescription {
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,//
-            include = JsonTypeInfo.As.EXTERNAL_PROPERTY,//
-            property = "applicationType")
+    @JsonTypeInfo(
+            use = JsonTypeInfo.Id.NAME,
+            include = JsonTypeInfo.As.EXTERNAL_PROPERTY,
+            property = "applicationType"
+    )
     @JsonSubTypes({
             @JsonSubTypes.Type(value = SpringBootApplicationDescription.class, name = "spring-boot")
     })
-    private Application application;
+    private AbstractApplication application;
 }

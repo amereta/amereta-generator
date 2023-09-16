@@ -57,7 +57,7 @@ public final class JavaMethodDeclaration implements Declaration {
                     if (parameter.getGenericTypes().isEmpty())
                         return ((parameter.modifiers != null) ? parameter.modifiers.render() + " " : "") + renderSimpleParameter(parameter);
                     else
-                        return ((parameter.modifiers != null) ? parameter.modifiers.render() + " "  : "") + renderGenericParameter(parameter);
+                        return ((parameter.modifiers != null) ? parameter.modifiers.render() + " " : "") + renderGenericParameter(parameter);
                 })
                 .collect(Collectors.joining(", ")));
         if (!this.exceptions.isEmpty()) {
