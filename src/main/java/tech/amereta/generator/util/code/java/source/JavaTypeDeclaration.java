@@ -3,10 +3,12 @@ package tech.amereta.generator.util.code.java.source;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
+import lombok.Setter;
 import tech.amereta.generator.util.code.TypeDeclaration;
 import tech.amereta.generator.util.code.formatting.IndentingWriter;
 import tech.amereta.generator.util.code.formatting.SimpleIndentStrategy;
 import tech.amereta.generator.util.code.java.JavaSourceCodeWriter;
+import tech.amereta.generator.util.code.java.declaration.AbstractJavaFieldDeclaration;
 import tech.amereta.generator.util.code.java.declaration.JavaFieldDeclaration;
 import tech.amereta.generator.util.code.java.declaration.JavaMethodDeclaration;
 import tech.amereta.generator.util.code.java.util.JavaAnnotation;
@@ -21,17 +23,18 @@ import java.util.stream.Collectors;
  */
 @Builder
 @Getter
+@Setter
 public final class JavaTypeDeclaration implements TypeDeclaration {
 
     @Default
     private List<JavaAnnotation> annotations = new ArrayList<>();
     @Default
-    private final List<JavaFieldDeclaration> fieldDeclarations = new ArrayList<>();
+    private List<AbstractJavaFieldDeclaration> fieldDeclarations = new ArrayList<>();
     @Default
-    private final List<JavaMethodDeclaration> methodDeclarations = new ArrayList<>();
+    private List<JavaMethodDeclaration> methodDeclarations = new ArrayList<>();
     private JavaModifier modifiers;
-    private final JavaType type;
-    private final String name;
+    private JavaType type;
+    private String name;
     private String extendedClassName;
     private String implementedClassName;
     @Default
@@ -60,11 +63,11 @@ public final class JavaTypeDeclaration implements TypeDeclaration {
     public Set<String> imports() {
         final List<String> imports = new ArrayList<>();
         imports.addAll(this.annotations.stream().map(JavaAnnotation::imports).flatMap(Collection::stream).toList());
-        imports.addAll(this.fieldDeclarations.stream().map(JavaFieldDeclaration::imports).flatMap(Collection::stream).toList());
+        imports.addAll(this.fieldDeclarations.stream().map(AbstractJavaFieldDeclaration::imports).flatMap(Collection::stream).toList());
         imports.addAll(this.methodDeclarations.stream().map(JavaMethodDeclaration::imports).flatMap(Collection::stream).toList());
-        imports.addAll(tailGenericTypes);
-        if (this.extendedClassName != null) imports.add(this.extendedClassName);
-        if (this.implementedClassName != null) imports.add(this.implementedClassName);
+        imports.addAll(this.tailGenericTypes.stream().filter(JavaSourceCodeWriter::requiresImport).toList());
+        if (JavaSourceCodeWriter.requiresImport(this.extendedClassName)) imports.add(this.extendedClassName);
+        if (JavaSourceCodeWriter.requiresImport(this.implementedClassName)) imports.add(this.implementedClassName);
         return new LinkedHashSet<>(imports);
     }
 

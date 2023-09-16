@@ -14,7 +14,7 @@ import java.util.List;
 
 public final class UserGenerator extends AbstractSpringSourceCodeGenerator {
 
-    protected static final String CLASS_NAME = "AbstractUser";
+    private static final String CLASS_NAME = "AbstractUser";
 
     public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
         return JavaCompilationUnit.builder()
@@ -30,10 +30,13 @@ public final class UserGenerator extends AbstractSpringSourceCodeGenerator {
                                         .build())
                                 .annotations(List.of(
                                         JavaAnnotation.builder()
-                                                .name("javax.persistence.MappedSuperclass")
+                                                .name("jakarta.persistence.MappedSuperclass")
                                                 .build(),
                                         JavaAnnotation.builder()
                                                 .name("lombok.experimental.SuperBuilder")
+                                                .build(),
+                                        JavaAnnotation.builder()
+                                                .name("lombok.NoArgsConstructor")
                                                 .build(),
                                         JavaAnnotation.builder()
                                                 .name("lombok.Getter")
@@ -51,10 +54,10 @@ public final class UserGenerator extends AbstractSpringSourceCodeGenerator {
                                                 .name("username")
                                                 .annotations(List.of(
                                                         JavaAnnotation.builder()
-                                                                .name("javax.validation.constraints.NotNull")
+                                                                .name("jakarta.validation.constraints.NotNull")
                                                                 .build(),
                                                         JavaAnnotation.builder()
-                                                                .name("javax.validation.constraints.Pattern")
+                                                                .name("jakarta.validation.constraints.Pattern")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("regexp")
@@ -63,7 +66,7 @@ public final class UserGenerator extends AbstractSpringSourceCodeGenerator {
                                                                                 .build()))
                                                                 .build(),
                                                         JavaAnnotation.builder()
-                                                                .name("javax.validation.constraints.Size")
+                                                                .name("jakarta.validation.constraints.Size")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("min")
@@ -77,7 +80,7 @@ public final class UserGenerator extends AbstractSpringSourceCodeGenerator {
                                                                                 .build()))
                                                                 .build(),
                                                         JavaAnnotation.builder()
-                                                                .name("javax.persistence.Column")
+                                                                .name("jakarta.persistence.Column")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("length")
@@ -103,6 +106,38 @@ public final class UserGenerator extends AbstractSpringSourceCodeGenerator {
                                                         .build())
                                                 .type("String")
                                                 .name("email")
+                                                .annotations(List.of(
+                                                        JavaAnnotation.builder()
+                                                                .name("jakarta.validation.constraints.Email")
+                                                                .build(),
+                                                        JavaAnnotation.builder()
+                                                                .name("jakarta.validation.constraints.Size")
+                                                                .attributes(List.of(
+                                                                        JavaAnnotation.Attribute.builder()
+                                                                                .name("min")
+                                                                                .type(Integer.class)
+                                                                                .values(List.of("5"))
+                                                                                .build(),
+                                                                        JavaAnnotation.Attribute.builder()
+                                                                                .name("max")
+                                                                                .type(Integer.class)
+                                                                                .values(List.of("254"))
+                                                                                .build()))
+                                                                .build(),
+                                                        JavaAnnotation.builder()
+                                                                .name("jakarta.persistence.Column")
+                                                                .attributes(List.of(
+                                                                        JavaAnnotation.Attribute.builder()
+                                                                                .name("length")
+                                                                                .type(Integer.class)
+                                                                                .values(List.of("254"))
+                                                                                .build(),
+                                                                        JavaAnnotation.Attribute.builder()
+                                                                                .name("unique")
+                                                                                .type(Boolean.class)
+                                                                                .values(List.of("true"))
+                                                                                .build()))
+                                                                .build()))
                                                 .build(),
                                         JavaFieldDeclaration.builder()
                                                 .modifiers(JavaModifier.builder()
@@ -111,6 +146,46 @@ public final class UserGenerator extends AbstractSpringSourceCodeGenerator {
                                                         .build())
                                                 .type("String")
                                                 .name("password")
+                                                .annotations(List.of(
+                                                        JavaAnnotation.builder()
+                                                                .name("com.fasterxml.jackson.annotation.JsonIgnore")
+                                                                .build(),
+                                                        JavaAnnotation.builder()
+                                                                .name("jakarta.validation.constraints.NotNull")
+                                                                .build(),
+                                                        JavaAnnotation.builder()
+                                                                .name("jakarta.validation.constraints.Size")
+                                                                .attributes(List.of(
+                                                                        JavaAnnotation.Attribute.builder()
+                                                                                .name("min")
+                                                                                .type(Integer.class)
+                                                                                .values(List.of("60"))
+                                                                                .build(),
+                                                                        JavaAnnotation.Attribute.builder()
+                                                                                .name("max")
+                                                                                .type(Integer.class)
+                                                                                .values(List.of("60"))
+                                                                                .build()))
+                                                                .build(),
+                                                        JavaAnnotation.builder()
+                                                                .name("jakarta.persistence.Column")
+                                                                .attributes(List.of(
+                                                                        JavaAnnotation.Attribute.builder()
+                                                                                .name("length")
+                                                                                .type(Integer.class)
+                                                                                .values(List.of("60"))
+                                                                                .build(),
+                                                                        JavaAnnotation.Attribute.builder()
+                                                                                .name("unique")
+                                                                                .type(Boolean.class)
+                                                                                .values(List.of("true"))
+                                                                                .build(),
+                                                                        JavaAnnotation.Attribute.builder()
+                                                                                .name("nullable")
+                                                                                .type(Boolean.class)
+                                                                                .values(List.of("false"))
+                                                                                .build()))
+                                                                .build()))
                                                 .build()))
                                 .build()))
                 .build();

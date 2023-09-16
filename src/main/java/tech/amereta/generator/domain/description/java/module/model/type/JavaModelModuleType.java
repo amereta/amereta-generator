@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description.java.module.model;
+package tech.amereta.generator.domain.description.java.module.model.type;
 
 public enum JavaModelModuleType {
 

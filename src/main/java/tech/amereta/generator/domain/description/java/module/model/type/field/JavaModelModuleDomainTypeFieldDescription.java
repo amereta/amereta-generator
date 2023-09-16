@@ -1,5 +1,6 @@
-package tech.amereta.generator.domain.description.java.module.model;
+package tech.amereta.generator.domain.description.java.module.model.type.field;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -12,6 +13,10 @@ import lombok.experimental.SuperBuilder;
 public final class JavaModelModuleDomainTypeFieldDescription extends AbstractJavaModelModuleFieldDescription {
 
     private JavaFieldRelationDescription relation;
+    private Integer length;
+    @Builder.Default
+    @JsonProperty("transient")
+    private boolean isTransient = false;
     @Builder.Default
     private boolean unique = false;
     @Builder.Default

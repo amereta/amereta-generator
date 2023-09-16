@@ -1,9 +1,11 @@
-package tech.amereta.generator.domain.description.java.module.model;
+package tech.amereta.generator.domain.description.java.module.model.type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import tech.amereta.generator.domain.description.java.module.model.type.field.JavaModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleTypeGenerator;
 import tech.amereta.generator.service.spring.module.type.ModelModuleDomainTypeGenerator;
 
@@ -13,8 +15,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public final class JavaModelModuleDomainTypeDescription extends AbstractJavaModuleTypeDescription {
+public final class JavaModelModuleDomainTypeDescription extends AbstractJavaModelModuleTypeDescription {
 
+    @JsonProperty("id")
+    private String idType = "UUID";
+    private Boolean authorizable = false;
     private List<JavaModelModuleDomainTypeFieldDescription> fields;
 
     @Override

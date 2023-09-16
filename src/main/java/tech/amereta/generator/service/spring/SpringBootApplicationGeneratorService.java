@@ -10,6 +10,7 @@ import tech.amereta.generator.service.spring.main.AmeretaAnnotationGeneratorSpri
 import tech.amereta.generator.service.spring.main.MainGeneratorSpring;
 import tech.amereta.generator.service.spring.main.config.ApplicationConfigurationGeneratorSpring;
 import tech.amereta.generator.service.spring.main.model.domain.UserGenerator;
+import tech.amereta.generator.service.spring.main.model.enumeration.RoleGenerator;
 import tech.amereta.generator.service.spring.main.security.SecurityConfigurationGeneratorSpring;
 import tech.amereta.generator.service.spring.test.MainTestGeneratorSpring;
 import tech.amereta.generator.util.code.java.JavaSourceCodeWriter;
@@ -48,7 +49,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         compilationUnits.add(ApplicationConfigurationGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(SecurityConfigurationGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(UserGenerator.generate(springApplicationDescription));
-        System.out.println(generateModules(springApplicationDescription));
+        compilationUnits.add(RoleGenerator.generate(springApplicationDescription));
         compilationUnits.addAll(generateModules(springApplicationDescription));
         return compilationUnits;
     }
@@ -86,6 +87,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 .name(springApplicationDescription.getName())
                 .packageName(springApplicationDescription.getPackageName())
                 .description(springApplicationDescription.getDescription())
+                .hasDataBase(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription))
                 .build();
     }
 

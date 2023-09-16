@@ -3,6 +3,7 @@ package tech.amereta.generator.util.code.java.source;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
+import lombok.Setter;
 import tech.amereta.generator.util.code.CompilationUnit;
 import tech.amereta.generator.util.code.formatting.IndentingWriter;
 import tech.amereta.generator.util.code.formatting.SimpleIndentStrategy;

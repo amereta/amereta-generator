@@ -7,8 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
 import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleDescription;
+import tech.amereta.generator.domain.description.java.module.model.type.AbstractJavaModelModuleTypeDescription;
+import tech.amereta.generator.domain.description.java.module.model.type.JavaModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.module.SpringModelModuleGenerator;
 
@@ -26,7 +27,7 @@ public final class JavaModelModuleDescription extends AbstractJavaModuleDescript
     @JsonSubTypes({
             @JsonSubTypes.Type(value = JavaModelModuleDomainTypeDescription.class, name = "DOMAIN"),
     })
-    private List<AbstractJavaModuleTypeDescription> models = new LinkedList<>();
+    private List<AbstractJavaModelModuleTypeDescription> models = new LinkedList<>();
 
     @Override
     public AbstractSpringModuleGenerator getGenerator() {

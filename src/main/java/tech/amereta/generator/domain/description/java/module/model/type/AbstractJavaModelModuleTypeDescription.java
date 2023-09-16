@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description.java.module.model;
+package tech.amereta.generator.domain.description.java.module.model.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import tech.amereta.generator.service.spring.AbstractSpringModuleTypeGenerator;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractJavaModuleTypeDescription {
+public abstract class AbstractJavaModelModuleTypeDescription {
 
     private JavaModelModuleType type;
     private String name;

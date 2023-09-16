@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleDescription;
+import tech.amereta.generator.domain.description.java.module.db.JavaDBModuleDescription;
 import tech.amereta.generator.domain.description.java.module.model.JavaModelModuleDescription;
 import tech.amereta.generator.service.spring.SpringBootApplicationGeneratorService;
 
@@ -46,7 +47,8 @@ public class SpringBootApplicationDescription implements AbstractApplication {
             visible = true
     )
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = JavaModelModuleDescription.class, name = "MODEL")
+            @JsonSubTypes.Type(value = JavaModelModuleDescription.class, name = "MODEL"),
+            @JsonSubTypes.Type(value = JavaDBModuleDescription.class, name = "DB")
     })
     private List<AbstractJavaModuleDescription> modules;
 

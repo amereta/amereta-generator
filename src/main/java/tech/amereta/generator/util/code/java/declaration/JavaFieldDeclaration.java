@@ -3,6 +3,7 @@ package tech.amereta.generator.util.code.java.declaration;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
+import lombok.Setter;
 import tech.amereta.generator.util.code.Declaration;
 import tech.amereta.generator.util.code.formatting.IndentingWriter;
 import tech.amereta.generator.util.code.formatting.SimpleIndentStrategy;
@@ -18,14 +19,15 @@ import java.util.stream.Collectors;
  */
 @Builder
 @Getter
-public final class JavaFieldDeclaration implements Declaration {
+@Setter
+public final class JavaFieldDeclaration extends AbstractJavaFieldDeclaration {
 
     @Default
-    private final List<JavaAnnotation> annotations = new ArrayList<>();
-    private final JavaModifier modifiers;
-    private final String name;
-    private final String type;
-    private final Object value;
+    private List<JavaAnnotation> annotations = new ArrayList<>();
+    private JavaModifier modifiers;
+    private String name;
+    private String type;
+    private Object value;
     @Default
     List<String> genericTypes = new ArrayList<>();
 
@@ -66,6 +68,8 @@ public final class JavaFieldDeclaration implements Declaration {
     private String initValue() {
         if (this.value instanceof Class)
             return " = new " + ((Class<?>) this.value).getSimpleName() + "()";
+        else if (this.value instanceof String)
+            return " = \"" + this.value + "\"";
         else {
             String value = " = " + this.value;
             if (this.value instanceof Long)

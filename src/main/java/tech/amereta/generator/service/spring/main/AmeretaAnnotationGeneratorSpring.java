@@ -27,7 +27,7 @@ public final class AmeretaAnnotationGeneratorSpring extends AbstractSpringSource
                                         .build())
                                 .annotations(List.of(
                                         JavaAnnotation.builder()
-                                                .name("javax.annotation.Generated")
+                                                .name("jakarta.annotation.Generated")
                                                 .attributes(List.of(
                                                         JavaAnnotation.Attribute.builder()
                                                                 .name("value")

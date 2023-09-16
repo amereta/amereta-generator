@@ -18,6 +18,7 @@ public final class PomGenerator implements ISoyConfiguration {
     private String name;
     private String packageName;
     private String description;
+    private Boolean hasDataBase;
 
     @Override
     public String getName() {
@@ -43,7 +44,8 @@ public final class PomGenerator implements ISoyConfiguration {
                 "spring", springVersion,
                 "name", name,
                 "packageName", packageName,
-                "description", description);
+                "description", description,
+                "hasDataBase", hasDataBase);
     }
 
     @Override
