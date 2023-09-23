@@ -2,11 +2,11 @@ package tech.amereta.generator.service.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tech.amereta.generator.domain.description.ApplicationDescription;
-import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
-import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleDescription;
-import tech.amereta.generator.domain.description.java.module.model.JavaModelModuleDescription;
-import tech.amereta.generator.domain.description.java.module.model.type.JavaModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.ApplicationDescription;
+import tech.amereta.generator.description.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.AbstractJavaModuleDescription;
+import tech.amereta.generator.description.spring.model.JavaModelModuleDescription;
+import tech.amereta.generator.description.spring.model.type.JavaModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
 import tech.amereta.core.java.JavaSourceCodeWriter;

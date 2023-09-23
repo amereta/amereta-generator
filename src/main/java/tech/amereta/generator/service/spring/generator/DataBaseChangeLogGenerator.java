@@ -2,7 +2,7 @@ package tech.amereta.generator.service.spring.generator;
 
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
-import tech.amereta.generator.domain.description.java.module.model.type.field.JavaModelModuleDomainTypeFieldDescription;
+import tech.amereta.generator.description.spring.model.type.field.JavaModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.util.StringFormatter;
 import tech.amereta.core.soy.ISoyConfiguration;
 

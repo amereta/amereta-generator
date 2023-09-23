@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description.java.module.db;
+package tech.amereta.generator.description.spring.db;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleDescription;
-import tech.amereta.generator.domain.description.java.module.db.type.AbstractJavaDBModuleTypeDescription;
-import tech.amereta.generator.domain.description.java.module.db.type.JavaDBModuleMySQLTypeDescription;
+import tech.amereta.generator.description.spring.AbstractJavaModuleDescription;
+import tech.amereta.generator.description.spring.db.type.AbstractJavaDBModuleTypeDescription;
+import tech.amereta.generator.description.spring.db.type.JavaDBModuleMySQLTypeDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.generator.SpringDBModuleGenerator;
 

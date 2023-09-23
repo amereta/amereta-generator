@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description.java.module.model;
+package tech.amereta.generator.description.spring.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleDescription;
-import tech.amereta.generator.domain.description.java.module.model.type.AbstractJavaModelModuleTypeDescription;
-import tech.amereta.generator.domain.description.java.module.model.type.JavaModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.spring.AbstractJavaModuleDescription;
+import tech.amereta.generator.description.spring.model.type.AbstractJavaModelModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.JavaModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.generator.SpringModelModuleGenerator;
 

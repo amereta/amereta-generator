@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description;
+package tech.amereta.generator.description;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,9 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleDescription;
-import tech.amereta.generator.domain.description.java.module.db.JavaDBModuleDescription;
-import tech.amereta.generator.domain.description.java.module.model.JavaModelModuleDescription;
+import tech.amereta.generator.description.spring.AbstractJavaModuleDescription;
+import tech.amereta.generator.description.spring.db.JavaDBModuleDescription;
+import tech.amereta.generator.description.spring.model.JavaModelModuleDescription;
 import tech.amereta.generator.service.spring.SpringBootApplicationGeneratorService;
 
 import javax.validation.constraints.NotNull;

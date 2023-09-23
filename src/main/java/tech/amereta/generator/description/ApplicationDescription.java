@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description;
+package tech.amereta.generator.description;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description.java.module.model.type.field;
+package tech.amereta.generator.description.spring.model.type.field;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;

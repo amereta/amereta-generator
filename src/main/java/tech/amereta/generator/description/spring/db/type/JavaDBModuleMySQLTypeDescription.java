@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description.java.module.db.type;
+package tech.amereta.generator.description.spring.db.type;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;

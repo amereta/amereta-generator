@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description;
+package tech.amereta.generator.description;
 
 public interface AbstractApplication {
 

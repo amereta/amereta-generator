@@ -1,6 +1,6 @@
 package tech.amereta.generator.service;
 
-import tech.amereta.generator.domain.description.ApplicationDescription;
+import tech.amereta.generator.description.ApplicationDescription;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -1,4 +1,4 @@
-package tech.amereta.generator.domain.description.java.module.model.type.field;
+package tech.amereta.generator.description.spring.model.type.field;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

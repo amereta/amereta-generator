@@ -1,7 +1,7 @@
 package tech.amereta.generator.service.spring;
 
-import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
-import tech.amereta.generator.domain.description.java.module.db.JavaDBModuleDescription;
+import tech.amereta.generator.description.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.db.JavaDBModuleDescription;
 
 public abstract class AbstractSpringSourceCodeGenerator {
 

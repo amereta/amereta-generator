@@ -2,10 +2,10 @@ package tech.amereta.generator.service.spring.generator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
-import tech.amereta.generator.domain.description.java.module.model.type.AbstractJavaModelModuleTypeDescription;
-import tech.amereta.generator.domain.description.java.module.model.type.JavaModelModuleDomainTypeDescription;
-import tech.amereta.generator.domain.description.java.module.model.type.field.JavaModelModuleDomainTypeFieldDescription;
+import tech.amereta.generator.description.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.model.type.AbstractJavaModelModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.JavaModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.spring.model.type.field.JavaModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleTypeGenerator;
 import tech.amereta.generator.util.StringFormatter;
 import tech.amereta.core.java.declaration.AbstractJavaFieldDeclaration;
