@@ -30,9 +30,11 @@ public final class PomGenerator implements ISoyConfiguration {
         File tempFile = File.createTempFile("pom.xml", ".soy");
         tempFile.deleteOnExit();
 
-        FileUtils.copyInputStreamToFile(//
-                Objects.requireNonNull(//
-                        getClass().getClassLoader().getResourceAsStream("templates/soy/pom.xml.soy")), tempFile);
+        FileUtils.copyInputStreamToFile(
+                Objects.requireNonNull(
+                        getClass().getClassLoader().getResourceAsStream("templates/soy/pom.xml.soy")
+                ), tempFile
+        );
 
         return tempFile;
     }
@@ -45,7 +47,8 @@ public final class PomGenerator implements ISoyConfiguration {
                 "name", name,
                 "packageName", packageName,
                 "description", description,
-                "hasDataBase", hasDataBase);
+                "hasDataBase", hasDataBase
+        );
     }
 
     @Override

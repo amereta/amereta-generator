@@ -26,9 +26,11 @@ public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
         File tempFile = File.createTempFile("application.yml", ".soy");
         tempFile.deleteOnExit();
 
-        FileUtils.copyInputStreamToFile(//
-                Objects.requireNonNull(//
-                        getClass().getClassLoader().getResourceAsStream("templates/soy/application.yml.soy")), tempFile);
+        FileUtils.copyInputStreamToFile(
+                Objects.requireNonNull(
+                        getClass().getClassLoader().getResourceAsStream("templates/soy/application.yml.soy")
+                ), tempFile
+        );
 
         return tempFile;
     }

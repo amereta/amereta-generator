@@ -5,7 +5,10 @@ import org.springframework.stereotype.Service;
 import tech.amereta.generator.domain.description.ApplicationDescription;
 import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
 import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleDescription;
+import tech.amereta.generator.domain.description.java.module.model.JavaModelModuleDescription;
+import tech.amereta.generator.domain.description.java.module.model.type.JavaModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.ApplicationGenerator;
+import tech.amereta.generator.service.AsciiArtProviderService;
 import tech.amereta.generator.service.spring.main.AmeretaAnnotationGeneratorSpring;
 import tech.amereta.generator.service.spring.main.MainGeneratorSpring;
 import tech.amereta.generator.service.spring.main.config.ApplicationConfigurationGeneratorSpring;
@@ -28,6 +31,9 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
 
     @Autowired
     private JavaSourceCodeWriter sourceWriter;
+
+    @Autowired
+    private AsciiArtProviderService asciiArtProviderService;
 
     @Override
     public void generate(final ApplicationDescription springApplicationDescription, final OutputStream outputStream) {
@@ -62,8 +68,10 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
 
     private List<ISoyConfiguration> generateStaticUnits(final SpringBootApplicationDescription springApplicationDescription) {
         List<ISoyConfiguration> units = new ArrayList<>();
-        units.add(generatePomXML(springApplicationDescription));
+        units.add(generatePom(springApplicationDescription));
+        units.add(generateBanner(springApplicationDescription));
         units.addAll(generateApplicationProperties(springApplicationDescription));
+        units.addAll(generateLiquibaseFiles(springApplicationDescription));
         return units;
     }
 
@@ -80,7 +88,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         return javaModuleDescription.getGenerator().generate(springApplicationDescription, javaModuleDescription);
     }
 
-    private ISoyConfiguration generatePomXML(final SpringBootApplicationDescription springApplicationDescription) {
+    private ISoyConfiguration generatePom(final SpringBootApplicationDescription springApplicationDescription) {
         return PomGenerator.builder()
                 .javaVersion(springApplicationDescription.getJavaVersion())
                 .springVersion(springApplicationDescription.getSpringVersion())
@@ -91,6 +99,12 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 .build();
     }
 
+    private ISoyConfiguration generateBanner(final SpringBootApplicationDescription springApplicationDescription) {
+        return BannerGenerator.builder()
+                .name(asciiArtProviderService.writeAscii(springApplicationDescription.getName()))
+                .build();
+    }
+
     private List<ISoyConfiguration> generateApplicationProperties(final SpringBootApplicationDescription springApplicationDescription) {
         return List.of(
                 ApplicationPropertiesGenerator.builder()
@@ -98,6 +112,28 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                         .port(springApplicationDescription.getPort())
                         .build()
         );
+    }
+
+    private List<ISoyConfiguration> generateLiquibaseFiles(final SpringBootApplicationDescription springApplicationDescription) {
+        final List<ISoyConfiguration> changelogs = new ArrayList<>(
+                springApplicationDescription.getModules()
+                .stream()
+                .filter(module -> module instanceof JavaModelModuleDescription)
+                .map(module -> ((JavaModelModuleDescription) module).getModels())
+                .flatMap(List::stream)
+                .filter(model -> model instanceof JavaModelModuleDomainTypeDescription)
+                .map(domain -> DataBaseChangeLogGenerator.builder()
+                        .name(domain.getName())
+                        .fields(((JavaModelModuleDomainTypeDescription) domain).getFields())
+                        .build())
+                .toList()
+        );
+        changelogs.add(
+                LiquibaseMasterGenerator.builder()
+                        .changelogs(changelogs.stream().map(cl -> cl.getPath().toString().replaceAll("src/main/resources/", "")).toList())
+                        .build()
+        );
+        return changelogs;
     }
 
     private SpringBootApplicationDescription getApplication(final ApplicationDescription springApplicationDescription) {

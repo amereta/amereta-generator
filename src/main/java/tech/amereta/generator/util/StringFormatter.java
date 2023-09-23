@@ -1,7 +1,5 @@
 package tech.amereta.generator.util;
 
-import java.util.stream.Collectors;
-
 public class StringFormatter {
 
     public static String toPascalCase(String string) {
