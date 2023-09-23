@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.domain.description.java.module.model.type.field.JavaModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleTypeGenerator;
-import tech.amereta.generator.service.spring.module.type.ModelModuleDomainTypeGenerator;
+import tech.amereta.generator.service.spring.generator.ModelModuleDomainTypeGenerator;
 
 import java.util.List;
 

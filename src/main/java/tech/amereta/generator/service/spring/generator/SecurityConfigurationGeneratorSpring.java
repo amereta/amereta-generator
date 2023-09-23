@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.main.security;
+package tech.amereta.generator.service.spring.generator;
 
 import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;

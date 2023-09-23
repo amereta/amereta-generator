@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.module.type;
+package tech.amereta.generator.service.spring.generator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

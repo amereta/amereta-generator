@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring;
+package tech.amereta.generator.service.spring.generator;
 
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;

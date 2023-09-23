@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring;
+package tech.amereta.generator.service.spring.generator;
 
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
@@ -7,28 +7,28 @@ import tech.amereta.core.soy.ISoyConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 @Builder
-public final class LiquibaseMasterGenerator implements ISoyConfiguration {
+public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
 
-    private List<String> changelogs;
+    private String name;
+    private String port;
 
     @Override
     public String getName() {
-        return "amereta.generator.master";
+        return "amereta.generator.properties";
     }
 
     @Override
     public File getFile() throws IOException {
-        File tempFile = File.createTempFile("master.xml", ".soy");
+        File tempFile = File.createTempFile("application.yml", ".soy");
         tempFile.deleteOnExit();
 
         FileUtils.copyInputStreamToFile(
                 Objects.requireNonNull(
-                        getClass().getClassLoader().getResourceAsStream("templates/soy/master.xml.soy")
+                        getClass().getClassLoader().getResourceAsStream("templates/soy/application.yml.soy")
                 ), tempFile
         );
 
@@ -38,12 +38,13 @@ public final class LiquibaseMasterGenerator implements ISoyConfiguration {
     @Override
     public Map<String, Object> getParameters() {
         return Map.of(
-                "changelogs", changelogs
+                "name", name,
+                "port", port
         );
     }
 
     @Override
     public Path getPath() {
-        return Path.of("src/main/resources/db/master.xml");
+        return Path.of("src/main/resources/properties/application.yml");
     }
 }

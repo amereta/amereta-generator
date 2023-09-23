@@ -11,7 +11,7 @@ import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleD
 import tech.amereta.generator.domain.description.java.module.db.type.AbstractJavaDBModuleTypeDescription;
 import tech.amereta.generator.domain.description.java.module.db.type.JavaDBModuleMySQLTypeDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleGenerator;
-import tech.amereta.generator.service.spring.module.SpringDBModuleGenerator;
+import tech.amereta.generator.service.spring.generator.SpringDBModuleGenerator;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

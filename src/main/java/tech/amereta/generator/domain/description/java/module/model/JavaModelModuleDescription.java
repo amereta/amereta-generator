@@ -11,7 +11,7 @@ import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleD
 import tech.amereta.generator.domain.description.java.module.model.type.AbstractJavaModelModuleTypeDescription;
 import tech.amereta.generator.domain.description.java.module.model.type.JavaModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleGenerator;
-import tech.amereta.generator.service.spring.module.SpringModelModuleGenerator;
+import tech.amereta.generator.service.spring.generator.SpringModelModuleGenerator;
 
 import java.util.LinkedList;
 import java.util.List;

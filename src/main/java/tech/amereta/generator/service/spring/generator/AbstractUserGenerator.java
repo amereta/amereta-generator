@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.main.model.domain;
+package tech.amereta.generator.service.spring.generator;
 
 import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
@@ -12,7 +12,7 @@ import tech.amereta.core.java.util.JavaType;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public final class UserGenerator extends AbstractSpringSourceCodeGenerator {
+public final class AbstractUserGenerator extends AbstractSpringSourceCodeGenerator {
 
     private static final String CLASS_NAME = "AbstractUser";
 

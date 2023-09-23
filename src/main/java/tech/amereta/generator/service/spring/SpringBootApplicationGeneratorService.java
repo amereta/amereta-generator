@@ -9,17 +9,11 @@ import tech.amereta.generator.domain.description.java.module.model.JavaModelModu
 import tech.amereta.generator.domain.description.java.module.model.type.JavaModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
-import tech.amereta.generator.service.spring.main.AmeretaAnnotationGeneratorSpring;
-import tech.amereta.generator.service.spring.main.MainGeneratorSpring;
-import tech.amereta.generator.service.spring.main.config.ApplicationConfigurationGeneratorSpring;
-import tech.amereta.generator.service.spring.main.model.domain.UserGenerator;
-import tech.amereta.generator.service.spring.main.model.enumeration.RoleGenerator;
-import tech.amereta.generator.service.spring.main.security.SecurityConfigurationGeneratorSpring;
-import tech.amereta.generator.service.spring.test.MainTestGeneratorSpring;
 import tech.amereta.core.java.JavaSourceCodeWriter;
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaSourceCode;
 import tech.amereta.core.soy.ISoyConfiguration;
+import tech.amereta.generator.service.spring.generator.*;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -52,7 +46,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         compilationUnits.add(MainGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(ApplicationConfigurationGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(SecurityConfigurationGeneratorSpring.generate(springApplicationDescription));
-        compilationUnits.add(UserGenerator.generate(springApplicationDescription));
+        compilationUnits.add(AbstractUserGenerator.generate(springApplicationDescription));
         compilationUnits.add(RoleGenerator.generate(springApplicationDescription));
         compilationUnits.addAll(generateModules(springApplicationDescription));
         return compilationUnits;
