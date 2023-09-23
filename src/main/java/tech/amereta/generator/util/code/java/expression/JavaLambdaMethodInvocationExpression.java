@@ -1,7 +1,5 @@
 package tech.amereta.generator.util.code.java.expression;
 
-import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 import tech.amereta.generator.util.code.Expression;
 import tech.amereta.generator.util.code.java.JavaSourceCodeWriter;
 import tech.amereta.generator.util.code.java.expression.util.Operable;
@@ -11,12 +9,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-@SuperBuilder
-@Getter
 public class JavaLambdaMethodInvocationExpression extends Operable implements Expression {
 
-    private final String target;
-    private final String invoke;
+    private String target;
+    private String invoke;
+
+    public static JavaLambdaMethodInvocationExpression builder() {
+        return new JavaLambdaMethodInvocationExpression();
+    }
 
     @Override
     public String render() {
@@ -32,4 +32,29 @@ public class JavaLambdaMethodInvocationExpression extends Operable implements Ex
         return new LinkedHashSet<>(imports);
     }
 
+    public String getTarget() {
+        return target;
+    }
+
+    public JavaLambdaMethodInvocationExpression target(String target) {
+        setTarget(target);
+        return this;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    public String getInvoke() {
+        return invoke;
+    }
+
+    public JavaLambdaMethodInvocationExpression invoke(String invoke) {
+        setInvoke(invoke);
+        return this;
+    }
+
+    public void setInvoke(String invoke) {
+        this.invoke = invoke;
+    }
 }

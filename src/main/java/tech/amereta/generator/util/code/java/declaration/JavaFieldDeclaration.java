@@ -1,10 +1,5 @@
 package tech.amereta.generator.util.code.java.declaration;
 
-import lombok.Builder;
-import lombok.Builder.Default;
-import lombok.Getter;
-import lombok.Setter;
-import tech.amereta.generator.util.code.Declaration;
 import tech.amereta.generator.util.code.formatting.IndentingWriter;
 import tech.amereta.generator.util.code.formatting.SimpleIndentStrategy;
 import tech.amereta.generator.util.code.java.JavaSourceCodeWriter;
@@ -17,26 +12,25 @@ import java.util.stream.Collectors;
 /**
  * Declaration of a field written in Java.
  */
-@Builder
-@Getter
-@Setter
 public final class JavaFieldDeclaration extends AbstractJavaFieldDeclaration {
 
-    @Default
     private List<JavaAnnotation> annotations = new ArrayList<>();
+    private List<String> genericTypes = new ArrayList<>();
     private JavaModifier modifiers;
     private String name;
-    private String type;
+    private String dataType;
     private Object value;
-    @Default
-    List<String> genericTypes = new ArrayList<>();
+
+    public static JavaFieldDeclaration builder() {
+        return new JavaFieldDeclaration();
+    }
 
     @Override
     public String render() {
         final IndentingWriter writer = new IndentingWriter(new SimpleIndentStrategy(IndentingWriter.DEFAULT_INDENT));
         writer.print(renderAnnotations());
         writer.print(this.modifiers.render());
-        writer.print(JavaSourceCodeWriter.getUnqualifiedName(this.type));
+        writer.print(JavaSourceCodeWriter.getUnqualifiedName(this.dataType));
         if (!this.genericTypes.isEmpty()) {
             writer.print(renderGenericType());
         }
@@ -58,11 +52,89 @@ public final class JavaFieldDeclaration extends AbstractJavaFieldDeclaration {
     @Override
     public Set<String> imports() {
         final List<String> imports = new ArrayList<>();
-        if (JavaSourceCodeWriter.requiresImport(this.type)) imports.add(this.type);
+        if (JavaSourceCodeWriter.requiresImport(this.dataType)) imports.add(this.dataType);
         if (this.value instanceof Class && JavaSourceCodeWriter.requiresImport(((Class<?>) this.value).getName()))
             imports.add(((Class<?>) this.value).getName());
         imports.addAll(this.annotations.stream().map(JavaAnnotation::imports).flatMap(Collection::stream).toList());
         return new LinkedHashSet<>(imports);
+    }
+
+    public List<JavaAnnotation> getAnnotations() {
+        return annotations;
+    }
+
+    public JavaFieldDeclaration annotations(List<JavaAnnotation> annotations) {
+        setAnnotations(annotations);
+        return this;
+    }
+
+    public void setAnnotations(List<JavaAnnotation> annotations) {
+        this.annotations = annotations;
+    }
+
+    public JavaModifier getModifiers() {
+        return modifiers;
+    }
+
+    public JavaFieldDeclaration modifiers(JavaModifier modifiers) {
+        setModifiers(modifiers);
+        return this;
+    }
+
+    public void setModifiers(JavaModifier modifiers) {
+        this.modifiers = modifiers;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public JavaFieldDeclaration name(String name) {
+        setName(name);
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public JavaFieldDeclaration dataType(String dataType) {
+        setDataType(dataType);
+        return this;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public JavaFieldDeclaration value(Object value) {
+        setValue(value);
+        return this;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    public List<String> getGenericTypes() {
+        return genericTypes;
+    }
+
+    public JavaFieldDeclaration genericTypes(List<String> genericTypes) {
+        setGenericTypes(genericTypes);
+        return this;
+    }
+
+    public void setGenericTypes(List<String> genericTypes) {
+        this.genericTypes = genericTypes;
     }
 
     private String initValue() {

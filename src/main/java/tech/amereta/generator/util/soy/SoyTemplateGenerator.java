@@ -1,8 +1,6 @@
 package tech.amereta.generator.util.soy;
 
 import com.google.template.soy.jbcsrc.api.SoySauce.Renderer;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.*;
@@ -16,11 +14,13 @@ import java.util.Map;
  * <a href="https://github.com/google/closure-templates">Closure templates
  * repository</a>
  */
-@AllArgsConstructor
-@Slf4j
 public class SoyTemplateGenerator {
 
-    Map<String, Object> parameters;
+    private Map<String, Object> parameters;
+
+    public SoyTemplateGenerator(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
 
     /**
      * Creates and return a {@link Renderer} using the templateURL provided
@@ -35,13 +35,12 @@ public class SoyTemplateGenerator {
         if (compiler.run(args, new PrintStream(byteArrayOutputStream, true)) == 0) {
             return compiler.getSoySauce().renderTemplate(name);
         } else {
-            log.error(byteArrayOutputStream.toString());
             throw new FileNotFoundException(path);
         }
     }
 
     public static void generate(ISoyConfiguration configuration) throws IOException {
-        String generatedContent = render(configuration);
+        final String generatedContent = render(configuration);
         if (!Files.exists(configuration.getPath().getParent())) {
             Files.createDirectories(configuration.getPath().getParent());
         }
@@ -51,10 +50,9 @@ public class SoyTemplateGenerator {
     }
 
     public static String render(ISoyConfiguration configuration) throws IOException {
-        log.debug("-- {}", configuration.getFile().getAbsolutePath());
-        Renderer renderer = getRenderer(configuration.getFile().getAbsolutePath(), configuration.getName());
+        final Renderer renderer = getRenderer(configuration.getFile().getAbsolutePath(), configuration.getName());
 
-        Map<String, Object> data = new HashMap<>();
+        final Map<String, Object> data = new HashMap<>();
         data.putAll(configuration.getParameters());
         data.putAll(getCommonData(configuration));
         renderer.setData(data);

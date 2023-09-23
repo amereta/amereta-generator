@@ -3,8 +3,8 @@ package tech.amereta.generator.service.spring.main.model.enumeration;
 import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import tech.amereta.generator.util.code.java.declaration.JavaEnumFieldDeclaration;
-import tech.amereta.generator.util.code.java.source.JavaCompilationUnit;
-import tech.amereta.generator.util.code.java.source.JavaTypeDeclaration;
+import tech.amereta.generator.util.code.java.JavaCompilationUnit;
+import tech.amereta.generator.util.code.java.JavaTypeDeclaration;
 import tech.amereta.generator.util.code.java.util.JavaModifier;
 import tech.amereta.generator.util.code.java.util.JavaType;
 
@@ -25,19 +25,13 @@ public final class RoleGenerator extends AbstractSpringSourceCodeGenerator {
                                 .name(CLASS_NAME)
                                 .modifiers(JavaModifier.builder()
                                         .type(JavaModifier.TYPE_MODIFIERS)
-                                        .modifiers(Modifier.PUBLIC)
-                                        .build())
+                                        .modifiers(Modifier.PUBLIC))
                                 .fieldDeclarations(List.of(
                                         JavaEnumFieldDeclaration.builder()
-                                                .name("ROOT")
-                                                .build(),
+                                                .name("ROOT"),
                                         JavaEnumFieldDeclaration.builder()
-                                                .name("ADMIN")
-                                                .build(),
+                                                .name("ADMIN"),
                                         JavaEnumFieldDeclaration.builder()
-                                                .name("USER")
-                                                .build()))
-                                .build()))
-                .build();
+                                                .name("USER")))));
     }
 }

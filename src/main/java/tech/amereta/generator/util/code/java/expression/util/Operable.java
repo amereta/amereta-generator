@@ -1,13 +1,9 @@
 package tech.amereta.generator.util.code.java.expression.util;
 
-import lombok.Builder;
-import lombok.experimental.SuperBuilder;
 import tech.amereta.generator.util.code.java.util.JavaOperand;
 
-@SuperBuilder
 public class Operable {
 
-    @Builder.Default
     private JavaOperand operand = null;
 
     public String render() {
@@ -19,4 +15,16 @@ public class Operable {
         return "";
     }
 
+    public JavaOperand getOperand() {
+        return operand;
+    }
+
+    public Operable operand(JavaOperand operand) {
+        setOperand(operand);
+        return this;
+    }
+
+    public void setOperand(JavaOperand operand) {
+        this.operand = operand;
+    }
 }

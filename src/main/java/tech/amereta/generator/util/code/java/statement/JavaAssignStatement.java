@@ -1,17 +1,18 @@
 package tech.amereta.generator.util.code.java.statement;
 
-import lombok.Builder;
 import tech.amereta.generator.util.code.Expression;
 import tech.amereta.generator.util.code.Statement;
 
 import java.util.Set;
 
 
-public record JavaAssignStatement(String variable,
-                                  Expression expression) implements Statement {
+public final class JavaAssignStatement implements Statement {
 
-    @Builder
-    public JavaAssignStatement {
+    private String variable;
+    private Expression expression;
+
+    public static JavaAssignStatement builder() {
+        return new JavaAssignStatement();
     }
 
     @Override
@@ -24,4 +25,29 @@ public record JavaAssignStatement(String variable,
         return this.expression.imports();
     }
 
+    public String getVariable() {
+        return variable;
+    }
+
+    public JavaAssignStatement variable(String variable) {
+        setVariable(variable);
+        return this;
+    }
+
+    public void setVariable(String variable) {
+        this.variable = variable;
+    }
+
+    public Expression getExpression() {
+        return expression;
+    }
+
+    public JavaAssignStatement expression(Expression expression) {
+        setExpression(expression);
+        return this;
+    }
+
+    public void setExpression(Expression expression) {
+        this.expression = expression;
+    }
 }

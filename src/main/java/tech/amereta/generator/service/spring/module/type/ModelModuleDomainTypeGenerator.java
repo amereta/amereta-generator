@@ -10,8 +10,8 @@ import tech.amereta.generator.service.spring.AbstractSpringModuleTypeGenerator;
 import tech.amereta.generator.util.StringFormatter;
 import tech.amereta.generator.util.code.java.declaration.AbstractJavaFieldDeclaration;
 import tech.amereta.generator.util.code.java.declaration.JavaFieldDeclaration;
-import tech.amereta.generator.util.code.java.source.JavaCompilationUnit;
-import tech.amereta.generator.util.code.java.source.JavaTypeDeclaration;
+import tech.amereta.generator.util.code.java.JavaCompilationUnit;
+import tech.amereta.generator.util.code.java.JavaTypeDeclaration;
 import tech.amereta.generator.util.code.java.util.JavaAnnotation;
 import tech.amereta.generator.util.code.java.util.JavaModifier;
 import tech.amereta.generator.util.code.java.util.JavaType;
@@ -54,10 +54,8 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                             .attributes(List.of(
                                     JavaAnnotation.Attribute.builder()
                                             .name("callSuper")
-                                            .type(Boolean.class)
-                                            .values(List.of("true"))
-                                            .build()))
-                            .build()
+                                            .dataType(Boolean.class)
+                                            .values(List.of("true"))))
             );
             domain.setExtendedClassName("AbstractUser");
         }
@@ -67,8 +65,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".model.domain")
                 .name(className)
-                .typeDeclarations(List.of(domain))
-                .build();
+                .typeDeclarations(List.of(domain));
     }
 
     private JavaCompilationUnit generateRepository(final SpringBootApplicationDescription applicationDescription, final JavaModelModuleDomainTypeDescription domainTypeDescription) {
@@ -78,7 +75,6 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
         repository.setAnnotations(List.of(
                 JavaAnnotation.builder()
                         .name("org.springframework.stereotype.Repository")
-                        .build()
         ));
         repository.setExtendedClassName("org.springframework.data.jpa.repository.JpaRepository");
         repository.setTailGenericTypes(List.of(
@@ -88,8 +84,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".repository")
                 .name(className)
-                .typeDeclarations(List.of(repository))
-                .build();
+                .typeDeclarations(List.of(repository));
     }
 
     private List<JavaCompilationUnit> generateSimpleDomain(SpringBootApplicationDescription applicationDescription, JavaModelModuleDomainTypeDescription domainTypeDescription) {
@@ -103,7 +98,6 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                         .packageName(basePackage(applicationDescription) + ".model.domain")
                         .name(className)
                         .typeDeclarations(List.of(domain))
-                        .build()
         );
     }
 
@@ -129,12 +123,10 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
         return JavaFieldDeclaration.builder()
                 .modifiers(JavaModifier.builder()
                         .type(JavaModifier.FIELD_MODIFIERS)
-                        .modifiers(Modifier.PRIVATE)
-                        .build())
-                .type(calculateIdType(idType))
+                        .modifiers(Modifier.PRIVATE))
+                .dataType(calculateIdType(idType))
                 .name("id")
-                .annotations(generateIdAnnotations(idType))
-                .build();
+                .annotations(generateIdAnnotations(idType));
     }
 
     private static List<JavaAnnotation> generateIdAnnotations(final String idType) {
@@ -148,62 +140,50 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
     private static List<JavaAnnotation> generateLongAnnotations() {
         return List.of(
                 JavaAnnotation.builder()
-                        .name("jakarta.persistence.Id")
-                        .build(),
+                        .name("jakarta.persistence.Id"),
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.GeneratedValue")
                         .attributes(List.of(
                                 JavaAnnotation.Attribute.builder()
                                         .name("strategy")
-                                        .type(Enum.class)
-                                        .values(List.of("jakarta.persistence.GenerationType.SEQUENCE"))
-                                        .build(),
+                                        .dataType(Enum.class)
+                                        .values(List.of("jakarta.persistence.GenerationType.SEQUENCE")),
                                 JavaAnnotation.Attribute.builder()
                                         .name("generator")
-                                        .type(String.class)
-                                        .values(List.of("sequenceGenerator"))
-                                        .build()))
-                        .build(),
+                                        .dataType(String.class)
+                                        .values(List.of("sequenceGenerator")))),
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.SequenceGenerator")
                         .attributes(List.of(
                                 JavaAnnotation.Attribute.builder()
                                         .name("name")
-                                        .type(String.class)
-                                        .values(List.of("sequenceGenerator"))
-                                        .build()))
-                        .build()
+                                        .dataType(String.class)
+                                        .values(List.of("sequenceGenerator"))))
         );
     }
 
     private static List<JavaAnnotation> generateUUIDAnnotations() {
         return List.of(
                 JavaAnnotation.builder()
-                        .name("jakarta.persistence.Id")
-                        .build(),
+                        .name("jakarta.persistence.Id"),
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.GeneratedValue")
                         .attributes(List.of(
                                 JavaAnnotation.Attribute.builder()
                                         .name("strategy")
-                                        .type(Enum.class)
-                                        .values(List.of("jakarta.persistence.GenerationType.UUID"))
-                                        .build()))
-                        .build(),
+                                        .dataType(Enum.class)
+                                        .values(List.of("jakarta.persistence.GenerationType.UUID")))),
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.Column")
                         .attributes(List.of(
                                 JavaAnnotation.Attribute.builder()
                                         .name("name")
-                                        .type(String.class)
-                                        .values(List.of("id"))
-                                        .build(),
+                                        .dataType(String.class)
+                                        .values(List.of("id")),
                                 JavaAnnotation.Attribute.builder()
                                         .name("length")
-                                        .type(Integer.class)
-                                        .values(List.of("36"))
-                                        .build()))
-                        .build()
+                                        .dataType(Integer.class)
+                                        .values(List.of("36"))))
         );
     }
 
@@ -228,17 +208,15 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
         List<JavaAnnotation.Attribute> columnAttributes = new ArrayList<>(List.of(
                 JavaAnnotation.Attribute.builder()
                         .name("name")
-                        .type(String.class)
+                        .dataType(String.class)
                         .values(List.of(StringFormatter.toSnakeCase(field.getName())))
-                        .build()
         ));
         if(field.getLength() != null) {
             columnAttributes.add(
                     JavaAnnotation.Attribute.builder()
                             .name("length")
-                            .type(Integer.class)
+                            .dataType(Integer.class)
                             .values(List.of(field.getLength().toString()))
-                            .build()
             );
             annotations.add(
                     JavaAnnotation.builder()
@@ -246,63 +224,54 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                             .attributes(List.of(
                                     JavaAnnotation.Attribute.builder()
                                             .name("min")
-                                            .type(Integer.class)
-                                            .values(List.of(field.getLength().toString()))
-                                            .build(),
+                                            .dataType(Integer.class)
+                                            .values(List.of(field.getLength().toString())),
                                     JavaAnnotation.Attribute.builder()
                                             .name("max")
-                                            .type(Integer.class)
-                                            .values(List.of(field.getLength().toString()))
-                                            .build()))
-                            .build()
+                                            .dataType(Integer.class)
+                                            .values(List.of(field.getLength().toString()))))
             );
         }
         if(field.isUnique()) {
             columnAttributes.add(
                     JavaAnnotation.Attribute.builder()
                             .name("unique")
-                            .type(Boolean.class)
+                            .dataType(Boolean.class)
                             .values(List.of("true"))
-                            .build()
             );
         }
         if(!field.isNullable()) {
             columnAttributes.add(
                     JavaAnnotation.Attribute.builder()
                             .name("nullable")
-                            .type(Boolean.class)
+                            .dataType(Boolean.class)
                             .values(List.of("false"))
-                            .build()
             );
         }
         if(!field.isUpdatable()) {
             columnAttributes.add(
                     JavaAnnotation.Attribute.builder()
                             .name("updatable")
-                            .type(Boolean.class)
+                            .dataType(Boolean.class)
                             .values(List.of("false"))
-                            .build()
             );
         }
         if(field.isExcludeFromJson()) {
             annotations.add(
                     JavaAnnotation.builder()
                             .name("com.fasterxml.jackson.annotation.JsonIgnore")
-                            .build()
             );
         }
         if(field.isTransient()) {
             annotations.add(
                     JavaAnnotation.builder()
                             .name("jakarta.persistence.Transient")
-                            .build()
             );
         }
         annotations.add(
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.Column")
                         .attributes(columnAttributes)
-                        .build()
         );
         return annotations;
     }
@@ -313,7 +282,6 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
             annotations.add(
                     JavaAnnotation.builder()
                             .name("lombok.Builder.Default")
-                            .build()
             );
         }
         return annotations;
@@ -326,8 +294,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                 .modifiers(JavaModifier.builder()
                         .type(JavaModifier.TYPE_MODIFIERS)
                         .modifiers(Modifier.PUBLIC)
-                        .build())
-                .build();
+                );
     }
 
     private JavaTypeDeclaration generateInterfaceDeclaration(String className) {
@@ -337,20 +304,17 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                 .modifiers(JavaModifier.builder()
                         .type(JavaModifier.TYPE_MODIFIERS)
                         .modifiers(Modifier.PUBLIC)
-                        .build())
-                .build();
+                );
     }
 
     private JavaFieldDeclaration generateFieldDeclaration(JavaModelModuleDomainTypeFieldDescription field) {
         return JavaFieldDeclaration.builder()
                 .modifiers(JavaModifier.builder()
                         .type(JavaModifier.FIELD_MODIFIERS)
-                        .modifiers(Modifier.PRIVATE)
-                        .build())
-                .type(field.getDataType())
+                        .modifiers(Modifier.PRIVATE))
+                .dataType(field.getDataType())
                 .name(field.getName())
-                .value(field.getDefaultValue())
-                .build();
+                .value(field.getDefaultValue());
     }
 
     private static List<JavaAnnotation> generateDBDomainAnnotations(JavaModelModuleDomainTypeDescription domainTypeDescription) {
@@ -360,13 +324,10 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                         .attributes(List.of(
                                 JavaAnnotation.Attribute.builder()
                                         .name("name")
-                                        .type(String.class)
-                                        .values(List.of(StringFormatter.toSnakeCase(domainTypeDescription.getName())))
-                                        .build()))
-                        .build(),
+                                        .dataType(String.class)
+                                        .values(List.of(StringFormatter.toSnakeCase(domainTypeDescription.getName()))))),
                 JavaAnnotation.builder()
-                        .name("jakarta.persistence.Entity")
-                        .build()));
+                        .name("jakarta.persistence.Entity")));
         annotations.addAll(generateSimpleDomainAnnotations());
         return annotations;
     }
@@ -374,16 +335,12 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
     private static List<JavaAnnotation> generateSimpleDomainAnnotations() {
         return List.of(
                 JavaAnnotation.builder()
-                        .name("lombok.Builder")
-                        .build(),
+                        .name("lombok.Builder"),
                 JavaAnnotation.builder()
-                        .name("lombok.Data")
-                        .build(),
+                        .name("lombok.Data"),
                 JavaAnnotation.builder()
-                        .name("lombok.NoArgsConstructor")
-                        .build(),
+                        .name("lombok.NoArgsConstructor"),
                 JavaAnnotation.builder()
-                        .name("lombok.AllArgsConstructor")
-                        .build());
+                        .name("lombok.AllArgsConstructor"));
     }
 }

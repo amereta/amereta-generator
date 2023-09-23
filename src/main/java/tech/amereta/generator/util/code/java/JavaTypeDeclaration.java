@@ -1,15 +1,9 @@
-package tech.amereta.generator.util.code.java.source;
+package tech.amereta.generator.util.code.java;
 
-import lombok.Builder;
-import lombok.Builder.Default;
-import lombok.Getter;
-import lombok.Setter;
 import tech.amereta.generator.util.code.TypeDeclaration;
 import tech.amereta.generator.util.code.formatting.IndentingWriter;
 import tech.amereta.generator.util.code.formatting.SimpleIndentStrategy;
-import tech.amereta.generator.util.code.java.JavaSourceCodeWriter;
 import tech.amereta.generator.util.code.java.declaration.AbstractJavaFieldDeclaration;
-import tech.amereta.generator.util.code.java.declaration.JavaFieldDeclaration;
 import tech.amereta.generator.util.code.java.declaration.JavaMethodDeclaration;
 import tech.amereta.generator.util.code.java.util.JavaAnnotation;
 import tech.amereta.generator.util.code.java.util.JavaModifier;
@@ -21,24 +15,21 @@ import java.util.stream.Collectors;
 /**
  * A declaration of a type written in Java.
  */
-@Builder
-@Getter
-@Setter
 public final class JavaTypeDeclaration implements TypeDeclaration {
 
-    @Default
     private List<JavaAnnotation> annotations = new ArrayList<>();
-    @Default
     private List<AbstractJavaFieldDeclaration> fieldDeclarations = new ArrayList<>();
-    @Default
     private List<JavaMethodDeclaration> methodDeclarations = new ArrayList<>();
+    private List<String> tailGenericTypes = new ArrayList<>();
     private JavaModifier modifiers;
     private JavaType type;
     private String name;
     private String extendedClassName;
     private String implementedClassName;
-    @Default
-    private List<String> tailGenericTypes = new ArrayList<>();
+
+    public static JavaTypeDeclaration builder() {
+        return new JavaTypeDeclaration();
+    }
 
     @Override
     public String render() {
@@ -71,6 +62,123 @@ public final class JavaTypeDeclaration implements TypeDeclaration {
         return new LinkedHashSet<>(imports);
     }
 
+    public List<JavaAnnotation> getAnnotations() {
+        return annotations;
+    }
+
+    public JavaTypeDeclaration annotations(List<JavaAnnotation> annotations) {
+        setAnnotations(annotations);
+        return this;
+    }
+
+    public void setAnnotations(List<JavaAnnotation> annotations) {
+        this.annotations = annotations;
+    }
+
+    public List<AbstractJavaFieldDeclaration> getFieldDeclarations() {
+        return fieldDeclarations;
+    }
+
+    public JavaTypeDeclaration fieldDeclarations(List<AbstractJavaFieldDeclaration> fieldDeclarations) {
+        setFieldDeclarations(fieldDeclarations);
+        return this;
+    }
+
+    public void setFieldDeclarations(List<AbstractJavaFieldDeclaration> fieldDeclarations) {
+        this.fieldDeclarations = fieldDeclarations;
+    }
+
+    public List<JavaMethodDeclaration> getMethodDeclarations() {
+        return methodDeclarations;
+    }
+
+    public JavaTypeDeclaration methodDeclarations(List<JavaMethodDeclaration> methodDeclarations) {
+        setMethodDeclarations(methodDeclarations);
+        return this;
+    }
+
+    public void setMethodDeclarations(List<JavaMethodDeclaration> methodDeclarations) {
+        this.methodDeclarations = methodDeclarations;
+    }
+
+    public List<String> getTailGenericTypes() {
+        return tailGenericTypes;
+    }
+
+    public JavaTypeDeclaration tailGenericTypes(List<String> tailGenericTypes) {
+        setTailGenericTypes(tailGenericTypes);
+        return this;
+    }
+
+    public void setTailGenericTypes(List<String> tailGenericTypes) {
+        this.tailGenericTypes = tailGenericTypes;
+    }
+
+    public JavaModifier getModifiers() {
+        return modifiers;
+    }
+
+    public JavaTypeDeclaration modifiers(JavaModifier modifiers) {
+        setModifiers(modifiers);
+        return this;
+    }
+
+    public void setModifiers(JavaModifier modifiers) {
+        this.modifiers = modifiers;
+    }
+
+    public JavaType getType() {
+        return type;
+    }
+
+    public JavaTypeDeclaration type(JavaType type) {
+        setType(type);
+        return this;
+    }
+
+    public void setType(JavaType type) {
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public JavaTypeDeclaration name(String name) {
+        setName(name);
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getExtendedClassName() {
+        return extendedClassName;
+    }
+
+    public JavaTypeDeclaration extendedClassName(String extendedClassName) {
+        setExtendedClassName(extendedClassName);
+        return this;
+    }
+
+    public void setExtendedClassName(String extendedClassName) {
+        this.extendedClassName = extendedClassName;
+    }
+
+    public String getImplementedClassName() {
+        return implementedClassName;
+    }
+
+    public JavaTypeDeclaration implementedClassName(String implementedClassName) {
+        setImplementedClassName(implementedClassName);
+        return this;
+    }
+
+    public void setImplementedClassName(String implementedClassName) {
+        this.implementedClassName = implementedClassName;
+    }
+
     private String implementedOrExtendedClassName() {
         String className = "";
         if (getExtendedClassName() != null)
@@ -84,9 +192,9 @@ public final class JavaTypeDeclaration implements TypeDeclaration {
     }
 
     private String renderGenericType() {
-        return "<" + this.tailGenericTypes.stream()//
-                .map(JavaSourceCodeWriter::getUnqualifiedName)//
-                .collect(Collectors.joining(", ")) +//
+        return "<" + this.tailGenericTypes.stream()
+                .map(JavaSourceCodeWriter::getUnqualifiedName)
+                .collect(Collectors.joining(", ")) +
                 ">";
     }
 

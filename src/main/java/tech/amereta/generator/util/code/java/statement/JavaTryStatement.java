@@ -1,6 +1,5 @@
 package tech.amereta.generator.util.code.java.statement;
 
-import lombok.Builder;
 import tech.amereta.generator.util.code.Statement;
 import tech.amereta.generator.util.code.formatting.IndentingWriter;
 import tech.amereta.generator.util.code.formatting.SimpleIndentStrategy;
@@ -12,10 +11,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record JavaTryStatement(List<Statement> statements, List<Catch> catches) implements Statement {
+public final class JavaTryStatement implements Statement {
 
-    @Builder
-    public JavaTryStatement {
+    private List<Statement> statements;
+    private List<Catch> catches;
+
+    public static JavaTryStatement builder() {
+        return new JavaTryStatement();
     }
 
     @Override
@@ -38,12 +40,41 @@ public record JavaTryStatement(List<Statement> statements, List<Catch> catches) 
         return new LinkedHashSet<>(imports);
     }
 
-    @Builder
+    public List<Statement> getStatements() {
+        return statements;
+    }
+
+    public JavaTryStatement statements(List<Statement> statements) {
+        setStatements(statements);
+        return this;
+    }
+
+    public void setStatements(List<Statement> statements) {
+        this.statements = statements;
+    }
+
+    public List<Catch> getCatches() {
+        return catches;
+    }
+
+    public JavaTryStatement catches(List<Catch> catches) {
+        setCatches(catches);
+        return this;
+    }
+
+    public void setCatches(List<Catch> catches) {
+        this.catches = catches;
+    }
+
     public static class Catch {
 
-        public String exception;
-        public String name;
-        public List<Statement> statements;
+        private String exception;
+        private String name;
+        private List<Statement> statements;
+
+        public static Catch builder() {
+            return new Catch();
+        }
 
         public String render() {
             IndentingWriter writer = new IndentingWriter(new SimpleIndentStrategy(IndentingWriter.DEFAULT_INDENT));
@@ -62,5 +93,43 @@ public record JavaTryStatement(List<Statement> statements, List<Catch> catches) 
             return new LinkedHashSet<>(imports);
         }
 
+        public String getException() {
+            return exception;
+        }
+
+        public Catch exception(String exception) {
+            setException(exception);
+            return this;
+        }
+
+        public void setException(String exception) {
+            this.exception = exception;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Catch name(String name) {
+            setName(name);
+            return this;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public List<Statement> getStatements() {
+            return statements;
+        }
+
+        public Catch statements(List<Statement> statements) {
+            setStatements(statements);
+            return this;
+        }
+
+        public void setStatements(List<Statement> statements) {
+            this.statements = statements;
+        }
     }
 }

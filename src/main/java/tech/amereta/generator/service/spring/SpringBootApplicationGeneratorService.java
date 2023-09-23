@@ -17,8 +17,8 @@ import tech.amereta.generator.service.spring.main.model.enumeration.RoleGenerato
 import tech.amereta.generator.service.spring.main.security.SecurityConfigurationGeneratorSpring;
 import tech.amereta.generator.service.spring.test.MainTestGeneratorSpring;
 import tech.amereta.generator.util.code.java.JavaSourceCodeWriter;
-import tech.amereta.generator.util.code.java.source.JavaCompilationUnit;
-import tech.amereta.generator.util.code.java.source.JavaSourceCode;
+import tech.amereta.generator.util.code.java.JavaCompilationUnit;
+import tech.amereta.generator.util.code.java.JavaSourceCode;
 import tech.amereta.generator.util.soy.ISoyConfiguration;
 
 import java.io.OutputStream;
@@ -29,8 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class SpringBootApplicationGeneratorService implements ApplicationGenerator {
 
-    @Autowired
-    private JavaSourceCodeWriter sourceWriter;
+    private static final JavaSourceCodeWriter JAVA_SOURCE_CODE_WRITER = new JavaSourceCodeWriter();
 
     @Autowired
     private AsciiArtProviderService asciiArtProviderService;
@@ -38,12 +37,11 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
     @Override
     public void generate(final ApplicationDescription springApplicationDescription, final OutputStream outputStream) {
         final SpringBootApplicationDescription springBootApplicationDescription = getApplication(springApplicationDescription);
-        sourceWriter.writeSourceTo(
+        JAVA_SOURCE_CODE_WRITER.writeSourceTo(
                 JavaSourceCode.builder()
                         .compilationUnits(generateCompilationUnits(springBootApplicationDescription))
                         .testCompilationUnits(generateTestCompilationUnits(springBootApplicationDescription))
-                        .staticCompilationUnits(generateStaticUnits(springBootApplicationDescription))
-                        .build(),
+                        .staticCompilationUnits(generateStaticUnits(springBootApplicationDescription)),
                 outputStream
         );
     }

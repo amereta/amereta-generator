@@ -1,22 +1,19 @@
 package tech.amereta.generator.util.code.java.expression;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 import tech.amereta.generator.util.code.Expression;
 import tech.amereta.generator.util.code.java.expression.util.Operable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuperBuilder
-@Getter
 public class JavaBraceletExpression extends Operable implements Expression {
 
-    @Builder.Default
-    List<Expression> expressions = new LinkedList<>();
-    @Builder.Default
+    private List<Expression> expressions = new LinkedList<>();
     private boolean bracelet = true;
+
+    public JavaBraceletExpression builder() {
+        return new JavaBraceletExpression();
+    }
 
     @Override
     public String render() {
@@ -30,4 +27,29 @@ public class JavaBraceletExpression extends Operable implements Expression {
         return this.expressions.stream().map(Expression::imports).flatMap(Collection::stream).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    public List<Expression> getExpressions() {
+        return expressions;
+    }
+
+    public JavaBraceletExpression expressions(List<Expression> expressions) {
+        setExpressions(expressions);
+        return this;
+    }
+
+    public void setExpressions(List<Expression> expressions) {
+        this.expressions = expressions;
+    }
+
+    public boolean isBracelet() {
+        return bracelet;
+    }
+
+    public JavaBraceletExpression bracelet(boolean bracelet) {
+        setBracelet(bracelet);
+        return this;
+    }
+
+    public void setBracelet(boolean bracelet) {
+        this.bracelet = bracelet;
+    }
 }

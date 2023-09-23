@@ -1,9 +1,7 @@
 package tech.amereta.generator.util.code.java;
 
-import org.springframework.stereotype.Service;
 import tech.amereta.generator.util.code.SourceCode;
 import tech.amereta.generator.util.code.SourceCodeWriter;
-import tech.amereta.generator.util.code.java.source.JavaCompilationUnit;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -14,7 +12,6 @@ import java.util.zip.ZipOutputStream;
 /**
  * A SourceCodeWriter that writes SourceCode in Java.
  */
-@Service
 public final class JavaSourceCodeWriter implements SourceCodeWriter {
 
     private final String sourceFileExtension;

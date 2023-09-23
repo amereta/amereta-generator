@@ -1,18 +1,18 @@
 package tech.amereta.generator.util.code.java.expression;
 
-import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 import tech.amereta.generator.util.code.Expression;
 import tech.amereta.generator.util.code.java.expression.util.Operable;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@SuperBuilder
-@Getter
 public class JavaVariableExpression extends Operable implements Expression {
 
-    private final String variable;
+    private String variable;
+
+    public static JavaVariableExpression builder() {
+        return new JavaVariableExpression();
+    }
 
     @Override
     public String render() {
@@ -26,4 +26,16 @@ public class JavaVariableExpression extends Operable implements Expression {
         return new LinkedHashSet<>();
     }
 
+    public String getVariable() {
+        return variable;
+    }
+
+    public JavaVariableExpression variable(String variable) {
+        setVariable(variable);
+        return this;
+    }
+
+    public void setVariable(String variable) {
+        this.variable = variable;
+    }
 }

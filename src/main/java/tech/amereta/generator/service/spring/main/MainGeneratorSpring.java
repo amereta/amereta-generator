@@ -8,8 +8,8 @@ import tech.amereta.generator.util.code.java.expression.JavaMethodInvocationExpr
 import tech.amereta.generator.util.code.java.expression.JavaValueExpression;
 import tech.amereta.generator.util.code.java.expression.JavaVariableExpression;
 import tech.amereta.generator.util.code.java.expression.util.JavaMethodInvoke;
-import tech.amereta.generator.util.code.java.source.JavaCompilationUnit;
-import tech.amereta.generator.util.code.java.source.JavaTypeDeclaration;
+import tech.amereta.generator.util.code.java.JavaCompilationUnit;
+import tech.amereta.generator.util.code.java.JavaTypeDeclaration;
 import tech.amereta.generator.util.code.java.statement.JavaExpressionStatement;
 import tech.amereta.generator.util.code.java.util.JavaAnnotation;
 import tech.amereta.generator.util.code.java.util.JavaModifier;
@@ -32,28 +32,23 @@ public final class MainGeneratorSpring extends AbstractSpringSourceCodeGenerator
                                 .name(className)
                                 .modifiers(JavaModifier.builder()
                                         .type(JavaModifier.TYPE_MODIFIERS)
-                                        .modifiers(Modifier.PUBLIC)
-                                        .build())
+                                        .modifiers(Modifier.PUBLIC))
                                 .annotations(List.of(
                                         JavaAnnotation.builder()
-                                                .name("GeneratedByAmereta")
-                                                .build(),
+                                                .name("GeneratedByAmereta"),
                                         JavaAnnotation.builder()
-                                                .name("org.springframework.boot.autoconfigure.SpringBootApplication")
-                                                .build()))
+                                                .name("org.springframework.boot.autoconfigure.SpringBootApplication")))
                                 .methodDeclarations(List.of(
                                         JavaMethodDeclaration.builder()
                                                 .name("main")
                                                 .modifiers(JavaModifier.builder()
                                                         .type(JavaModifier.METHOD_MODIFIERS)
-                                                        .modifiers(Modifier.PUBLIC | Modifier.STATIC)
-                                                        .build())
+                                                        .modifiers(Modifier.PUBLIC | Modifier.STATIC))
                                                 .returnType("void")
                                                 .parameters(List.of(
                                                         JavaMethodDeclaration.Parameter.builder()
                                                                 .type("java.lang.String[]")
-                                                                .name("args")
-                                                                .build()))
+                                                                .name("args")))
                                                 .statements(List.of(
                                                         JavaExpressionStatement.builder()
                                                                 .expression(JavaMethodInvocationExpression.builder()
@@ -64,17 +59,9 @@ public final class MainGeneratorSpring extends AbstractSpringSourceCodeGenerator
                                                                                         .arguments(List.of(
                                                                                                 JavaValueExpression.builder()
                                                                                                         .value(className)
-                                                                                                        .type(Class.class)
-                                                                                                        .build(),
+                                                                                                        .type(Class.class),
                                                                                                 JavaVariableExpression.builder()
-                                                                                                        .variable("args")
-                                                                                                        .build()))
-                                                                                        .build()))
-                                                                        .build())
-                                                                .build()))
-                                                .build()))
-                                .build()))
-                .build();
+                                                                                                        .variable("args"))))))))))));
     }
 
 }

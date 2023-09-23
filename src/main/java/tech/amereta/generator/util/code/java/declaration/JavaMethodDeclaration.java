@@ -1,9 +1,5 @@
 package tech.amereta.generator.util.code.java.declaration;
 
-import lombok.Builder;
-import lombok.Builder.Default;
-import lombok.Data;
-import lombok.Getter;
 import tech.amereta.generator.util.code.Declaration;
 import tech.amereta.generator.util.code.Statement;
 import tech.amereta.generator.util.code.formatting.IndentingWriter;
@@ -18,32 +14,18 @@ import java.util.stream.Collectors;
 /**
  * Declaration of a method written in Java.
  */
-@Builder
-@Getter
 public final class JavaMethodDeclaration implements Declaration {
 
-    @Default
-    private final List<JavaAnnotation> annotations = new ArrayList<>();
-    @Default
-    private final List<Parameter> parameters = new LinkedList<>();
-    @Default
-    private final List<Statement> statements = new LinkedList<>();
-    @Default
-    private final List<String> exceptions = new LinkedList<>();
-    private final String name;
-    private final String returnType;
-    private final JavaModifier modifiers;
+    private List<JavaAnnotation> annotations = new ArrayList<>();
+    private List<Parameter> parameters = new LinkedList<>();
+    private List<Statement> statements = new LinkedList<>();
+    private List<String> exceptions = new LinkedList<>();
+    private String name;
+    private String returnType;
+    private JavaModifier modifiers;
 
-    @Builder
-    @Data
-    public static class Parameter {
-
-        @Builder.Default
-        private final List<String> genericTypes = new LinkedList<>();
-        private final String type;
-        private final String name;
-        private final JavaModifier modifiers;
-
+    public static JavaMethodDeclaration builder() {
+        return new JavaMethodDeclaration();
     }
 
     @Override
@@ -87,6 +69,97 @@ public final class JavaMethodDeclaration implements Declaration {
         return new LinkedHashSet<>(imports);
     }
 
+    public List<JavaAnnotation> getAnnotations() {
+        return annotations;
+    }
+
+    public JavaMethodDeclaration annotations(List<JavaAnnotation> annotations) {
+        setAnnotations(annotations);
+        return this;
+    }
+
+    public void setAnnotations(List<JavaAnnotation> annotations) {
+        this.annotations = annotations;
+    }
+
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public JavaMethodDeclaration parameters(List<Parameter> parameters) {
+        setParameters(parameters);
+        return this;
+    }
+
+    public void setParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
+    }
+
+    public List<Statement> getStatements() {
+        return statements;
+    }
+
+    public JavaMethodDeclaration statements(List<Statement> statements) {
+        setStatements(statements);
+        return this;
+    }
+
+    public void setStatements(List<Statement> statements) {
+        this.statements = statements;
+    }
+
+    public List<String> getExceptions() {
+        return exceptions;
+    }
+
+    public JavaMethodDeclaration exceptions(List<String> exceptions) {
+        setExceptions(exceptions);
+        return this;
+    }
+
+    public void setExceptions(List<String> exceptions) {
+        this.exceptions = exceptions;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public JavaMethodDeclaration name(String name) {
+        setName(name);
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getReturnType() {
+        return returnType;
+    }
+
+    public JavaMethodDeclaration returnType(String returnType) {
+        setReturnType(returnType);
+        return this;
+    }
+
+    public void setReturnType(String returnType) {
+        this.returnType = returnType;
+    }
+
+    public JavaModifier getModifiers() {
+        return modifiers;
+    }
+
+    public JavaMethodDeclaration modifiers(JavaModifier modifiers) {
+        setModifiers(modifiers);
+        return this;
+    }
+
+    public void setModifiers(JavaModifier modifiers) {
+        this.modifiers = modifiers;
+    }
+
     private String renderExceptions() {
         return this.exceptions.stream()
                 .map(JavaSourceCodeWriter::getUnqualifiedName)
@@ -123,4 +196,67 @@ public final class JavaMethodDeclaration implements Declaration {
         return this.annotations.stream().map(JavaAnnotation::render).collect(Collectors.joining());
     }
 
+    public static class Parameter {
+
+        private List<String> genericTypes = new LinkedList<>();
+        private String type;
+        private String name;
+        private JavaModifier modifiers;
+
+        public static Parameter builder() {
+            return new Parameter();
+        }
+
+        public List<String> getGenericTypes() {
+            return genericTypes;
+        }
+
+        public Parameter genericTypes(List<String> genericTypes) {
+            setGenericTypes(genericTypes);
+            return this;
+        }
+
+        public void setGenericTypes(List<String> genericTypes) {
+            this.genericTypes = genericTypes;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public Parameter type(String type) {
+            setType(type);
+            return this;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Parameter name(String name) {
+            setName(name);
+            return this;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public JavaModifier getModifiers() {
+            return modifiers;
+        }
+
+        public Parameter modifiers(JavaModifier modifiers) {
+            setModifiers(modifiers);
+            return this;
+        }
+
+        public void setModifiers(JavaModifier modifiers) {
+            this.modifiers = modifiers;
+        }
+    }
 }

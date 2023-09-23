@@ -1,6 +1,5 @@
 package tech.amereta.generator.util.code.java.statement;
 
-import lombok.Builder;
 import tech.amereta.generator.util.code.Expression;
 import tech.amereta.generator.util.code.Statement;
 
@@ -9,10 +8,12 @@ import java.util.Set;
 /**
  * A statement that contains a single expression.
  */
-public record JavaExpressionStatement(Expression expression) implements Statement {
+public final class JavaExpressionStatement implements Statement {
 
-    @Builder
-    public JavaExpressionStatement {
+    private Expression expression;
+
+    public static JavaExpressionStatement builder() {
+        return new JavaExpressionStatement();
     }
 
     @Override
@@ -23,5 +24,18 @@ public record JavaExpressionStatement(Expression expression) implements Statemen
     @Override
     public Set<String> imports() {
         return this.expression.imports();
+    }
+
+    public Expression getExpression() {
+        return expression;
+    }
+
+    public JavaExpressionStatement expression(Expression expression) {
+        setExpression(expression);
+        return this;
+    }
+
+    public void setExpression(Expression expression) {
+        this.expression = expression;
     }
 }

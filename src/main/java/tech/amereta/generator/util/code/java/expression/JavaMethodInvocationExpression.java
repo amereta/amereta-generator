@@ -1,8 +1,5 @@
 package tech.amereta.generator.util.code.java.expression;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 import tech.amereta.generator.util.code.Expression;
 import tech.amereta.generator.util.code.java.JavaSourceCodeWriter;
 import tech.amereta.generator.util.code.java.expression.util.JavaMethodInvoke;
@@ -14,13 +11,14 @@ import java.util.stream.Collectors;
 /**
  * An invocation of a method.
  */
-@SuperBuilder
-@Getter
 public class JavaMethodInvocationExpression extends Operable implements Expression {
 
-    @Builder.Default
-    private final List<JavaMethodInvoke> invokes = new LinkedList<>();
-    private final String target;
+    private List<JavaMethodInvoke> invokes = new LinkedList<>();
+    private String target;
+
+    public static JavaMethodInvocationExpression builder() {
+        return new JavaMethodInvocationExpression();
+    }
 
     @Override
     public String render() {
@@ -48,4 +46,29 @@ public class JavaMethodInvocationExpression extends Operable implements Expressi
         return new LinkedHashSet<>(imports);
     }
 
+    public List<JavaMethodInvoke> getInvokes() {
+        return invokes;
+    }
+
+    public JavaMethodInvocationExpression invokes(List<JavaMethodInvoke> invokes) {
+        setInvokes(invokes);
+        return this;
+    }
+
+    public void setInvokes(List<JavaMethodInvoke> invokes) {
+        this.invokes = invokes;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public JavaMethodInvocationExpression target(String target) {
+        setTarget(target);
+        return this;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
 }

@@ -1,7 +1,5 @@
 package tech.amereta.generator.util.code.java.expression;
 
-import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 import tech.amereta.generator.util.code.Expression;
 import tech.amereta.generator.util.code.java.JavaSourceCodeWriter;
 import tech.amereta.generator.util.code.java.expression.util.Operable;
@@ -11,12 +9,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-@SuperBuilder
-@Getter
 public class JavaValueExpression extends Operable implements Expression {
 
-    private final String value;
-    private final Class<?> type;
+    private String value;
+    private Class<?> type;
+
+    public static JavaValueExpression builder() {
+        return new JavaValueExpression();
+    }
 
     @Override
     public String render() {
@@ -56,4 +56,29 @@ public class JavaValueExpression extends Operable implements Expression {
         return new LinkedHashSet<>(imports);
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public JavaValueExpression value(String value) {
+        setValue(value);
+        return this;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public Class<?> getType() {
+        return type;
+    }
+
+    public JavaValueExpression type(Class<?> type) {
+        setType(type);
+        return this;
+    }
+
+    public void setType(Class<?> type) {
+        this.type = type;
+    }
 }

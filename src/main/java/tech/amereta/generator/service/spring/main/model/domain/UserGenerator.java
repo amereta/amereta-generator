@@ -3,8 +3,8 @@ package tech.amereta.generator.service.spring.main.model.domain;
 import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import tech.amereta.generator.util.code.java.declaration.JavaFieldDeclaration;
-import tech.amereta.generator.util.code.java.source.JavaCompilationUnit;
-import tech.amereta.generator.util.code.java.source.JavaTypeDeclaration;
+import tech.amereta.generator.util.code.java.JavaCompilationUnit;
+import tech.amereta.generator.util.code.java.JavaTypeDeclaration;
 import tech.amereta.generator.util.code.java.util.JavaAnnotation;
 import tech.amereta.generator.util.code.java.util.JavaModifier;
 import tech.amereta.generator.util.code.java.util.JavaType;
@@ -26,168 +26,128 @@ public final class UserGenerator extends AbstractSpringSourceCodeGenerator {
                                 .name(CLASS_NAME)
                                 .modifiers(JavaModifier.builder()
                                         .type(JavaModifier.TYPE_MODIFIERS)
-                                        .modifiers(Modifier.PUBLIC | Modifier.ABSTRACT)
-                                        .build())
+                                        .modifiers(Modifier.PUBLIC | Modifier.ABSTRACT))
                                 .annotations(List.of(
                                         JavaAnnotation.builder()
-                                                .name("jakarta.persistence.MappedSuperclass")
-                                                .build(),
+                                                .name("jakarta.persistence.MappedSuperclass"),
                                         JavaAnnotation.builder()
-                                                .name("lombok.experimental.SuperBuilder")
-                                                .build(),
+                                                .name("lombok.experimental.SuperBuilder"),
                                         JavaAnnotation.builder()
-                                                .name("lombok.NoArgsConstructor")
-                                                .build(),
+                                                .name("lombok.NoArgsConstructor"),
                                         JavaAnnotation.builder()
-                                                .name("lombok.Getter")
-                                                .build(),
+                                                .name("lombok.Getter"),
                                         JavaAnnotation.builder()
-                                                .name("lombok.Setter")
-                                                .build()))
+                                                .name("lombok.Setter")))
                                 .fieldDeclarations(List.of(
                                         JavaFieldDeclaration.builder()
                                                 .modifiers(JavaModifier.builder()
                                                         .type(JavaModifier.TYPE_MODIFIERS)
-                                                        .modifiers(Modifier.PRIVATE)
-                                                        .build())
-                                                .type("String")
+                                                        .modifiers(Modifier.PRIVATE))
+                                                .dataType("String")
                                                 .name("username")
                                                 .annotations(List.of(
                                                         JavaAnnotation.builder()
-                                                                .name("jakarta.validation.constraints.NotNull")
-                                                                .build(),
+                                                                .name("jakarta.validation.constraints.NotNull"),
                                                         JavaAnnotation.builder()
                                                                 .name("jakarta.validation.constraints.Pattern")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("regexp")
-                                                                                .type(String.class)
-                                                                                .values(List.of("1"))
-                                                                                .build()))
-                                                                .build(),
+                                                                                .dataType(String.class)
+                                                                                .values(List.of("1")))),
                                                         JavaAnnotation.builder()
                                                                 .name("jakarta.validation.constraints.Size")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("min")
-                                                                                .type(Integer.class)
-                                                                                .values(List.of("1"))
-                                                                                .build(),
+                                                                                .dataType(Integer.class)
+                                                                                .values(List.of("1")),
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("max")
-                                                                                .type(Integer.class)
-                                                                                .values(List.of("50"))
-                                                                                .build()))
-                                                                .build(),
+                                                                                .dataType(Integer.class)
+                                                                                .values(List.of("50")))),
                                                         JavaAnnotation.builder()
                                                                 .name("jakarta.persistence.Column")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("length")
-                                                                                .type(Integer.class)
-                                                                                .values(List.of("50"))
-                                                                                .build(),
+                                                                                .dataType(Integer.class)
+                                                                                .values(List.of("50")),
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("unique")
-                                                                                .type(Boolean.class)
-                                                                                .values(List.of("true"))
-                                                                                .build(),
+                                                                                .dataType(Boolean.class)
+                                                                                .values(List.of("true")),
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("nullable")
-                                                                                .type(Boolean.class)
-                                                                                .values(List.of("false"))
-                                                                                .build()))
-                                                                .build()))
-                                                .build(),
+                                                                                .dataType(Boolean.class)
+                                                                                .values(List.of("false")))))),
                                         JavaFieldDeclaration.builder()
                                                 .modifiers(JavaModifier.builder()
                                                         .type(JavaModifier.TYPE_MODIFIERS)
-                                                        .modifiers(Modifier.PRIVATE)
-                                                        .build())
-                                                .type("String")
+                                                        .modifiers(Modifier.PRIVATE))
+                                                .dataType("String")
                                                 .name("email")
                                                 .annotations(List.of(
                                                         JavaAnnotation.builder()
-                                                                .name("jakarta.validation.constraints.Email")
-                                                                .build(),
+                                                                .name("jakarta.validation.constraints.Email"),
                                                         JavaAnnotation.builder()
                                                                 .name("jakarta.validation.constraints.Size")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("min")
-                                                                                .type(Integer.class)
-                                                                                .values(List.of("5"))
-                                                                                .build(),
+                                                                                .dataType(Integer.class)
+                                                                                .values(List.of("5")),
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("max")
-                                                                                .type(Integer.class)
-                                                                                .values(List.of("254"))
-                                                                                .build()))
-                                                                .build(),
+                                                                                .dataType(Integer.class)
+                                                                                .values(List.of("254")))),
                                                         JavaAnnotation.builder()
                                                                 .name("jakarta.persistence.Column")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("length")
-                                                                                .type(Integer.class)
-                                                                                .values(List.of("254"))
-                                                                                .build(),
+                                                                                .dataType(Integer.class)
+                                                                                .values(List.of("254")),
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("unique")
-                                                                                .type(Boolean.class)
-                                                                                .values(List.of("true"))
-                                                                                .build()))
-                                                                .build()))
-                                                .build(),
+                                                                                .dataType(Boolean.class)
+                                                                                .values(List.of("true")))))),
                                         JavaFieldDeclaration.builder()
                                                 .modifiers(JavaModifier.builder()
                                                         .type(JavaModifier.TYPE_MODIFIERS)
-                                                        .modifiers(Modifier.PRIVATE)
-                                                        .build())
-                                                .type("String")
+                                                        .modifiers(Modifier.PRIVATE))
+                                                .dataType("String")
                                                 .name("password")
                                                 .annotations(List.of(
                                                         JavaAnnotation.builder()
-                                                                .name("com.fasterxml.jackson.annotation.JsonIgnore")
-                                                                .build(),
+                                                                .name("com.fasterxml.jackson.annotation.JsonIgnore"),
                                                         JavaAnnotation.builder()
-                                                                .name("jakarta.validation.constraints.NotNull")
-                                                                .build(),
+                                                                .name("jakarta.validation.constraints.NotNull"),
                                                         JavaAnnotation.builder()
                                                                 .name("jakarta.validation.constraints.Size")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("min")
-                                                                                .type(Integer.class)
-                                                                                .values(List.of("60"))
-                                                                                .build(),
+                                                                                .dataType(Integer.class)
+                                                                                .values(List.of("60")),
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("max")
-                                                                                .type(Integer.class)
-                                                                                .values(List.of("60"))
-                                                                                .build()))
-                                                                .build(),
+                                                                                .dataType(Integer.class)
+                                                                                .values(List.of("60")))),
                                                         JavaAnnotation.builder()
                                                                 .name("jakarta.persistence.Column")
                                                                 .attributes(List.of(
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("length")
-                                                                                .type(Integer.class)
-                                                                                .values(List.of("60"))
-                                                                                .build(),
+                                                                                .dataType(Integer.class)
+                                                                                .values(List.of("60")),
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("unique")
-                                                                                .type(Boolean.class)
-                                                                                .values(List.of("true"))
-                                                                                .build(),
+                                                                                .dataType(Boolean.class)
+                                                                                .values(List.of("true")),
                                                                         JavaAnnotation.Attribute.builder()
                                                                                 .name("nullable")
-                                                                                .type(Boolean.class)
-                                                                                .values(List.of("false"))
-                                                                                .build()))
-                                                                .build()))
-                                                .build()))
-                                .build()))
-                .build();
+                                                                                .dataType(Boolean.class)
+                                                                                .values(List.of("false"))))))))));
     }
 }

@@ -1,9 +1,5 @@
-package tech.amereta.generator.util.code.java.source;
+package tech.amereta.generator.util.code.java;
 
-import lombok.Builder;
-import lombok.Builder.Default;
-import lombok.Getter;
-import lombok.Setter;
 import tech.amereta.generator.util.code.CompilationUnit;
 import tech.amereta.generator.util.code.formatting.IndentingWriter;
 import tech.amereta.generator.util.code.formatting.SimpleIndentStrategy;
@@ -14,14 +10,15 @@ import java.util.stream.Collectors;
 /**
  * A Java-compilation unit that represents an individual source file.
  */
-@Builder
-@Getter
 public final class JavaCompilationUnit implements CompilationUnit {
 
-    @Default
-    private final List<JavaTypeDeclaration> typeDeclarations = new ArrayList<>();
-    private final String packageName;
-    private final String name;
+    private List<JavaTypeDeclaration> typeDeclarations = new ArrayList<>();
+    private String packageName;
+    private String name;
+
+    public static JavaCompilationUnit builder() {
+        return new JavaCompilationUnit();
+    }
 
     @Override
     public String render() {
@@ -47,4 +44,38 @@ public final class JavaCompilationUnit implements CompilationUnit {
         return Collections.unmodifiableList(this.typeDeclarations);
     }
 
+    public JavaCompilationUnit typeDeclarations(List<JavaTypeDeclaration> typeDeclarations) {
+        setTypeDeclarations(typeDeclarations);
+        return this;
+    }
+
+    public void setTypeDeclarations(List<JavaTypeDeclaration> typeDeclarations) {
+        this.typeDeclarations = typeDeclarations;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public JavaCompilationUnit packageName(String packageName) {
+        setPackageName(packageName);
+        return this;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public JavaCompilationUnit name(String name) {
+        setName(name);
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

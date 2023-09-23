@@ -1,24 +1,20 @@
 package tech.amereta.generator.util.code.java.expression.util;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
 import tech.amereta.generator.util.code.Expression;
 import tech.amereta.generator.util.code.formatting.IndentingWriter;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Builder
-@Getter
-@ToString
 public final class JavaMethodInvoke {
 
-    @Builder.Default
-    private final List<Expression> arguments = new LinkedList<>();
-    @Builder.Default
-    private final Boolean breakLine = false;
-    private final String method;
+    private List<Expression> arguments = new LinkedList<>();
+    private Boolean breakLine = false;
+    private String method;
+
+    public static JavaMethodInvoke builder() {
+        return new JavaMethodInvoke();
+    }
 
     public String render() {
         return printTabIfBreakLine()
@@ -31,6 +27,46 @@ public final class JavaMethodInvoke {
 
     public Set<String> imports() {
         return this.arguments.stream().map(Expression::imports).flatMap(Collection::stream).collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public List<Expression> getArguments() {
+        return arguments;
+    }
+
+    public JavaMethodInvoke arguments(List<Expression> arguments) {
+        setArguments(arguments);
+        return this;
+    }
+
+    public void setArguments(List<Expression> arguments) {
+        this.arguments = arguments;
+    }
+
+    public Boolean getBreakLine() {
+        return breakLine;
+    }
+
+    public JavaMethodInvoke breakLine(Boolean breakLine) {
+        setBreakLine(breakLine);
+        return this;
+    }
+
+    public void setBreakLine(Boolean breakLine) {
+        this.breakLine = breakLine;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public JavaMethodInvoke method(String method) {
+        setMethod(method);
+        return this;
+    }
+
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     private String getUnqualifiedName(String name) {

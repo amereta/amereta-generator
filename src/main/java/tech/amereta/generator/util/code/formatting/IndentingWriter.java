@@ -1,7 +1,5 @@
 package tech.amereta.generator.util.code.formatting;
 
-import lombok.Getter;
-
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.function.Function;
@@ -20,7 +18,6 @@ public class IndentingWriter {
 
     private int level = 0;
 
-    @Getter
     private String indent = "";
 
     private boolean prependIndent = false;
@@ -126,4 +123,7 @@ public class IndentingWriter {
             buffer.append(this.indent).append(string);
     }
 
+    public String getIndent() {
+        return indent;
+    }
 }

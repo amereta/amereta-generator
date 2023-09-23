@@ -1,16 +1,11 @@
 package tech.amereta.generator.util.code.java.util;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Builder
-@Data
 public class JavaModifier {
 
     public static final Map<Predicate<Integer>, String> TYPE_MODIFIERS;
@@ -42,8 +37,12 @@ public class JavaModifier {
         METHOD_MODIFIERS = methodModifiers;
     }
 
-    private final int modifiers;
-    Map<Predicate<Integer>, String> type;
+    private int modifiers;
+    private Map<Predicate<Integer>, String> type;
+
+    public static JavaModifier builder() {
+        return new JavaModifier();
+    }
 
     public String render() {
         final String modifiers = type.entrySet().stream()
@@ -55,4 +54,29 @@ public class JavaModifier {
         return "";
     }
 
+    public int getModifiers() {
+        return modifiers;
+    }
+
+    public JavaModifier modifiers(int modifiers) {
+        setModifiers(modifiers);
+        return this;
+    }
+
+    public void setModifiers(int modifiers) {
+        this.modifiers = modifiers;
+    }
+
+    public Map<Predicate<Integer>, String> getType() {
+        return type;
+    }
+
+    public JavaModifier type(Map<Predicate<Integer>, String> type) {
+        setType(type);
+        return this;
+    }
+
+    public void setType(Map<Predicate<Integer>, String> type) {
+        this.type = type;
+    }
 }

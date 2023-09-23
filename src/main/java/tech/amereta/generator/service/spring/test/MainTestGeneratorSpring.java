@@ -4,8 +4,8 @@ import tech.amereta.generator.domain.description.SpringBootApplicationDescriptio
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import tech.amereta.generator.util.StringFormatter;
 import tech.amereta.generator.util.code.java.declaration.JavaMethodDeclaration;
-import tech.amereta.generator.util.code.java.source.JavaCompilationUnit;
-import tech.amereta.generator.util.code.java.source.JavaTypeDeclaration;
+import tech.amereta.generator.util.code.java.JavaCompilationUnit;
+import tech.amereta.generator.util.code.java.JavaTypeDeclaration;
 import tech.amereta.generator.util.code.java.util.JavaAnnotation;
 import tech.amereta.generator.util.code.java.util.JavaModifier;
 import tech.amereta.generator.util.code.java.util.JavaType;
@@ -27,25 +27,18 @@ public final class MainTestGeneratorSpring extends AbstractSpringSourceCodeGener
                                 .name(className)
                                 .modifiers(JavaModifier.builder()
                                         .type(JavaModifier.TYPE_MODIFIERS)
-                                        .modifiers(Modifier.PUBLIC)
-                                        .build())
+                                        .modifiers(Modifier.PUBLIC))
                                 .annotations(List.of(
                                         JavaAnnotation.builder()
-                                                .name("org.springframework.boot.test.context.SpringBootTest")
-                                                .build()))
+                                                .name("org.springframework.boot.test.context.SpringBootTest")))
                                 .methodDeclarations(List.of(
                                         JavaMethodDeclaration.builder()
                                                 .name("contextLoads")
                                                 .modifiers(JavaModifier.builder()
-                                                        .type(JavaModifier.METHOD_MODIFIERS)
-                                                        .build())
+                                                        .type(JavaModifier.METHOD_MODIFIERS))
                                                 .returnType("void")
                                                 .annotations(List.of(
                                                         JavaAnnotation.builder()
-                                                                .name("org.junit.jupiter.api.Test")
-                                                                .build()))
-                                                .build()))
-                                .build()))
-                .build();
+                                                                .name("org.junit.jupiter.api.Test")))))));
     }
 }

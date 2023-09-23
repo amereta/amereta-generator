@@ -4,7 +4,7 @@ import tech.amereta.generator.domain.description.SpringBootApplicationDescriptio
 import tech.amereta.generator.domain.description.java.module.AbstractJavaModuleDescription;
 import tech.amereta.generator.domain.description.java.module.model.JavaModelModuleDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleGenerator;
-import tech.amereta.generator.util.code.java.source.JavaCompilationUnit;
+import tech.amereta.generator.util.code.java.JavaCompilationUnit;
 
 import java.util.List;
 import java.util.stream.Collectors;
