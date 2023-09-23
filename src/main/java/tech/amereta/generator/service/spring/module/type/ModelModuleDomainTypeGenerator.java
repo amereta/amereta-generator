@@ -8,13 +8,13 @@ import tech.amereta.generator.domain.description.java.module.model.type.JavaMode
 import tech.amereta.generator.domain.description.java.module.model.type.field.JavaModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.service.spring.AbstractSpringModuleTypeGenerator;
 import tech.amereta.generator.util.StringFormatter;
-import tech.amereta.generator.util.code.java.declaration.AbstractJavaFieldDeclaration;
-import tech.amereta.generator.util.code.java.declaration.JavaFieldDeclaration;
-import tech.amereta.generator.util.code.java.JavaCompilationUnit;
-import tech.amereta.generator.util.code.java.JavaTypeDeclaration;
-import tech.amereta.generator.util.code.java.util.JavaAnnotation;
-import tech.amereta.generator.util.code.java.util.JavaModifier;
-import tech.amereta.generator.util.code.java.util.JavaType;
+import tech.amereta.core.java.declaration.AbstractJavaFieldDeclaration;
+import tech.amereta.core.java.declaration.JavaFieldDeclaration;
+import tech.amereta.core.java.JavaCompilationUnit;
+import tech.amereta.core.java.JavaTypeDeclaration;
+import tech.amereta.core.java.util.JavaAnnotation;
+import tech.amereta.core.java.util.JavaModifier;
+import tech.amereta.core.java.util.JavaType;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

@@ -4,7 +4,7 @@ import lombok.Builder;
 import org.apache.commons.io.FileUtils;
 import tech.amereta.generator.domain.description.java.module.model.type.field.JavaModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.util.StringFormatter;
-import tech.amereta.generator.util.soy.ISoyConfiguration;
+import tech.amereta.core.soy.ISoyConfiguration;
 
 import java.io.File;
 import java.io.IOException;

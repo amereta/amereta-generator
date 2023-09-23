@@ -16,10 +16,10 @@ import tech.amereta.generator.service.spring.main.model.domain.UserGenerator;
 import tech.amereta.generator.service.spring.main.model.enumeration.RoleGenerator;
 import tech.amereta.generator.service.spring.main.security.SecurityConfigurationGeneratorSpring;
 import tech.amereta.generator.service.spring.test.MainTestGeneratorSpring;
-import tech.amereta.generator.util.code.java.JavaSourceCodeWriter;
-import tech.amereta.generator.util.code.java.JavaCompilationUnit;
-import tech.amereta.generator.util.code.java.JavaSourceCode;
-import tech.amereta.generator.util.soy.ISoyConfiguration;
+import tech.amereta.core.java.JavaSourceCodeWriter;
+import tech.amereta.core.java.JavaCompilationUnit;
+import tech.amereta.core.java.JavaSourceCode;
+import tech.amereta.core.soy.ISoyConfiguration;
 
 import java.io.OutputStream;
 import java.util.ArrayList;

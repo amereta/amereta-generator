@@ -3,12 +3,12 @@ package tech.amereta.generator.service.spring.test;
 import tech.amereta.generator.domain.description.SpringBootApplicationDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import tech.amereta.generator.util.StringFormatter;
-import tech.amereta.generator.util.code.java.declaration.JavaMethodDeclaration;
-import tech.amereta.generator.util.code.java.JavaCompilationUnit;
-import tech.amereta.generator.util.code.java.JavaTypeDeclaration;
-import tech.amereta.generator.util.code.java.util.JavaAnnotation;
-import tech.amereta.generator.util.code.java.util.JavaModifier;
-import tech.amereta.generator.util.code.java.util.JavaType;
+import tech.amereta.core.java.declaration.JavaMethodDeclaration;
+import tech.amereta.core.java.JavaCompilationUnit;
+import tech.amereta.core.java.JavaTypeDeclaration;
+import tech.amereta.core.java.util.JavaAnnotation;
+import tech.amereta.core.java.util.JavaModifier;
+import tech.amereta.core.java.util.JavaType;
 
 import java.lang.reflect.Modifier;
 import java.util.List;

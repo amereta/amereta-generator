@@ -2,7 +2,7 @@ package tech.amereta.generator.service.spring;
 
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
-import tech.amereta.generator.util.soy.ISoyConfiguration;
+import tech.amereta.core.soy.ISoyConfiguration;
 
 import java.io.File;
 import java.io.IOException;
