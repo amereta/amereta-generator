@@ -7,6 +7,7 @@
 {@param packageName: string}
 {@param description: string}
 {@param hasDataBase: bool}
+{@param dbType: string}
 
 {literal}<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -51,7 +52,17 @@
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>
 			<version>3.0.2</version>
-		</dependency>{/literal}{/if}{literal}
+		</dependency>{/literal}{if $dbType == 'POSTGRESQL'}{literal}
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>{/literal}{elseif $dbType == 'MYSQL'}{literal}
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>{/literal}{/if}{/if}{literal}
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

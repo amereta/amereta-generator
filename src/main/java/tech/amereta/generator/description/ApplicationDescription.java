@@ -20,7 +20,7 @@ public class ApplicationDescription {
             property = "applicationType"
     )
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = SpringBootApplicationDescription.class, name = "spring-boot")
+            @JsonSubTypes.Type(value = SpringBootApplicationDescription.class, name = "SPRING_BOOT")
     })
     private AbstractApplication application;
 }

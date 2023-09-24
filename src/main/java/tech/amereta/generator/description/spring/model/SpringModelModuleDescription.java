@@ -18,7 +18,6 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public final class SpringModelModuleDescription extends AbstractSpringModuleDescription {

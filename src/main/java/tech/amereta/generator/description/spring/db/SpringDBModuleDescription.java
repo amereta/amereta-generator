@@ -16,12 +16,15 @@ import tech.amereta.generator.service.spring.generator.module.db.SpringDBModuleG
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public final class SpringDBModuleDescription extends AbstractSpringModuleDescription {
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+    @JsonTypeInfo(
+            use = JsonTypeInfo.Id.NAME,
+            property = "name",
+            visible = true
+    )
     @JsonSubTypes({
             @JsonSubTypes.Type(value = SpringDBModuleMySQLTypeDescription.class, name = "MYSQL"),
             @JsonSubTypes.Type(value = SpringDBModulePostgreSQLTypeDescription.class, name = "POSTGRESQL"),

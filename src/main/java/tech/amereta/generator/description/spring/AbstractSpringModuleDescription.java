@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
 
 @Data
-@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class AbstractSpringModuleDescription {

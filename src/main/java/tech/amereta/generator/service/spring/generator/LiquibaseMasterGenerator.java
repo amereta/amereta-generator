@@ -14,6 +14,7 @@ import java.util.Objects;
 @Builder
 public final class LiquibaseMasterGenerator implements ISoyConfiguration {
 
+    private String dbType;
     private List<String> changelogs;
 
     @Override
@@ -38,6 +39,7 @@ public final class LiquibaseMasterGenerator implements ISoyConfiguration {
     @Override
     public Map<String, Object> getParameters() {
         return Map.of(
+                "dbType", dbType,
                 "changelogs", changelogs
         );
     }

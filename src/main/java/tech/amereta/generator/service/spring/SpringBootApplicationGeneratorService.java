@@ -2,17 +2,17 @@ package tech.amereta.generator.service.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tech.amereta.core.java.JavaCompilationUnit;
+import tech.amereta.core.java.JavaSourceCode;
+import tech.amereta.core.java.JavaSourceCodeWriter;
+import tech.amereta.core.soy.ISoyConfiguration;
 import tech.amereta.generator.description.ApplicationDescription;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
+import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
-import tech.amereta.core.java.JavaSourceCodeWriter;
-import tech.amereta.core.java.JavaCompilationUnit;
-import tech.amereta.core.java.JavaSourceCode;
-import tech.amereta.core.soy.ISoyConfiguration;
 import tech.amereta.generator.service.spring.generator.*;
 
 import java.io.OutputStream;
@@ -63,7 +63,9 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         units.add(generatePom(springApplicationDescription));
         units.add(generateBanner(springApplicationDescription));
         units.addAll(generateApplicationProperties(springApplicationDescription));
-        units.addAll(generateLiquibaseFiles(springApplicationDescription));
+        if (AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription)) {
+            units.addAll(generateLiquibaseFiles(springApplicationDescription));
+        }
         return units;
     }
 
@@ -88,6 +90,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 .packageName(springApplicationDescription.getPackageName())
                 .description(springApplicationDescription.getDescription())
                 .hasDataBase(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription))
+                .dbType(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription) ? AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getType().toString() : "")
                 .build();
     }
 
@@ -102,6 +105,8 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 ApplicationPropertiesGenerator.builder()
                         .name(springApplicationDescription.getName())
                         .port(springApplicationDescription.getPort())
+                        .hasDataBase(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription))
+                        .dbType(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription) ? AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getType().toString() : "")
                         .build()
         );
     }
@@ -109,19 +114,20 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
     private List<ISoyConfiguration> generateLiquibaseFiles(final SpringBootApplicationDescription springApplicationDescription) {
         final List<ISoyConfiguration> changelogs = new ArrayList<>(
                 springApplicationDescription.getModules()
-                .stream()
-                .filter(module -> module instanceof SpringModelModuleDescription)
-                .map(module -> ((SpringModelModuleDescription) module).getModels())
-                .flatMap(List::stream)
-                .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
-                .map(domain -> DataBaseChangeLogGenerator.builder()
-                        .name(domain.getName())
-                        .fields(((SpringModelModuleDomainTypeDescription) domain).getFields())
-                        .build())
-                .toList()
+                        .stream()
+                        .filter(module -> module instanceof SpringModelModuleDescription)
+                        .map(module -> ((SpringModelModuleDescription) module).getModels())
+                        .flatMap(List::stream)
+                        .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
+                        .map(domain -> DataBaseChangeLogGenerator.builder()
+                                .name(domain.getName())
+                                .fields(((SpringModelModuleDomainTypeDescription) domain).getFields())
+                                .build())
+                        .toList()
         );
         changelogs.add(
                 LiquibaseMasterGenerator.builder()
+                        .dbType(AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getType().toString())
                         .changelogs(changelogs.stream().map(cl -> cl.getPath().toString().replaceAll("src/main/resources/", "")).toList())
                         .build()
         );

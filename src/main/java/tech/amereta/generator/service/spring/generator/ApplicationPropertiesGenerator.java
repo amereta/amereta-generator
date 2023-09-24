@@ -15,6 +15,8 @@ public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
 
     private String name;
     private String port;
+    private Boolean hasDataBase;
+    private String dbType;
 
     @Override
     public String getName() {
@@ -39,12 +41,15 @@ public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
     public Map<String, Object> getParameters() {
         return Map.of(
                 "name", name,
-                "port", port
+                "port", port,
+                "hasDataBase", hasDataBase,
+                "dbType", dbType,
+                "dbName", name.toLowerCase()
         );
     }
 
     @Override
     public Path getPath() {
-        return Path.of("src/main/resources/properties/application.yml");
+        return Path.of("src/main/resources/config/application.yml");
     }
 }
