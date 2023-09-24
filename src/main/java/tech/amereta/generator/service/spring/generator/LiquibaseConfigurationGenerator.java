@@ -57,20 +57,20 @@ public final class LiquibaseConfigurationGenerator extends AbstractSpringSourceC
                                         )
                                         .methodDeclarations(
                                                 List.of(
-                                                    JavaMethodDeclaration.builder()
-                                                            .name("liquibase")
-                                                            .returnType("liquibase.integration.spring.SpringLiquibase")
-                                                            .modifiers(
-                                                                    JavaModifier.builder()
-                                                                            .type(JavaModifier.METHOD_MODIFIERS)
-                                                                            .modifiers(Modifier.PUBLIC)
-                                                            )
-                                                            .annotations(
-                                                                    List.of(
-                                                                            JavaAnnotation.builder()
-                                                                                    .name("org.springframework.context.annotation.Bean")
-                                                                    )
-                                                            )
+                                                        JavaMethodDeclaration.builder()
+                                                                .name("liquibase")
+                                                                .returnType("liquibase.integration.spring.SpringLiquibase")
+                                                                .modifiers(
+                                                                        JavaModifier.builder()
+                                                                                .type(JavaModifier.METHOD_MODIFIERS)
+                                                                                .modifiers(Modifier.PUBLIC)
+                                                                )
+                                                                .annotations(
+                                                                        List.of(
+                                                                                JavaAnnotation.builder()
+                                                                                        .name("org.springframework.context.annotation.Bean")
+                                                                        )
+                                                                )
                                                 )
                                         )
                         )

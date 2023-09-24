@@ -24,7 +24,7 @@ public abstract class AbstractSpringSourceCodeGenerator {
                 .stream()
                 .filter(module -> module instanceof SpringDBModuleDescription)
                 .toList();
-        if(database.size() > 1) {
+        if (database.size() > 1) {
             throw new ApplicationCannotHaveTwoDifferentDatabasesException();
         }
         return (SpringDBModuleDescription) database.get(0);

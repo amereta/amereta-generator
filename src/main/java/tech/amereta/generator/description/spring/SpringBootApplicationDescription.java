@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.AbstractApplication;
-import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
 import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.service.spring.SpringBootApplicationGeneratorService;

@@ -35,7 +35,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         return List.of(
                 generateDBDomain(applicationDescription, domainTypeDescription),
                 generateRepository(applicationDescription, domainTypeDescription)
-//                                generateController(field)
+//                                generateController(field) TODO: ControllerGenerator
         );
     }
 
@@ -49,10 +49,12 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                     JavaAnnotation.builder()
                             .name("lombok.EqualsAndHashCode")
                             .attributes(List.of(
-                                    JavaAnnotation.Attribute.builder()
-                                            .name("callSuper")
-                                            .dataType(Boolean.class)
-                                            .values(List.of("true"))))
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("callSuper")
+                                                    .dataType(Boolean.class)
+                                                    .values(List.of("true"))
+                                    )
+                            )
             );
             domain.setExtendedClassName("AbstractUser");
         }
@@ -69,15 +71,19 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         final String domainName = StringFormatter.toPascalCase(domainTypeDescription.getName());
         final String className = domainName + "Repository";
         final JavaTypeDeclaration repository = generateInterfaceDeclaration(className);
-        repository.setAnnotations(List.of(
-                JavaAnnotation.builder()
-                        .name("org.springframework.stereotype.Repository")
-        ));
+        repository.setAnnotations(
+                List.of(
+                        JavaAnnotation.builder()
+                                .name("org.springframework.stereotype.Repository")
+                )
+        );
         repository.setExtendedClassName("org.springframework.data.jpa.repository.JpaRepository");
-        repository.setTailGenericTypes(List.of(
-                basePackage(applicationDescription) + ".model.domain." + domainName,
-                calculateIdType(domainTypeDescription.getIdType())
-        ));
+        repository.setTailGenericTypes(
+                List.of(
+                        basePackage(applicationDescription) + ".model.domain." + domainName,
+                        calculateIdType(domainTypeDescription.getIdType())
+                )
+        );
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".repository")
                 .name(className)
@@ -140,22 +146,28 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                         .name("jakarta.persistence.Id"),
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.GeneratedValue")
-                        .attributes(List.of(
-                                JavaAnnotation.Attribute.builder()
-                                        .name("strategy")
-                                        .dataType(Enum.class)
-                                        .values(List.of("jakarta.persistence.GenerationType.SEQUENCE")),
-                                JavaAnnotation.Attribute.builder()
-                                        .name("generator")
-                                        .dataType(String.class)
-                                        .values(List.of("sequenceGenerator")))),
+                        .attributes(
+                                List.of(
+                                        JavaAnnotation.Attribute.builder()
+                                                .name("strategy")
+                                                .dataType(Enum.class)
+                                                .values(List.of("jakarta.persistence.GenerationType.SEQUENCE")),
+                                        JavaAnnotation.Attribute.builder()
+                                                .name("generator")
+                                                .dataType(String.class)
+                                                .values(List.of("sequenceGenerator"))
+                                )
+                        ),
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.SequenceGenerator")
-                        .attributes(List.of(
-                                JavaAnnotation.Attribute.builder()
-                                        .name("name")
-                                        .dataType(String.class)
-                                        .values(List.of("sequenceGenerator"))))
+                        .attributes(
+                                List.of(
+                                        JavaAnnotation.Attribute.builder()
+                                                .name("name")
+                                                .dataType(String.class)
+                                                .values(List.of("sequenceGenerator"))
+                                )
+                        )
         );
     }
 
@@ -165,22 +177,28 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                         .name("jakarta.persistence.Id"),
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.GeneratedValue")
-                        .attributes(List.of(
-                                JavaAnnotation.Attribute.builder()
-                                        .name("strategy")
-                                        .dataType(Enum.class)
-                                        .values(List.of("jakarta.persistence.GenerationType.UUID")))),
+                        .attributes(
+                                List.of(
+                                        JavaAnnotation.Attribute.builder()
+                                                .name("strategy")
+                                                .dataType(Enum.class)
+                                                .values(List.of("jakarta.persistence.GenerationType.UUID"))
+                                )
+                        ),
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.Column")
-                        .attributes(List.of(
-                                JavaAnnotation.Attribute.builder()
-                                        .name("name")
-                                        .dataType(String.class)
-                                        .values(List.of("id")),
-                                JavaAnnotation.Attribute.builder()
-                                        .name("length")
-                                        .dataType(Integer.class)
-                                        .values(List.of("36"))))
+                        .attributes(
+                                List.of(
+                                        JavaAnnotation.Attribute.builder()
+                                                .name("name")
+                                                .dataType(String.class)
+                                                .values(List.of("id")),
+                                        JavaAnnotation.Attribute.builder()
+                                                .name("length")
+                                                .dataType(Integer.class)
+                                                .values(List.of("36"))
+                                )
+                        )
         );
     }
 
@@ -218,15 +236,18 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
             annotations.add(
                     JavaAnnotation.builder()
                             .name("jakarta.validation.constraints.Size")
-                            .attributes(List.of(
-                                    JavaAnnotation.Attribute.builder()
-                                            .name("min")
-                                            .dataType(Integer.class)
-                                            .values(List.of(field.getLength().toString())),
-                                    JavaAnnotation.Attribute.builder()
-                                            .name("max")
-                                            .dataType(Integer.class)
-                                            .values(List.of(field.getLength().toString()))))
+                            .attributes(
+                                    List.of(
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("min")
+                                                    .dataType(Integer.class)
+                                                    .values(List.of(field.getLength().toString())),
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("max")
+                                                    .dataType(Integer.class)
+                                                    .values(List.of(field.getLength().toString()))
+                                    )
+                            )
             );
         }
         if (field.isUnique()) {
@@ -289,9 +310,10 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         return JavaTypeDeclaration.builder()
                 .type(JavaType.CLASS)
                 .name(className)
-                .modifiers(JavaModifier.builder()
-                        .type(JavaModifier.TYPE_MODIFIERS)
-                        .modifiers(Modifier.PUBLIC)
+                .modifiers(
+                        JavaModifier.builder()
+                                .type(JavaModifier.TYPE_MODIFIERS)
+                                .modifiers(Modifier.PUBLIC)
                 );
     }
 
@@ -299,33 +321,42 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         return JavaTypeDeclaration.builder()
                 .type(JavaType.INTERFACE)
                 .name(className)
-                .modifiers(JavaModifier.builder()
-                        .type(JavaModifier.TYPE_MODIFIERS)
-                        .modifiers(Modifier.PUBLIC)
+                .modifiers(
+                        JavaModifier.builder()
+                                .type(JavaModifier.TYPE_MODIFIERS)
+                                .modifiers(Modifier.PUBLIC)
                 );
     }
 
     private JavaFieldDeclaration generateFieldDeclaration(SpringModelModuleDomainTypeFieldDescription field) {
         return JavaFieldDeclaration.builder()
-                .modifiers(JavaModifier.builder()
-                        .type(JavaModifier.FIELD_MODIFIERS)
-                        .modifiers(Modifier.PRIVATE))
+                .modifiers(
+                        JavaModifier.builder()
+                                .type(JavaModifier.FIELD_MODIFIERS)
+                                .modifiers(Modifier.PRIVATE)
+                )
                 .dataType(field.getDataType())
                 .name(field.getName())
                 .value(field.getDefaultValue());
     }
 
     private static List<JavaAnnotation> generateDBDomainAnnotations(SpringModelModuleDomainTypeDescription domainTypeDescription) {
-        final List<JavaAnnotation> annotations = new ArrayList<>(List.of(
-                JavaAnnotation.builder()
-                        .name("jakarta.persistence.Table")
-                        .attributes(List.of(
-                                JavaAnnotation.Attribute.builder()
-                                        .name("name")
-                                        .dataType(String.class)
-                                        .values(List.of(StringFormatter.toSnakeCase(domainTypeDescription.getName()))))),
-                JavaAnnotation.builder()
-                        .name("jakarta.persistence.Entity")));
+        final List<JavaAnnotation> annotations = new ArrayList<>(
+                List.of(
+                        JavaAnnotation.builder()
+                                .name("jakarta.persistence.Table")
+                                .attributes(
+                                        List.of(
+                                                JavaAnnotation.Attribute.builder()
+                                                        .name("name")
+                                                        .dataType(String.class)
+                                                        .values(List.of(StringFormatter.toSnakeCase(domainTypeDescription.getName())))
+                                        )
+                                ),
+                        JavaAnnotation.builder()
+                                .name("jakarta.persistence.Entity")
+                )
+        );
         annotations.addAll(generateSimpleDomainAnnotations());
         return annotations;
     }

@@ -3,9 +3,7 @@ package tech.amereta.generator.service.spring.generator.module.db;
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.generator.description.spring.AbstractSpringModuleTypeDescription;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.db.type.SpringDBModulePostgreSQLTypeDescription;
 import tech.amereta.generator.service.spring.generator.DataBaseConfigurationGenerator;
-import tech.amereta.generator.service.spring.generator.LiquibaseConfigurationGenerator;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
 
 import java.util.List;

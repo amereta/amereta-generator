@@ -1,7 +1,6 @@
 package tech.amereta.generator.description.spring.db.type;
 
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.NoArgsConstructor;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
 import tech.amereta.generator.service.spring.generator.module.db.SpringDBModulePostgreSQLTypeGenerator;
 

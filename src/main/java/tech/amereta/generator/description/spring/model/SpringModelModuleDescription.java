@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
 import tech.amereta.generator.description.spring.model.type.AbstractSpringModelModuleTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;

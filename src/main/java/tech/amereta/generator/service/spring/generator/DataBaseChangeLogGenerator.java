@@ -2,9 +2,9 @@ package tech.amereta.generator.service.spring.generator;
 
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
+import tech.amereta.core.soy.ISoyConfiguration;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.util.StringFormatter;
-import tech.amereta.core.soy.ISoyConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,14 +73,14 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String resolveUnique(final Boolean isUnique) {
-        if(isUnique) {
+        if (isUnique) {
             return "unique=\"true\" uniqueConstraintName=\"ux_" + StringFormatter.toSnakeCase(name) + "_" + StringFormatter.toSnakeCase(getName()) + "\"";
         }
         return "unique=\"false\"";
     }
 
     private String resolveFieldType(final String dataType, final Integer length) {
-        return switch (dataType){
+        return switch (dataType) {
             case "String" -> "varchar(" + resolveFieldLength(length) + ")";
             case "Double" -> "double";
             default -> throw new ClassCastException("There is no valid type " + dataType);

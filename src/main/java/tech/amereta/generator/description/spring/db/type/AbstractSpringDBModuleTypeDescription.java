@@ -3,9 +3,7 @@ package tech.amereta.generator.description.spring.db.type;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import tech.amereta.generator.description.spring.AbstractSpringModuleTypeDescription;
 
 @Data
