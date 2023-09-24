@@ -4,16 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import tech.amereta.generator.service.spring.AbstractSpringModuleTypeGenerator;
+import tech.amereta.generator.description.spring.AbstractSpringModuleTypeDescription;
 
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractJavaModelModuleTypeDescription {
+public abstract class AbstractSpringModelModuleTypeDescription extends AbstractSpringModuleTypeDescription {
 
-    private JavaModelModuleType type;
+    private SpringModelModuleType type;
     private String name;
-
-    public abstract AbstractSpringModuleTypeGenerator getGenerator();
 }

@@ -1,40 +1,37 @@
-package tech.amereta.generator.service.spring.generator;
+package tech.amereta.generator.service.spring.generator.module.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import tech.amereta.generator.description.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.model.type.AbstractJavaModelModuleTypeDescription;
-import tech.amereta.generator.description.spring.model.type.JavaModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.model.type.field.JavaModelModuleDomainTypeFieldDescription;
-import tech.amereta.generator.service.spring.AbstractSpringModuleTypeGenerator;
-import tech.amereta.generator.util.StringFormatter;
-import tech.amereta.core.java.declaration.AbstractJavaFieldDeclaration;
-import tech.amereta.core.java.declaration.JavaFieldDeclaration;
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
+import tech.amereta.core.java.declaration.AbstractJavaFieldDeclaration;
+import tech.amereta.core.java.declaration.JavaFieldDeclaration;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
+import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.AbstractSpringModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
+import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
+import tech.amereta.generator.util.StringFormatter;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTypeGenerator {
+public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringModuleTypeGenerator {
 
     @Override
-    public List<JavaCompilationUnit> generate(final SpringBootApplicationDescription applicationDescription, final AbstractJavaModelModuleTypeDescription model) {
-        final JavaModelModuleDomainTypeDescription javaModelModuleDomainTypeDescription = (JavaModelModuleDomainTypeDescription) model;
+    public List<JavaCompilationUnit> generate(final SpringBootApplicationDescription applicationDescription,
+                                              final AbstractSpringModuleTypeDescription model) {
+        final SpringModelModuleDomainTypeDescription springModelModuleDomainTypeDescription = (SpringModelModuleDomainTypeDescription) model;
 
         return applicationHasDataBase(applicationDescription) ?
-                generateDBDomains(applicationDescription, javaModelModuleDomainTypeDescription) :
-                generateSimpleDomain(applicationDescription, javaModelModuleDomainTypeDescription);
+                generateDBDomains(applicationDescription, springModelModuleDomainTypeDescription) :
+                generateSimpleDomain(applicationDescription, springModelModuleDomainTypeDescription);
     }
 
 
-    private List<JavaCompilationUnit> generateDBDomains(final SpringBootApplicationDescription applicationDescription, final JavaModelModuleDomainTypeDescription domainTypeDescription) {
+    private List<JavaCompilationUnit> generateDBDomains(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         return List.of(
                 generateDBDomain(applicationDescription, domainTypeDescription),
                 generateRepository(applicationDescription, domainTypeDescription)
@@ -42,12 +39,12 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
         );
     }
 
-    private JavaCompilationUnit generateDBDomain(final SpringBootApplicationDescription applicationDescription, final JavaModelModuleDomainTypeDescription domainTypeDescription) {
+    private JavaCompilationUnit generateDBDomain(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final String className = StringFormatter.toPascalCase(domainTypeDescription.getName());
         final JavaTypeDeclaration domain = generateClassDeclaration(className);
         final List<JavaAnnotation> annotations = generateDBDomainAnnotations(domainTypeDescription);
 
-        if(domainTypeDescription.getAuthorizable()) {
+        if (domainTypeDescription.getAuthorizable()) {
             annotations.add(
                     JavaAnnotation.builder()
                             .name("lombok.EqualsAndHashCode")
@@ -68,7 +65,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                 .typeDeclarations(List.of(domain));
     }
 
-    private JavaCompilationUnit generateRepository(final SpringBootApplicationDescription applicationDescription, final JavaModelModuleDomainTypeDescription domainTypeDescription) {
+    private JavaCompilationUnit generateRepository(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final String domainName = StringFormatter.toPascalCase(domainTypeDescription.getName());
         final String className = domainName + "Repository";
         final JavaTypeDeclaration repository = generateInterfaceDeclaration(className);
@@ -87,7 +84,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                 .typeDeclarations(List.of(repository));
     }
 
-    private List<JavaCompilationUnit> generateSimpleDomain(SpringBootApplicationDescription applicationDescription, JavaModelModuleDomainTypeDescription domainTypeDescription) {
+    private List<JavaCompilationUnit> generateSimpleDomain(SpringBootApplicationDescription applicationDescription, SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final String className = StringFormatter.toPascalCase(domainTypeDescription.getName());
         final JavaTypeDeclaration domain = generateClassDeclaration(className);
         domain.setAnnotations(generateSimpleDomainAnnotations());
@@ -101,7 +98,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
         );
     }
 
-    private List<AbstractJavaFieldDeclaration> generateDBDomainFields(final JavaModelModuleDomainTypeDescription domainTypeDescription) {
+    private List<AbstractJavaFieldDeclaration> generateDBDomainFields(final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final List<AbstractJavaFieldDeclaration> fieldDeclarations = new ArrayList<>();
         final JavaFieldDeclaration idField = generateIdField(domainTypeDescription.getIdType());
         fieldDeclarations.add(idField);
@@ -191,7 +188,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
         return "UUID".equals(idType) ? "java.util.UUID" : idType;
     }
 
-    private List<AbstractJavaFieldDeclaration> generateSimpleDomainFields(final JavaModelModuleDomainTypeDescription domainTypeDescription) {
+    private List<AbstractJavaFieldDeclaration> generateSimpleDomainFields(final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         return new ArrayList<>(domainTypeDescription.getFields()
                 .stream()
                 .map(field -> {
@@ -203,7 +200,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                 .toList());
     }
 
-    private List<JavaAnnotation> generateDBFieldAnnotations(JavaModelModuleDomainTypeFieldDescription field) {
+    private List<JavaAnnotation> generateDBFieldAnnotations(SpringModelModuleDomainTypeFieldDescription field) {
         final List<JavaAnnotation> annotations = new ArrayList<>(generateSimpleFieldAnnotations(field));
         List<JavaAnnotation.Attribute> columnAttributes = new ArrayList<>(List.of(
                 JavaAnnotation.Attribute.builder()
@@ -211,7 +208,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                         .dataType(String.class)
                         .values(List.of(StringFormatter.toSnakeCase(field.getName())))
         ));
-        if(field.getLength() != null) {
+        if (field.getLength() != null) {
             columnAttributes.add(
                     JavaAnnotation.Attribute.builder()
                             .name("length")
@@ -232,7 +229,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                                             .values(List.of(field.getLength().toString()))))
             );
         }
-        if(field.isUnique()) {
+        if (field.isUnique()) {
             columnAttributes.add(
                     JavaAnnotation.Attribute.builder()
                             .name("unique")
@@ -240,7 +237,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                             .values(List.of("true"))
             );
         }
-        if(!field.isNullable()) {
+        if (!field.isNullable()) {
             columnAttributes.add(
                     JavaAnnotation.Attribute.builder()
                             .name("nullable")
@@ -248,7 +245,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                             .values(List.of("false"))
             );
         }
-        if(!field.isUpdatable()) {
+        if (!field.isUpdatable()) {
             columnAttributes.add(
                     JavaAnnotation.Attribute.builder()
                             .name("updatable")
@@ -256,13 +253,13 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                             .values(List.of("false"))
             );
         }
-        if(field.isExcludeFromJson()) {
+        if (field.isExcludeFromJson()) {
             annotations.add(
                     JavaAnnotation.builder()
                             .name("com.fasterxml.jackson.annotation.JsonIgnore")
             );
         }
-        if(field.isTransient()) {
+        if (field.isTransient()) {
             annotations.add(
                     JavaAnnotation.builder()
                             .name("jakarta.persistence.Transient")
@@ -276,7 +273,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
         return annotations;
     }
 
-    private List<JavaAnnotation> generateSimpleFieldAnnotations(JavaModelModuleDomainTypeFieldDescription field) {
+    private List<JavaAnnotation> generateSimpleFieldAnnotations(SpringModelModuleDomainTypeFieldDescription field) {
         final List<JavaAnnotation> annotations = new ArrayList<>();
         if (field.getDefaultValue() != null) {
             annotations.add(
@@ -307,7 +304,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                 );
     }
 
-    private JavaFieldDeclaration generateFieldDeclaration(JavaModelModuleDomainTypeFieldDescription field) {
+    private JavaFieldDeclaration generateFieldDeclaration(SpringModelModuleDomainTypeFieldDescription field) {
         return JavaFieldDeclaration.builder()
                 .modifiers(JavaModifier.builder()
                         .type(JavaModifier.FIELD_MODIFIERS)
@@ -317,7 +314,7 @@ public final class ModelModuleDomainTypeGenerator extends AbstractSpringModuleTy
                 .value(field.getDefaultValue());
     }
 
-    private static List<JavaAnnotation> generateDBDomainAnnotations(JavaModelModuleDomainTypeDescription domainTypeDescription) {
+    private static List<JavaAnnotation> generateDBDomainAnnotations(SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final List<JavaAnnotation> annotations = new ArrayList<>(List.of(
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.Table")

@@ -1,6 +1,6 @@
 package tech.amereta.generator.description.spring;
 
-public enum JavaModuleType {
+public enum SpringModuleType {
 
     MODEL,
     DB

@@ -13,7 +13,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractJavaModelModuleFieldDescription {
+public abstract class AbstractSpringModelModuleFieldDescription {
 
     private String name;
     private String dataType;

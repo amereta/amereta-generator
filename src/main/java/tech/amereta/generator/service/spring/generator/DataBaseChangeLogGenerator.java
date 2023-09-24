@@ -2,7 +2,7 @@ package tech.amereta.generator.service.spring.generator;
 
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
-import tech.amereta.generator.description.spring.model.type.field.JavaModelModuleDomainTypeFieldDescription;
+import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.util.StringFormatter;
 import tech.amereta.core.soy.ISoyConfiguration;
 
@@ -25,7 +25,7 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
             + String.valueOf(date.getMinute())
             + String.valueOf(date.getNano() / 10000);
     private String name;
-    private List<JavaModelModuleDomainTypeFieldDescription> fields;
+    private List<SpringModelModuleDomainTypeFieldDescription> fields;
 
     @Override
     public String getName() {
@@ -66,7 +66,7 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
                 .toList();
     }
 
-    private String generateChangeset(final JavaModelModuleDomainTypeFieldDescription fieldDescription) {
+    private String generateChangeset(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
         return "\n\t\t\t<column name=\"" + getName() + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\">\n" +
                 "\t\t\t\t<constraints nullable=\"" + fieldDescription.isNullable() + "\" " + resolveUnique(fieldDescription.isUnique()) + " />\n" +
                 "\t\t\t</column>";

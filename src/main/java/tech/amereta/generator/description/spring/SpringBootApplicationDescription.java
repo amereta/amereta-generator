@@ -1,4 +1,4 @@
-package tech.amereta.generator.description;
+package tech.amereta.generator.description.spring;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,9 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tech.amereta.generator.description.spring.AbstractJavaModuleDescription;
-import tech.amereta.generator.description.spring.db.JavaDBModuleDescription;
-import tech.amereta.generator.description.spring.model.JavaModelModuleDescription;
+import tech.amereta.generator.description.AbstractApplication;
+import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
+import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
+import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.service.spring.SpringBootApplicationGeneratorService;
 
 import javax.validation.constraints.NotNull;
@@ -47,10 +48,10 @@ public class SpringBootApplicationDescription implements AbstractApplication {
             visible = true
     )
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = JavaModelModuleDescription.class, name = "MODEL"),
-            @JsonSubTypes.Type(value = JavaDBModuleDescription.class, name = "DB")
+            @JsonSubTypes.Type(value = SpringModelModuleDescription.class, name = "MODEL"),
+            @JsonSubTypes.Type(value = SpringDBModuleDescription.class, name = "DB")
     })
-    private List<AbstractJavaModuleDescription> modules;
+    private List<AbstractSpringModuleDescription> modules;
 
     @Builder.Default
     @JsonIgnore

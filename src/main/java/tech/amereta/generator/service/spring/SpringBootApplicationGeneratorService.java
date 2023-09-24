@@ -3,10 +3,10 @@ package tech.amereta.generator.service.spring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.amereta.generator.description.ApplicationDescription;
-import tech.amereta.generator.description.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.AbstractJavaModuleDescription;
-import tech.amereta.generator.description.spring.model.JavaModelModuleDescription;
-import tech.amereta.generator.description.spring.model.type.JavaModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
+import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
 import tech.amereta.core.java.JavaSourceCodeWriter;
@@ -76,7 +76,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
     }
 
     private List<JavaCompilationUnit> generateModule(final SpringBootApplicationDescription springApplicationDescription,
-                                                     final AbstractJavaModuleDescription javaModuleDescription) {
+                                                     final AbstractSpringModuleDescription javaModuleDescription) {
         return javaModuleDescription.getGenerator().generate(springApplicationDescription, javaModuleDescription);
     }
 
@@ -110,13 +110,13 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         final List<ISoyConfiguration> changelogs = new ArrayList<>(
                 springApplicationDescription.getModules()
                 .stream()
-                .filter(module -> module instanceof JavaModelModuleDescription)
-                .map(module -> ((JavaModelModuleDescription) module).getModels())
+                .filter(module -> module instanceof SpringModelModuleDescription)
+                .map(module -> ((SpringModelModuleDescription) module).getModels())
                 .flatMap(List::stream)
-                .filter(model -> model instanceof JavaModelModuleDomainTypeDescription)
+                .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
                 .map(domain -> DataBaseChangeLogGenerator.builder()
                         .name(domain.getName())
-                        .fields(((JavaModelModuleDomainTypeDescription) domain).getFields())
+                        .fields(((SpringModelModuleDomainTypeDescription) domain).getFields())
                         .build())
                 .toList()
         );
