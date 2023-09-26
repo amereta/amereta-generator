@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 
 @Builder
 @Data
@@ -19,7 +20,7 @@ public class ApplicationDescription {
             property = "applicationType"
     )
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = SpringBootApplicationDescription.class, name = "spring-boot")
+            @JsonSubTypes.Type(value = SpringBootApplicationDescription.class, name = "SPRING_BOOT")
     })
     private AbstractApplication application;
 }

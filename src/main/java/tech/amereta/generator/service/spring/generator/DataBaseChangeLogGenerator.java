@@ -2,9 +2,9 @@ package tech.amereta.generator.service.spring.generator;
 
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
-import tech.amereta.generator.description.spring.model.type.field.JavaModelModuleDomainTypeFieldDescription;
-import tech.amereta.generator.util.StringFormatter;
 import tech.amereta.core.soy.ISoyConfiguration;
+import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
+import tech.amereta.generator.util.StringFormatter;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
             + String.valueOf(date.getMinute())
             + String.valueOf(date.getNano() / 10000);
     private String name;
-    private List<JavaModelModuleDomainTypeFieldDescription> fields;
+    private List<SpringModelModuleDomainTypeFieldDescription> fields;
 
     @Override
     public String getName() {
@@ -51,7 +51,7 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
         return Map.of(
                 "name", StringFormatter.toSnakeCase(name),
                 "timestamp", timestamp,
-                "fields", generateChangesets()
+                "fields", generateColumns()
         );
     }
 
@@ -60,27 +60,27 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
         return Path.of("src/main/resources/db/changelog/" + timestamp + "_" + StringFormatter.toPascalCase(name) + ".xml");
     }
 
-    private List<String> generateChangesets() {
+    private List<String> generateColumns() {
         return this.fields.stream()
-                .map(this::generateChangeset)
+                .map(this::generateColumn)
                 .toList();
     }
 
-    private String generateChangeset(final JavaModelModuleDomainTypeFieldDescription fieldDescription) {
-        return "\n\t\t\t<column name=\"" + getName() + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\">\n" +
+    private String generateColumn(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
+        return "\n\t\t\t<column name=\"" + fieldDescription.getName() + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\">\n" +
                 "\t\t\t\t<constraints nullable=\"" + fieldDescription.isNullable() + "\" " + resolveUnique(fieldDescription.isUnique()) + " />\n" +
                 "\t\t\t</column>";
     }
 
     private String resolveUnique(final Boolean isUnique) {
-        if(isUnique) {
+        if (isUnique) {
             return "unique=\"true\" uniqueConstraintName=\"ux_" + StringFormatter.toSnakeCase(name) + "_" + StringFormatter.toSnakeCase(getName()) + "\"";
         }
         return "unique=\"false\"";
     }
 
     private String resolveFieldType(final String dataType, final Integer length) {
-        return switch (dataType){
+        return switch (dataType) {
             case "String" -> "varchar(" + resolveFieldLength(length) + ")";
             case "Double" -> "double";
             default -> throw new ClassCastException("There is no valid type " + dataType);

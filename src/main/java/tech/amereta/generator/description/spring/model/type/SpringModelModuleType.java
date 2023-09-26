@@ -1,13 +1,13 @@
 package tech.amereta.generator.description.spring.model.type;
 
-public enum JavaModelModuleType {
+public enum SpringModelModuleType {
 
     DOMAIN("domain"),
     ENUM("enum");
 
     private final String packageName;
 
-    JavaModelModuleType(String packageName) {
+    SpringModelModuleType(String packageName) {
         this.packageName = packageName;
     }
 

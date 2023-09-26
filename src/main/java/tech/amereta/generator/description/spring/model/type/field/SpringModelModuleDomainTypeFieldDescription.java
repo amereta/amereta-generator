@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public final class JavaModelModuleDomainTypeFieldDescription extends AbstractJavaModelModuleFieldDescription {
+public final class SpringModelModuleDomainTypeFieldDescription extends AbstractSpringModelModuleFieldDescription {
 
     private JavaFieldRelationDescription relation;
     private Integer length;

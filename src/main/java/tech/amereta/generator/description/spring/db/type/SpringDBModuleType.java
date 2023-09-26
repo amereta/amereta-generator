@@ -1,6 +1,7 @@
 package tech.amereta.generator.description.spring.db.type;
 
-public enum JavaDBModuleType {
+public enum SpringDBModuleType {
 
-    MYSQL
+    MYSQL,
+    POSTGRESQL
 }
