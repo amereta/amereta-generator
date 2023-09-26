@@ -20,7 +20,7 @@ spring:
     {/literal}{if $hasDataBase}
     {literal}datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:{/literal}{if $dbType == 'POSTGRESQL'}{literal}postgresql://localhost:5432/{/literal}{elseif $dbType == 'MYSQL'}{literal}mysql://localhost:3306/{/literal}{/if}{$dbName}{literal}
+        url: jdbc:{/literal}{if $dbType == 'POSTGRESQL'}{literal}postgresql://localhost:5432/{/literal}{elseif $dbType == 'MYSQL'}{literal}mysql://localhost:3306/{/literal}{/if}{$dbName}{if $dbType == 'MYSQL'}{literal}?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true{/literal}{/if}{literal}
         username: username
         password: password
         hikari:
