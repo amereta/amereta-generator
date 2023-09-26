@@ -51,7 +51,7 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
         return Map.of(
                 "name", StringFormatter.toSnakeCase(name),
                 "timestamp", timestamp,
-                "fields", generateChangesets()
+                "fields", generateColumns()
         );
     }
 
@@ -60,14 +60,14 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
         return Path.of("src/main/resources/db/changelog/" + timestamp + "_" + StringFormatter.toPascalCase(name) + ".xml");
     }
 
-    private List<String> generateChangesets() {
+    private List<String> generateColumns() {
         return this.fields.stream()
-                .map(this::generateChangeset)
+                .map(this::generateColumn)
                 .toList();
     }
 
-    private String generateChangeset(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
-        return "\n\t\t\t<column name=\"" + getName() + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\">\n" +
+    private String generateColumn(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
+        return "\n\t\t\t<column name=\"" + fieldDescription.getName() + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\">\n" +
                 "\t\t\t\t<constraints nullable=\"" + fieldDescription.isNullable() + "\" " + resolveUnique(fieldDescription.isUnique()) + " />\n" +
                 "\t\t\t</column>";
     }
