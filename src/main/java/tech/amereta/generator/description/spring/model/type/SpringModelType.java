@@ -2,22 +2,6 @@ package tech.amereta.generator.description.spring.model.type;
 
 public enum SpringModelType {
 
-    DOMAIN("domain"),
-    ENUM("enum");
-
-    private final String packageName;
-
-    SpringModelType(String packageName) {
-        this.packageName = packageName;
-    }
-
-    @Override
-    public String toString() {
-        return packageName.split("\\.")[packageName.split("\\.").length - 1];
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
+    DOMAIN,
+    ENUM
 }

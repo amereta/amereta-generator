@@ -3,6 +3,7 @@ package tech.amereta.generator.service.spring.generator;
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
 import tech.amereta.core.soy.ISoyConfiguration;
+import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.util.StringFormatter;
 
@@ -79,10 +80,11 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
         return "unique=\"false\"";
     }
 
-    private String resolveFieldType(final String dataType, final Integer length) {
+    private String resolveFieldType(final SpringDataType dataType, final Integer length) {
+        // TODO: Handle other data types
         return switch (dataType) {
-            case "String" -> "varchar(" + resolveFieldLength(length) + ")";
-            case "Double" -> "double";
+            case STRING -> "varchar(" + resolveFieldLength(length) + ")";
+            case DOUBLE -> "double";
             default -> throw new ClassCastException("There is no valid type " + dataType);
         };
     }

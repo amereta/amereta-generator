@@ -9,7 +9,9 @@ import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
+import tech.amereta.generator.exception.DomainIdDataTypeException;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
 import tech.amereta.generator.util.StringFormatter;
 
@@ -80,7 +82,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         repository.setTailGenericTypes(
                 List.of(
                         basePackage(applicationDescription) + ".model.domain." + domainName,
-                        calculateIdType(domainTypeDescription.getIdType())
+                        domainTypeDescription.getIdType().getDataType()
                 )
         );
         return JavaCompilationUnit.builder()
@@ -121,21 +123,21 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         return fieldDeclarations;
     }
 
-    private static JavaFieldDeclaration generateIdField(final String idType) {
+    private static JavaFieldDeclaration generateIdField(final SpringDataType idType) {
         return JavaFieldDeclaration.builder()
                 .modifiers(JavaModifier.builder()
                         .type(JavaModifier.FIELD_MODIFIERS)
                         .modifiers(Modifier.PRIVATE))
-                .dataType(calculateIdType(idType))
+                .dataType(idType.getDataType())
                 .name("id")
                 .annotations(generateIdAnnotations(idType));
     }
 
-    private static List<JavaAnnotation> generateIdAnnotations(final String idType) {
+    private static List<JavaAnnotation> generateIdAnnotations(final SpringDataType idType) {
         return switch (idType) {
-            case "UUID" -> generateUUIDAnnotations();
-            case "Long" -> generateLongAnnotations();
-            default -> throw new ClassCastException("Cannot create idType with " + idType);
+            case UUID -> generateUUIDAnnotations();
+            case LONG -> generateLongAnnotations();
+            default -> throw new DomainIdDataTypeException("Cannot create id with " + idType);
         };
     }
 
@@ -199,10 +201,6 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                                 )
                         )
         );
-    }
-
-    private static String calculateIdType(String idType) {
-        return "UUID".equals(idType) ? "java.util.UUID" : idType;
     }
 
     private List<AbstractJavaFieldDeclaration> generateSimpleDomainFields(final SpringModelModuleDomainTypeDescription domainTypeDescription) {
@@ -312,7 +310,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                                 .type(JavaModifier.FIELD_MODIFIERS)
                                 .modifiers(Modifier.PRIVATE)
                 )
-                .dataType(field.getDataType())
+                .dataType(field.getDataType().getDataType())
                 .name(field.getName())
                 .value(field.getDefaultValue());
     }

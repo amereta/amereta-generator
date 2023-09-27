@@ -7,9 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
 import tech.amereta.generator.service.spring.generator.module.model.SpringModelModuleDomainTypeGenerator;
+import tech.amereta.generator.util.DataTypeValidator;
 
 import java.util.List;
 
@@ -20,7 +22,8 @@ import java.util.List;
 public final class SpringModelModuleDomainTypeDescription extends SpringModelModuleTypeDescription {
 
     @JsonProperty("id")
-    private String idType = "UUID";
+    @DataTypeValidator(values = {SpringDataType.UUID, SpringDataType.LONG})
+    private SpringDataType idType = SpringDataType.UUID;
 
     private Boolean authorizable = false;
 

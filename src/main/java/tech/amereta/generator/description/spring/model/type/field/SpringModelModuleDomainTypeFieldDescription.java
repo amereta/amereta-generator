@@ -20,7 +20,7 @@ public final class SpringModelModuleDomainTypeFieldDescription {
     private String name;
 
     @NotNull(message = "domain field's dataType must not be null!")
-    private String dataType;
+    private SpringDataType dataType;
 
     private Object defaultValue;
 
