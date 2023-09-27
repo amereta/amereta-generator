@@ -6,9 +6,8 @@ import tech.amereta.core.java.declaration.AbstractJavaFieldDeclaration;
 import tech.amereta.core.java.declaration.JavaFieldDeclaration;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
-import tech.amereta.core.java.util.JavaType;
-import tech.amereta.generator.description.spring.AbstractSpringModuleTypeDescription;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
@@ -22,7 +21,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
 
     @Override
     public List<JavaCompilationUnit> generate(final SpringBootApplicationDescription applicationDescription,
-                                              final AbstractSpringModuleTypeDescription typeDescription) {
+                                              final SpringModuleTypeDescription typeDescription) {
         final SpringModelModuleDomainTypeDescription domainTypeDescription = (SpringModelModuleDomainTypeDescription) typeDescription;
 
         return applicationHasDataBase(applicationDescription) ?

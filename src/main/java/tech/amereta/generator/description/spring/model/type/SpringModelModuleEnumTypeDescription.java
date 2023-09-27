@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SpringModelModuleEnumTypeDescription extends AbstractSpringModelModuleTypeDescription {
+public final class SpringModelModuleEnumTypeDescription extends SpringModelModuleTypeDescription {
 
     private List<SpringModelModuleEnumTypeFieldDescription> fields;
 

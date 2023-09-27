@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SpringModelModuleDomainTypeDescription extends AbstractSpringModelModuleTypeDescription {
+public final class SpringModelModuleDomainTypeDescription extends SpringModelModuleTypeDescription {
 
     @JsonProperty("id")
     private String idType = "UUID";
