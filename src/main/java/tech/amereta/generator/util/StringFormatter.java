@@ -17,6 +17,10 @@ public class StringFormatter {
                 .collect(Collectors.joining());
     }
 
+    public static String toHumaneCase(String string) {
+        return String.join(" ", findWordsInMixedCase(string));
+    }
+
     public static String toSnakeCase(String string) {
         return string.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
     }
