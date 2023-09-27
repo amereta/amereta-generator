@@ -22,12 +22,12 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
 
     @Override
     public List<JavaCompilationUnit> generate(final SpringBootApplicationDescription applicationDescription,
-                                              final AbstractSpringModuleTypeDescription model) {
-        final SpringModelModuleDomainTypeDescription springModelModuleDomainTypeDescription = (SpringModelModuleDomainTypeDescription) model;
+                                              final AbstractSpringModuleTypeDescription typeDescription) {
+        final SpringModelModuleDomainTypeDescription domainTypeDescription = (SpringModelModuleDomainTypeDescription) typeDescription;
 
         return applicationHasDataBase(applicationDescription) ?
-                generateDBDomains(applicationDescription, springModelModuleDomainTypeDescription) :
-                generateSimpleDomain(applicationDescription, springModelModuleDomainTypeDescription);
+                generateDBDomains(applicationDescription, domainTypeDescription) :
+                generateSimpleDomain(applicationDescription, domainTypeDescription);
     }
 
 
@@ -90,7 +90,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                 .typeDeclarations(List.of(repository));
     }
 
-    private List<JavaCompilationUnit> generateSimpleDomain(SpringBootApplicationDescription applicationDescription, SpringModelModuleDomainTypeDescription domainTypeDescription) {
+    private List<JavaCompilationUnit> generateSimpleDomain(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final String className = StringFormatter.toPascalCase(domainTypeDescription.getName());
         final JavaTypeDeclaration domain = generateClassDeclaration(className);
         domain.setAnnotations(generateSimpleDomainAnnotations());
@@ -218,7 +218,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                 .toList());
     }
 
-    private List<JavaAnnotation> generateDBFieldAnnotations(SpringModelModuleDomainTypeFieldDescription field) {
+    private List<JavaAnnotation> generateDBFieldAnnotations(final SpringModelModuleDomainTypeFieldDescription field) {
         final List<JavaAnnotation> annotations = new ArrayList<>(generateSimpleFieldAnnotations(field));
         List<JavaAnnotation.Attribute> columnAttributes = new ArrayList<>(List.of(
                 JavaAnnotation.Attribute.builder()
@@ -306,29 +306,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         return annotations;
     }
 
-    private JavaTypeDeclaration generateClassDeclaration(String className) {
-        return JavaTypeDeclaration.builder()
-                .type(JavaType.CLASS)
-                .name(className)
-                .modifiers(
-                        JavaModifier.builder()
-                                .type(JavaModifier.TYPE_MODIFIERS)
-                                .modifiers(Modifier.PUBLIC)
-                );
-    }
-
-    private JavaTypeDeclaration generateInterfaceDeclaration(String className) {
-        return JavaTypeDeclaration.builder()
-                .type(JavaType.INTERFACE)
-                .name(className)
-                .modifiers(
-                        JavaModifier.builder()
-                                .type(JavaModifier.TYPE_MODIFIERS)
-                                .modifiers(Modifier.PUBLIC)
-                );
-    }
-
-    private JavaFieldDeclaration generateFieldDeclaration(SpringModelModuleDomainTypeFieldDescription field) {
+    private JavaFieldDeclaration generateFieldDeclaration(final SpringModelModuleDomainTypeFieldDescription field) {
         return JavaFieldDeclaration.builder()
                 .modifiers(
                         JavaModifier.builder()
@@ -340,7 +318,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                 .value(field.getDefaultValue());
     }
 
-    private static List<JavaAnnotation> generateDBDomainAnnotations(SpringModelModuleDomainTypeDescription domainTypeDescription) {
+    private static List<JavaAnnotation> generateDBDomainAnnotations(final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final List<JavaAnnotation> annotations = new ArrayList<>(
                 List.of(
                         JavaAnnotation.builder()

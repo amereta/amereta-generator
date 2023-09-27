@@ -5,26 +5,27 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@EqualsAndHashCode(callSuper = true)
+import java.util.LinkedList;
+import java.util.List;
+
 @Data
-@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SpringModelModuleDomainTypeFieldDescription extends AbstractSpringModelModuleFieldDescription {
+public final class SpringModelModuleDomainTypeFieldDescription {
 
-    private JavaFieldRelationDescription relation;
+    private String name;
+    private String dataType;
+    private Object defaultValue;
+    private List<String> genericTypes = new LinkedList<>();
+    private List<String> modifiers = new LinkedList<>();
     private Integer length;
-    @Builder.Default
     @JsonProperty("transient")
     private boolean isTransient = false;
-    @Builder.Default
     private boolean unique = false;
-    @Builder.Default
     private boolean nullable = true;
-    @Builder.Default
     private boolean updatable = true;
-    @Builder.Default
     private boolean excludeFromJson = false;
+    private JavaFieldRelationDescription relation;
 
     @Data
     @Builder

@@ -46,8 +46,10 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         compilationUnits.add(MainGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(ApplicationConfigurationGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(SecurityConfigurationGeneratorSpring.generate(springApplicationDescription));
-        compilationUnits.add(AbstractUserGenerator.generate(springApplicationDescription));
-        compilationUnits.add(RoleGenerator.generate(springApplicationDescription));
+        if (AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription)) {
+            compilationUnits.add(AbstractUserGenerator.generate(springApplicationDescription));
+            compilationUnits.add(RoleGenerator.generate(springApplicationDescription));
+        }
         compilationUnits.addAll(generateModules(springApplicationDescription));
         return compilationUnits;
     }
