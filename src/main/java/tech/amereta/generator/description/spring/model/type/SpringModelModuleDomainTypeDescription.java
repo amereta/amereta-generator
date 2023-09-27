@@ -1,6 +1,8 @@
 package tech.amereta.generator.description.spring.model.type;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,7 +21,11 @@ public final class SpringModelModuleDomainTypeDescription extends SpringModelMod
 
     @JsonProperty("id")
     private String idType = "UUID";
+
     private Boolean authorizable = false;
+
+    @NotNull(message = "domain's fields must not be null!")
+    @Valid
     private List<SpringModelModuleDomainTypeFieldDescription> fields;
 
     @Override

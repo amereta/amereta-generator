@@ -2,6 +2,7 @@ package tech.amereta.generator.description.spring.db;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +29,7 @@ public final class SpringDBModuleDescription extends AbstractSpringModuleDescrip
             @JsonSubTypes.Type(value = SpringDBModuleMySQLTypeDescription.class, name = "MYSQL"),
             @JsonSubTypes.Type(value = SpringDBModulePostgreSQLTypeDescription.class, name = "POSTGRESQL"),
     })
+    @Valid
     private SpringDBModuleTypeDescription db;
 
     @Override

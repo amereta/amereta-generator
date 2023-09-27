@@ -2,6 +2,7 @@ package tech.amereta.generator.description.spring.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,6 +32,7 @@ public final class SpringModelModuleDescription extends AbstractSpringModuleDesc
             @JsonSubTypes.Type(value = SpringModelModuleDomainTypeDescription.class, name = "DOMAIN"),
             @JsonSubTypes.Type(value = SpringModelModuleEnumTypeDescription.class, name = "ENUM"),
     })
+    @Valid
     private List<SpringModelModuleTypeDescription> models = new LinkedList<>();
 
     @Override

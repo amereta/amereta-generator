@@ -1,5 +1,6 @@
 package tech.amereta.generator.web.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class ApplicationGeneratorController {
     private ApplicationGeneratorService applicationGeneratorService;
 
     @PostMapping(value = "/generate", produces = "application/zip")
-    public ResponseEntity<StreamingResponseBody> generate(@RequestBody ApplicationDescription applicationDescription) {
+    public ResponseEntity<StreamingResponseBody> generate(@Valid @RequestBody ApplicationDescription applicationDescription) {
         return ResponseEntity
                 .ok()
                 .header("Content-Disposition", "attachment; filename=" + applicationDescription.getApplication().getName() + ".zip")

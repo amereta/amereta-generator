@@ -2,13 +2,12 @@ package tech.amereta.generator.description;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 
-@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,5 +21,6 @@ public class ApplicationDescription {
     @JsonSubTypes({
             @JsonSubTypes.Type(value = SpringBootApplicationDescription.class, name = "SPRING_BOOT")
     })
+    @Valid
     private AbstractApplication application;
 }
