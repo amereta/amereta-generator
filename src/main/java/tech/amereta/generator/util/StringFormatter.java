@@ -38,7 +38,7 @@ public class StringFormatter {
         if (string.charAt(string.length() - 1) == 'y') {
             return string.substring(0, string.length() - 1) + "ies";
         } else if (string.charAt(string.length() - 1) == 's') {
-            return string.substring(0, string.length() - 1) + "es";
+            return string + "es";
         }
         return string + "s";
     }
