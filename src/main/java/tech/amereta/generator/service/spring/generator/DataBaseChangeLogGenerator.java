@@ -75,7 +75,7 @@ public final class DataBaseChangeLogGenerator implements ISoyConfiguration {
 
     private String resolveUnique(final Boolean isUnique) {
         if (isUnique) {
-            return "unique=\"true\" uniqueConstraintName=\"ux_" + StringFormatter.toSnakeCase(name) + "_" + StringFormatter.toSnakeCase(getName()) + "\"";
+            return "unique=\"true\" uniqueConstraintName=\"ux_" + StringFormatter.toSnakeCase(name) + "__" + StringFormatter.toSnakeCase(getName()) + "\"";
         }
         return "unique=\"false\"";
     }

@@ -1,7 +1,6 @@
 package tech.amereta.generator.description.spring.model.type.field;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public final class SpringModelModuleDomainTypeFieldDescription {
@@ -40,41 +40,4 @@ public final class SpringModelModuleDomainTypeFieldDescription {
     private boolean updatable = true;
 
     private boolean excludeFromJson = false;
-
-    private JavaFieldRelationDescription relation;
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static final class JavaFieldRelationDescription {
-
-        public enum Relation {
-
-            ONE_TO_ONE("OneToOne"),
-            ONE_TO_MANY("OneToMany"),
-            MANY_TO_ONE("ManyToOne"),
-            MANY_TO_MANY("ManyToMany");
-
-            private final String name;
-
-            Relation(String name) {
-                this.name = name;
-            }
-
-            @JsonValue
-            @Override
-            public String toString() {
-                return name;
-            }
-
-        }
-
-        private Relation type;
-        private String mappedBy;
-        @Builder.Default
-        private boolean join = false;
-
-    }
-
 }

@@ -15,8 +15,10 @@ import tech.amereta.generator.exception.DomainIdDataTypeException;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
 import tech.amereta.generator.util.StringFormatter;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringModuleTypeGenerator {
@@ -112,15 +114,208 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         fieldDeclarations.addAll(
                 domainTypeDescription.getFields()
                         .stream()
-                        .map(field -> {
-                                    final JavaFieldDeclaration fieldDeclaration = generateFieldDeclaration(field);
-                                    fieldDeclaration.setAnnotations(generateDBFieldAnnotations(field));
-                                    return fieldDeclaration;
-                                }
-                        )
+                        .map(field -> generateField(field, generateDBFieldAnnotations(field)))
+                        .toList()
+        );
+        fieldDeclarations.addAll(
+                domainTypeDescription.getRelations()
+                        .stream()
+                        .map(relation -> generateRelationField(relation, domainTypeDescription.getName()))
                         .toList()
         );
         return fieldDeclarations;
+    }
+
+    private JavaFieldDeclaration generateRelationField(final SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation, final String domainName) {
+        final JavaFieldDeclaration javaFieldDeclaration = generateFieldDeclarationForRelation(relation);
+        javaFieldDeclaration.setAnnotations(generateRelationAnnotations(relation, domainName));
+        return javaFieldDeclaration;
+    }
+
+    private List<JavaAnnotation> generateRelationAnnotations(final SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation, final String domainName) {
+        final List<JavaAnnotation> relationAnnotation = new ArrayList<>(
+                generateRelationAnnotation(relation, domainName)
+        );
+        relationAnnotation.add(generateJsonIgnore(relation, domainName));
+        return relationAnnotation;
+    }
+
+    private List<JavaAnnotation> generateRelationAnnotation(final SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation, final String domainName) {
+        return switch (relation.getRelationType()) {
+            case ONE_TO_ONE -> generateOneToOneAnnotation(relation, domainName);
+            case ONE_TO_MANY -> generateOneToManyAnnotation(domainName);
+            case MANY_TO_ONE -> generateManyToOneAnnotation();
+            case MANY_TO_MANY -> generateManyToManyAnnotation(relation, domainName);
+        };
+    }
+
+    private List<JavaAnnotation> generateManyToManyAnnotation(final SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation, final String domainName) {
+        final JavaAnnotation manyToManyAnnotation = JavaAnnotation.builder()
+                .name("jakarta.persistence.ManyToMany");
+        if (!relation.getJoin()) {
+            manyToManyAnnotation.setAttributes(
+                    List.of(
+                            JavaAnnotation.Attribute.builder()
+                                    .name("mappedBy")
+                                    .dataType(String.class)
+                                    .values(
+                                            List.of(
+                                                    StringFormatter.toPlural(
+                                                            StringFormatter.toCamelCase(domainName)
+                                                    )
+                                            )
+                                    )
+                    )
+            );
+            return Collections.singletonList(manyToManyAnnotation);
+        } else {
+            return List.of(
+                    manyToManyAnnotation,
+                    JavaAnnotation.builder()
+                            .name("jakarta.persistence.JoinTable")
+                            .attributes(
+                                    List.of(
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("name")
+                                                    .dataType(String.class)
+                                                    .values(List.of(StringFormatter.toSnakeCase(domainName) + "__" + StringFormatter.toSnakeCase(relation.getTo()))),
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("joinColumns")
+                                                    .dataType(Annotation.class)
+                                                    .values(
+                                                            List.of(
+                                                                    JavaAnnotation.builder()
+                                                                            .name("jakarta.persistence.JoinColumn")
+                                                                            .attributes(
+                                                                                    List.of(
+                                                                                            JavaAnnotation.Attribute.builder()
+                                                                                                    .name("name")
+                                                                                                    .dataType(String.class)
+                                                                                                    .values(List.of(StringFormatter.toCamelCase(domainName) + "_id"))
+                                                                                    )
+                                                                            )
+                                                            )
+                                                    ),
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("inverseJoinColumns")
+                                                    .dataType(Annotation.class)
+                                                    .values(
+                                                            List.of(
+                                                                    JavaAnnotation.builder()
+                                                                            .name("jakarta.persistence.JoinColumn")
+                                                                            .attributes(
+                                                                                    List.of(
+                                                                                            JavaAnnotation.Attribute.builder()
+                                                                                                    .name("name")
+                                                                                                    .dataType(String.class)
+                                                                                                    .values(List.of(StringFormatter.toCamelCase(relation.getTo()) + "_id"))
+                                                                                    )
+                                                                            )
+                                                            )
+                                                    )
+                                    )
+                            )
+            );
+        }
+    }
+
+    private List<JavaAnnotation> generateManyToOneAnnotation() {
+        return Collections.singletonList(
+                JavaAnnotation.builder().name("jakarta.persistence.ManyToOne")
+        );
+    }
+
+    private List<JavaAnnotation> generateOneToManyAnnotation(final String domainName) {
+        return Collections.singletonList(
+                JavaAnnotation.builder()
+                        .name("jakarta.persistence.OneToMany")
+                        .attributes(
+                                List.of(
+                                        JavaAnnotation.Attribute.builder()
+                                                .name("mappedBy")
+                                                .dataType(String.class)
+                                                .values(List.of(StringFormatter.toCamelCase(domainName)))
+                                )
+                        )
+        );
+    }
+
+    private List<JavaAnnotation> generateOneToOneAnnotation(final SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation, final String domainName) {
+        final JavaAnnotation oneToOneAnnotation = JavaAnnotation.builder()
+                .name("jakarta.persistence.OneToOne");
+        if (!relation.getJoin()) {
+            oneToOneAnnotation.setAttributes(
+                    List.of(
+                            JavaAnnotation.Attribute.builder()
+                                    .name("mappedBy")
+                                    .dataType(String.class)
+                                    .values(List.of(StringFormatter.toCamelCase(domainName)))
+                    )
+            );
+            return Collections.singletonList(oneToOneAnnotation);
+        } else {
+            return List.of(
+                    oneToOneAnnotation,
+                    JavaAnnotation.builder()
+                            .name("jakarta.persistence.JoinColumn")
+                            .attributes(
+                                    List.of(
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("unique")
+                                                    .dataType(Boolean.class)
+                                                    .values(List.of("true"))
+                                    )
+                            )
+            );
+        }
+    }
+
+    private JavaAnnotation generateJsonIgnore(final SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation, String domainName) {
+        return JavaAnnotation.builder()
+                .name("com.fasterxml.jackson.annotation.JsonIgnoreProperties")
+                .attributes(List.of(
+                                JavaAnnotation.Attribute.builder()
+                                        .name("value")
+                                        .dataType(String.class)
+                                        .values(List.of(isManyToMany(relation) ? StringFormatter.toPlural(domainName) : domainName))
+                        )
+                );
+    }
+
+    private boolean isManyToMany(SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation) {
+        return relation.getRelationType() == SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription.Relation.MANY_TO_MANY;
+    }
+
+    private JavaFieldDeclaration generateFieldDeclarationForRelation(final SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation) {
+        final JavaFieldDeclaration field = JavaFieldDeclaration.builder()
+                .modifiers(
+                        JavaModifier.builder()
+                                .type(JavaModifier.FIELD_MODIFIERS)
+                                .modifiers(Modifier.PRIVATE)
+                )
+                .dataType(resolveRelationDataType(relation))
+                .name(resolveRelationFieldName(relation));
+
+        if (isOneToManyOrManyToMany(relation)) {
+            field.setGenericTypes(List.of(StringFormatter.toPascalCase(relation.getTo())));
+        }
+
+        return field;
+    }
+
+    private String resolveRelationFieldName(SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation) {
+        return isOneToManyOrManyToMany(relation) ?
+                StringFormatter.toPlural(StringFormatter.toCamelCase(relation.getTo()))
+                : StringFormatter.toCamelCase(relation.getTo());
+    }
+
+    private String resolveRelationDataType(SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation) {
+        return isOneToManyOrManyToMany(relation) ?
+                "java.util.List" : StringFormatter.toPascalCase(relation.getTo());
+    }
+
+    private boolean isOneToManyOrManyToMany(SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription relation) {
+        return relation.getRelationType() == SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription.Relation.ONE_TO_MANY || relation.getRelationType() == SpringModelModuleDomainTypeDescription.SpringFieldRelationDescription.Relation.MANY_TO_MANY;
     }
 
     private static JavaFieldDeclaration generateIdField(final SpringDataType idType) {
@@ -206,13 +401,15 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
     private List<AbstractJavaFieldDeclaration> generateSimpleDomainFields(final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         return new ArrayList<>(domainTypeDescription.getFields()
                 .stream()
-                .map(field -> {
-                            final JavaFieldDeclaration fieldDeclaration = generateFieldDeclaration(field);
-                            fieldDeclaration.setAnnotations(generateSimpleFieldAnnotations(field));
-                            return fieldDeclaration;
-                        }
+                .map(field -> generateField(field, generateSimpleFieldAnnotations(field))
                 )
                 .toList());
+    }
+
+    private JavaFieldDeclaration generateField(SpringModelModuleDomainTypeFieldDescription field, List<JavaAnnotation> field1) {
+        final JavaFieldDeclaration fieldDeclaration = generateFieldDeclaration(field);
+        fieldDeclaration.setAnnotations(field1);
+        return fieldDeclaration;
     }
 
     private List<JavaAnnotation> generateDBFieldAnnotations(final SpringModelModuleDomainTypeFieldDescription field) {

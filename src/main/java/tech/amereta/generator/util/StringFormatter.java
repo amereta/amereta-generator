@@ -17,12 +17,30 @@ public class StringFormatter {
                 .collect(Collectors.joining());
     }
 
+    public static String toCamelCase(String string) {
+        final List<String> words = findWordsInMixedCase(string);
+        return words.get(0).toLowerCase() +
+                words.subList(1, words.size())
+                        .stream()
+                        .map(item -> item.substring(0, 1).toUpperCase() + item.substring(1).toLowerCase())
+                        .collect(Collectors.joining());
+    }
+
     public static String toHumaneCase(String string) {
         return String.join(" ", findWordsInMixedCase(string));
     }
 
     public static String toSnakeCase(String string) {
         return string.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+    }
+
+    public static String toPlural(String string) {
+        if (string.charAt(string.length() - 1) == 'y') {
+            return string.substring(0, string.length() - 1) + "ies";
+        } else if (string.charAt(string.length() - 1) == 's') {
+            return string.substring(0, string.length() - 1) + "es";
+        }
+        return string + "s";
     }
 
     private static List<String> findWordsInMixedCase(String text) {
