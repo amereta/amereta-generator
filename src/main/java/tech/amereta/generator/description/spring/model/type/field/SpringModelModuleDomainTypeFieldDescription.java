@@ -1,5 +1,6 @@
 package tech.amereta.generator.description.spring.model.type.field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,20 +25,31 @@ public final class SpringModelModuleDomainTypeFieldDescription {
 
     private Object defaultValue;
 
+    @Builder.Default
     private List<String> genericTypes = new LinkedList<>();
 
+    @Builder.Default
     private List<String> modifiers = new LinkedList<>();
 
     private Integer length;
 
     @JsonProperty("transient")
+    @Builder.Default
     private boolean isTransient = false;
 
+    @JsonIgnore
+    @Builder.Default
+    private boolean primaryKey = false;
+
+    @Builder.Default
     private boolean unique = false;
 
+    @Builder.Default
     private boolean nullable = true;
 
+    @Builder.Default
     private boolean updatable = true;
 
+    @Builder.Default
     private boolean excludeFromJson = false;
 }

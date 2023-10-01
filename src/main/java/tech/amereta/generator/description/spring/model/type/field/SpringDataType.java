@@ -7,6 +7,7 @@ public enum SpringDataType {
     LONG("Long"),
     FLOAT("Float"),
     DOUBLE("Double"),
+    BIGDECIMAL("java.math.BigDecimal"),
     UUID("java.util.UUID"),
     ZONED_DATETIME("java.time.ZonedDateTime");
 

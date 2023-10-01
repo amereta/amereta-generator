@@ -14,8 +14,11 @@ import java.util.Objects;
 public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
 
     private String name;
+
     private String port;
+
     private Boolean hasDataBase;
+
     private String dbType;
 
     @Override

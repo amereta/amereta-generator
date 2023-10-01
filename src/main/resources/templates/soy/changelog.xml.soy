@@ -14,8 +14,7 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <changeSet id="{/literal}{$timestamp}{literal}-1" author="amereta">
-        <createTable tableName="{/literal}{$name}{literal}">
-            {/literal}
+        <createTable tableName="{/literal}{$name}{literal}">{/literal}
             {for $field in $fields}
                 {$field}
             {/for}

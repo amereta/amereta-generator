@@ -15,6 +15,7 @@ import java.util.Objects;
 public final class LiquibaseMasterGenerator implements ISoyConfiguration {
 
     private String dbType;
+
     private List<String> changelogs;
 
     @Override

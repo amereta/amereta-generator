@@ -14,11 +14,17 @@ import java.util.Objects;
 public final class PomGenerator implements ISoyConfiguration {
 
     private String javaVersion;
+
     private String springVersion;
+
     private String name;
+
     private String packageName;
+
     private String description;
+
     private Boolean hasDataBase;
+
     private String dbType;
 
     @Override

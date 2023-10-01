@@ -11,6 +11,10 @@ import tech.amereta.generator.description.spring.AbstractSpringModuleDescription
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringRelation;
+import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
 import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
 import tech.amereta.generator.service.spring.generator.*;
@@ -114,16 +118,20 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
     }
 
     private List<ISoyConfiguration> generateLiquibaseFiles(final SpringBootApplicationDescription springApplicationDescription) {
+        final List<SpringModelModuleDomainTypeDescription> domains = extractDomainsFromApplicationDescription(springApplicationDescription);
         final List<ISoyConfiguration> changelogs = new ArrayList<>(
-                springApplicationDescription.getModules()
-                        .stream()
-                        .filter(module -> module instanceof SpringModelModuleDescription)
-                        .map(module -> ((SpringModelModuleDescription) module).getModels())
-                        .flatMap(List::stream)
-                        .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
-                        .map(domain -> DataBaseChangeLogGenerator.builder()
+                domains.stream()
+                        .map(domain -> LiquibaseChangeLogGenerator.builder()
                                 .name(domain.getName())
-                                .fields(((SpringModelModuleDomainTypeDescription) domain).getFields())
+                                .idType(domain.getIdType())
+                                .fields(domain.getFields())
+                                .relations(
+                                        domain.getRelations()
+                                                .stream()
+                                                .filter(this::mustGenerateRelation)
+                                                .peek(relation -> relation.setJoinDataType(findJoinDataType(domains, relation.getTo())))
+                                                .toList()
+                                )
                                 .build())
                         .toList()
         );
@@ -134,6 +142,35 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                         .build()
         );
         return changelogs;
+    }
+
+    private List<SpringModelModuleDomainTypeDescription> extractDomainsFromApplicationDescription(SpringBootApplicationDescription springApplicationDescription) {
+        return springApplicationDescription.getModules()
+                .stream()
+                .filter(module -> module instanceof SpringModelModuleDescription)
+                .map(module -> ((SpringModelModuleDescription) module).getModels())
+                .flatMap(List::stream)
+                .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
+                .map(model -> ((SpringModelModuleDomainTypeDescription) model))
+                .toList();
+    }
+
+    private SpringDataType findJoinDataType(final List<SpringModelModuleDomainTypeDescription> domains, final String name) {
+        final SpringModelModuleDomainTypeDescription otherSideOfRelation = (SpringModelModuleDomainTypeDescription) findOtherSideOfRelation(domains, name);
+        return otherSideOfRelation.getIdType();
+    }
+
+    private SpringModelModuleTypeDescription findOtherSideOfRelation(final List<SpringModelModuleDomainTypeDescription> domains, final String name) {
+        return domains
+                .stream()
+                .filter(domain -> domain.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private boolean mustGenerateRelation(final SpringModelModuleFieldRelationDescription relation) {
+        return (relation.getJoin() && relation.getRelationType() == SpringRelation.ONE_TO_ONE)
+                || relation.getRelationType() == SpringRelation.MANY_TO_ONE;
     }
 
     private SpringBootApplicationDescription getApplication(final ApplicationDescription springApplicationDescription) {
