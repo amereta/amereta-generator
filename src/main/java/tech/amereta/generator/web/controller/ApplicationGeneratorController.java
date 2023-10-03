@@ -2,6 +2,7 @@ package tech.amereta.generator.web.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,14 @@ public class ApplicationGeneratorController {
     @Autowired
     private ApplicationGeneratorService applicationGeneratorService;
 
-    @PostMapping(value = "/generate", produces = "application/zip")
+    @PostMapping(
+            value = "/generate",
+            consumes = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    "application/yaml",
+                    "text/yaml"
+            },
+            produces = "application/zip")
     public ResponseEntity<StreamingResponseBody> generate(@Valid @RequestBody ApplicationDescription applicationDescription) {
         return ResponseEntity
                 .ok()
