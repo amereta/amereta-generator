@@ -62,6 +62,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                 "name", StringFormatter.toSnakeCase(name),
                 "timestamp", timestamp,
                 "fields", generateFields(),
+                "manyToManyTables", generateManyToManyTables(),
                 "constraints", generateConstraints()
         );
     }
@@ -82,6 +83,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
         );
         fields.addAll(
                 this.relations.stream()
+                        .filter(relation -> relation.getRelationType() != SpringRelation.MANY_TO_MANY)
                         .map(this::convertRelationToField)
                         .map(this::generateField)
                         .toList()
@@ -95,12 +97,57 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                 .toList();
     }
 
+    private List<String> generateManyToManyTables() {
+        return this.relations.stream()
+                .filter(relation -> relation.getJoin() && relation.getRelationType() == SpringRelation.MANY_TO_MANY)
+                .map(this::generateManyToManyTable)
+                .toList();
+    }
+
+    private String generateManyToManyTable(final SpringModelModuleFieldRelationDescription relationDescription) {
+        return "\n\t\t<createTable tableName=\"" + resolveManyToManyTableName(relationDescription) + "\">\n" +
+                "\t\t\t<column name=\"" + StringFormatter.toSnakeCase(this.name) + "_id\" type=\"" + resolveFieldType(this.idType, null) + "\">\n" +
+                "\t\t\t\t<constraints nullable=\"false\"/>\n" +
+                "\t\t\t</column>\n" +
+                "\t\t\t<column name=\"" + StringFormatter.toSnakeCase(relationDescription.getTo()) + "_id\" type=\"" + resolveFieldType(relationDescription.getJoinDataType(), null) + "\">\n" +
+                "\t\t\t\t<constraints nullable=\"false\"/>\n" +
+                "\t\t\t</column>\n" +
+                "\t\t</createTable>\n" +
+                "\n\t\t<addPrimaryKey columnNames=\"" + StringFormatter.toSnakeCase(this.name) + "_id, " + StringFormatter.toSnakeCase(relationDescription.getTo()) + "_id\" tableName=\"" + resolveManyToManyTableName(relationDescription) + "\"/>";
+    }
+
     private String generateConstraint(final SpringModelModuleFieldRelationDescription relationDescription) {
-        return "\n\t\t<addForeignKeyConstraint baseColumnNames=\"" + StringFormatter.toSnakeCase(relationDescription.getTo()) + "_id\"\n" +
-                "\t\t\t\t\t\t\t\t baseTableName=\"" + StringFormatter.toSnakeCase(this.name) + "\"\n" +
-                "\t\t\t\t\t\t\t\t constraintName=\"fk_" + StringFormatter.toSnakeCase(this.name) + "__" + StringFormatter.toSnakeCase(relationDescription.getTo()) + "_id\"\n" +
+        if (relationDescription.getJoin() && relationDescription.getRelationType() == SpringRelation.MANY_TO_MANY) {
+            return foreignKeyConstraint(
+                    StringFormatter.toSnakeCase(this.name),
+                    resolveManyToManyTableName(relationDescription),
+                    resolveManyToManyTableName(relationDescription) + "__" + StringFormatter.toSnakeCase(this.name),
+                    StringFormatter.toSnakeCase(this.name)
+            ) + foreignKeyConstraint(
+                    StringFormatter.toSnakeCase(relationDescription.getTo()),
+                    resolveManyToManyTableName(relationDescription),
+                    resolveManyToManyTableName(relationDescription) + "__" + StringFormatter.toSnakeCase(relationDescription.getTo()),
+                    StringFormatter.toSnakeCase(relationDescription.getTo())
+            );
+        }
+        return foreignKeyConstraint(
+                StringFormatter.toSnakeCase(relationDescription.getTo()),
+                StringFormatter.toSnakeCase(this.name),
+                StringFormatter.toSnakeCase(this.name) + "__" + StringFormatter.toSnakeCase(relationDescription.getTo()),
+                StringFormatter.toSnakeCase(relationDescription.getTo())
+        );
+    }
+
+    private String foreignKeyConstraint(final String baseColumnNames, final String baseTableName, final String constraintName, final String referencedTableName) {
+        return "\n\t\t<addForeignKeyConstraint baseColumnNames=\"" + baseColumnNames + "_id\"\n" +
+                "\t\t\t\t\t\t\t\t baseTableName=\"" + baseTableName + "\"\n" +
+                "\t\t\t\t\t\t\t\t constraintName=\"fk_" + constraintName + "_id\"\n" +
                 "\t\t\t\t\t\t\t\t referencedColumnNames=\"id\"\n" +
-                "\t\t\t\t\t\t\t\t referencedTableName=\"" + StringFormatter.toSnakeCase(relationDescription.getTo()) + "\"/>";
+                "\t\t\t\t\t\t\t\t referencedTableName=\"" + referencedTableName + "\"/>";
+    }
+
+    private String resolveManyToManyTableName(final SpringModelModuleFieldRelationDescription relationDescription) {
+        return StringFormatter.toSnakeCase(this.name) + "__" + StringFormatter.toSnakeCase(relationDescription.getTo());
     }
 
     private String idField() {
@@ -129,7 +176,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String resolveFieldConstraints(SpringModelModuleDomainTypeFieldDescription fieldDescription) {
-        if(fieldDescription.isPrimaryKey() || !fieldDescription.isNullable() || fieldDescription.isUnique()) {
+        if (fieldDescription.isPrimaryKey() || !fieldDescription.isNullable() || fieldDescription.isUnique()) {
             return ">\n\t\t\t\t<constraints " + resolvePrimaryKey(fieldDescription.isPrimaryKey()) + resolveNullable(fieldDescription.isNullable()) + resolveUnique(fieldDescription.isUnique(), fieldDescription.getName()) + "/>\n\t\t\t</column>";
         }
         return " />";
@@ -143,7 +190,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String resolveNullable(boolean isNullable) {
-        if(!isNullable) {
+        if (!isNullable) {
             return "nullable=\"false\" ";
         }
         return "";

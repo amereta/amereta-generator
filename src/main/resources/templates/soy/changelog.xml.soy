@@ -4,6 +4,7 @@
 {@param timestamp: string}
 {@param name: string}
 {@param fields: list<string>}
+{@param manyToManyTables: list<string>}
 {@param constraints: list<string>}
 
 {literal}<?xml version="1.0" encoding="UTF-8"?>
@@ -21,6 +22,12 @@
             {/for}
             {literal}
         </createTable>{/literal}
+        {if length($manyToManyTables) != 0}
+            {\n}
+            {for $manyToManyTable in $manyToManyTables}
+                {$manyToManyTable}
+            {/for}
+        {/if}
         {if length($constraints) != 0}{\n}{/if}
         {for $constraint in $constraints}
             {$constraint}

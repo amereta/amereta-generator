@@ -170,7 +170,8 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
 
     private boolean mustGenerateRelation(final SpringModelModuleFieldRelationDescription relation) {
         return (relation.getJoin() && relation.getRelationType() == SpringRelation.ONE_TO_ONE)
-                || relation.getRelationType() == SpringRelation.MANY_TO_ONE;
+                || relation.getRelationType() == SpringRelation.MANY_TO_ONE
+                || relation.getRelationType() == SpringRelation.MANY_TO_MANY;
     }
 
     private SpringBootApplicationDescription getApplication(final ApplicationDescription springApplicationDescription) {
