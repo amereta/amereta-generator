@@ -61,7 +61,8 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
         return Map.of(
                 "name", StringFormatter.toSnakeCase(name),
                 "timestamp", timestamp,
-                "fields", generateFields()
+                "fields", generateFields(),
+                "constraints", generateConstraints()
         );
     }
 
@@ -88,6 +89,20 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
         return fields;
     }
 
+    private List<String> generateConstraints() {
+        return this.relations.stream()
+                .map(this::generateConstraint)
+                .toList();
+    }
+
+    private String generateConstraint(final SpringModelModuleFieldRelationDescription relationDescription) {
+        return "\n\t\t<addForeignKeyConstraint baseColumnNames=\"" + StringFormatter.toSnakeCase(relationDescription.getTo()) + "_id\"\n" +
+                "\t\t\t\t\t\t\t\t baseTableName=\"" + StringFormatter.toSnakeCase(this.name) + "\"\n" +
+                "\t\t\t\t\t\t\t\t constraintName=\"fk_" + StringFormatter.toSnakeCase(this.name) + "__" + StringFormatter.toSnakeCase(relationDescription.getTo()) + "_id\"\n" +
+                "\t\t\t\t\t\t\t\t referencedColumnNames=\"id\"\n" +
+                "\t\t\t\t\t\t\t\t referencedTableName=\"" + StringFormatter.toSnakeCase(relationDescription.getTo()) + "\"/>";
+    }
+
     private String idField() {
         return generateField(
                 SpringModelModuleDomainTypeFieldDescription.builder()
@@ -110,10 +125,10 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
 
     private String generateField(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
         return "\n\t\t\t<column name=\"" + StringFormatter.toSnakeCase(fieldDescription.getName()) + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\"" +
-                resolveConstraints(fieldDescription);
+                resolveFieldConstraints(fieldDescription);
     }
 
-    private String resolveConstraints(SpringModelModuleDomainTypeFieldDescription fieldDescription) {
+    private String resolveFieldConstraints(SpringModelModuleDomainTypeFieldDescription fieldDescription) {
         if(fieldDescription.isPrimaryKey() || !fieldDescription.isNullable() || fieldDescription.isUnique()) {
             return ">\n\t\t\t\t<constraints " + resolvePrimaryKey(fieldDescription.isPrimaryKey()) + resolveNullable(fieldDescription.isNullable()) + resolveUnique(fieldDescription.isUnique(), fieldDescription.getName()) + "/>\n\t\t\t</column>";
         }

@@ -4,6 +4,7 @@
 {@param timestamp: string}
 {@param name: string}
 {@param fields: list<string>}
+{@param constraints: list<string>}
 
 {literal}<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
@@ -19,7 +20,12 @@
                 {$field}
             {/for}
             {literal}
-        </createTable>
+        </createTable>{/literal}
+        {if length($constraints) != 0}{\n}{/if}
+        {for $constraint in $constraints}
+            {$constraint}
+        {/for}
+        {literal}
     </changeSet>
 </databaseChangeLog>
 {/literal}
