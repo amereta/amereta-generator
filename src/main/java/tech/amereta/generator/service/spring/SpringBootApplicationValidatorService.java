@@ -4,19 +4,15 @@ import org.springframework.stereotype.Service;
 import tech.amereta.generator.description.ApplicationDescription;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleEnumTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.*;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleEnumTypeFieldDescription;
-import tech.amereta.generator.exception.DuplicateAuthorizableDomainsException;
-import tech.amereta.generator.exception.DuplicateDomainNameException;
-import tech.amereta.generator.exception.DuplicateEnumNameException;
-import tech.amereta.generator.exception.ModelDuplicateFieldNameException;
+import tech.amereta.generator.exception.*;
 import tech.amereta.generator.service.ApplicationValidator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -26,18 +22,30 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
     @Override
     public void validate(final ApplicationDescription applicationDescription) {
         final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescription);
-        final List<String> domainNames = new ArrayList<>();
-        final List<String> enumNames = new ArrayList<>();
-        final AtomicBoolean authorizableDomainExists = new AtomicBoolean(false);
 
-        springBootApplicationDescription.getModules()
+        final List<SpringModelModuleTypeDescription> models = extractModels(springBootApplicationDescription);
+
+        validateModels(models);
+        validateRelations(models);
+    }
+
+    private List<SpringModelModuleTypeDescription> extractModels(SpringBootApplicationDescription springBootApplicationDescription) {
+        return springBootApplicationDescription.getModules()
                 .stream()
                 .filter(module -> module instanceof SpringModelModuleDescription)
                 .map(modelModule -> ((SpringModelModuleDescription) modelModule).getModels())
                 .flatMap(List::stream)
-                .forEach(model -> {
-                    validateModel(model, authorizableDomainExists, domainNames, enumNames);
-                });
+                .toList();
+    }
+
+    private void validateModels(final List<SpringModelModuleTypeDescription> models) {
+        final List<String> domainNames = new ArrayList<>();
+        final List<String> enumNames = new ArrayList<>();
+        final AtomicBoolean authorizableDomainExists = new AtomicBoolean(false);
+
+        models.forEach(model -> {
+            validateModel(model, authorizableDomainExists, domainNames, enumNames);
+        });
     }
 
     private void validateModel(final SpringModelModuleTypeDescription model, final AtomicBoolean authorizableDomainExists, final List<String> domainNames, final List<String> enumNames) {
@@ -66,7 +74,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         if (!domainNames.contains(domainDescription.getName())) {
             domainNames.add(domainDescription.getName());
         } else {
-            throw new DuplicateDomainNameException(domainDescription.getName());
+            throw new DuplicateModelNameException("Domain", domainDescription.getName());
         }
     }
 
@@ -78,7 +86,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         }
     }
 
-    private static List<SpringModelModuleDomainTypeFieldDescription> findDuplicateDomainFields(final SpringModelModuleDomainTypeDescription domainDescription) {
+    private List<SpringModelModuleDomainTypeFieldDescription> findDuplicateDomainFields(final SpringModelModuleDomainTypeDescription domainDescription) {
         return domainDescription.getFields()
                 .stream()
                 .collect(Collectors.groupingBy(SpringModelModuleDomainTypeFieldDescription::getName))
@@ -94,11 +102,11 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         validateEnumFields(enumDescription);
     }
 
-    private static void validateEnumName(final SpringModelModuleEnumTypeDescription enumDescription, final List<String> enumNames) {
+    private void validateEnumName(final SpringModelModuleEnumTypeDescription enumDescription, final List<String> enumNames) {
         if (!enumNames.contains(enumDescription.getName())) {
             enumNames.add(enumDescription.getName());
         } else {
-            throw new DuplicateEnumNameException(enumDescription.getName());
+            throw new DuplicateModelNameException("Enum", enumDescription.getName());
         }
     }
 
@@ -110,7 +118,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         }
     }
 
-    private static List<SpringModelModuleEnumTypeFieldDescription> findDuplicateEnumFields(final SpringModelModuleEnumTypeDescription enumDescription) {
+    private List<SpringModelModuleEnumTypeFieldDescription> findDuplicateEnumFields(final SpringModelModuleEnumTypeDescription enumDescription) {
         return enumDescription.getFields()
                 .stream()
                 .collect(Collectors.groupingBy(SpringModelModuleEnumTypeFieldDescription::getName))
@@ -119,6 +127,116 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
                 .filter(e -> e.getValue().size() > 1)
                 .flatMap(e -> e.getValue().stream())
                 .toList();
+    }
+
+    private void validateRelations(final List<SpringModelModuleTypeDescription> models) {
+        final Map<String, SpringModelModuleDomainTypeDescription> domainsWithName = convertToMapOfDomainsWithName(models);
+
+        domainsWithName.forEach((name, domain) -> {
+            domain.getRelations().forEach(relation -> {
+                validateRelation(relation, domain, domainsWithName.get(relation.getTo()));
+            });
+        });
+    }
+
+    private void validateRelation(final SpringModelModuleFieldRelationDescription relation, final SpringModelModuleDomainTypeDescription thisSideDomain, final SpringModelModuleDomainTypeDescription otherSideDomain) {
+        switch (relation.getRelationType()) {
+            case ONE_TO_ONE -> validateOneToOneRelation(relation, thisSideDomain, otherSideDomain);
+            case ONE_TO_MANY -> validateOneToManyRelation(thisSideDomain, otherSideDomain);
+            case MANY_TO_ONE -> validateManyToOneRelation(thisSideDomain, otherSideDomain);
+            case MANY_TO_MANY -> validateManyToManyRelation(relation, thisSideDomain, otherSideDomain);
+        }
+    }
+
+    private void validateOneToOneRelation(final SpringModelModuleFieldRelationDescription thisSideRelation, final SpringModelModuleDomainTypeDescription thisSideDomain, final SpringModelModuleDomainTypeDescription otherSideDomain) {
+        final SpringRelation oneToOne = SpringRelation.ONE_TO_ONE;
+
+        if (otherSideOfRelationDoesNotExists(thisSideDomain, otherSideDomain, oneToOne)) {
+            otherSideDomain.getRelations().add(
+                    createRelationDescription(thisSideDomain, oneToOne)
+            );
+            thisSideRelation.setJoin(true);
+        } else {
+            final SpringModelModuleFieldRelationDescription otherSideRelation = findOtherSideOfRelation(thisSideDomain, otherSideDomain, oneToOne);
+
+            if(haveBothSideOrNoSideJoin(thisSideRelation, otherSideRelation)) {
+                throw new RelationJoinException(oneToOne.getName(), thisSideDomain.getName(), otherSideDomain.getName());
+            }
+        }
+    }
+
+    private void validateOneToManyRelation(final SpringModelModuleDomainTypeDescription thisSideDomain, final SpringModelModuleDomainTypeDescription otherSideDomain) {
+        final SpringRelation manyToOne = SpringRelation.MANY_TO_ONE;
+
+        if (otherSideOfRelationDoesNotExists(thisSideDomain, otherSideDomain, manyToOne)) {
+            otherSideDomain.getRelations().add(
+                    createRelationDescription(thisSideDomain, manyToOne)
+            );
+        }
+    }
+
+    private void validateManyToOneRelation(final SpringModelModuleDomainTypeDescription thisSideDomain, final SpringModelModuleDomainTypeDescription otherSideDomain) {
+        final SpringRelation oneToMany = SpringRelation.ONE_TO_MANY;
+
+        if (otherSideOfRelationDoesNotExists(thisSideDomain, otherSideDomain, oneToMany)) {
+            otherSideDomain.getRelations().add(
+                    createRelationDescription(thisSideDomain, oneToMany)
+            );
+        }
+    }
+
+    private void validateManyToManyRelation(final SpringModelModuleFieldRelationDescription thisSideRelation, final SpringModelModuleDomainTypeDescription thisSideDomain, final SpringModelModuleDomainTypeDescription otherSideDomain) {
+        final SpringRelation manyToMany = SpringRelation.MANY_TO_MANY;
+
+        if (otherSideOfRelationDoesNotExists(thisSideDomain, otherSideDomain, manyToMany)) {
+            otherSideDomain.getRelations().add(
+                    createRelationDescription(thisSideDomain, manyToMany)
+            );
+            thisSideRelation.setJoin(true);
+        } else {
+            final SpringModelModuleFieldRelationDescription otherSideRelation = findOtherSideOfRelation(thisSideDomain, otherSideDomain, manyToMany);
+
+            if(haveBothSideOrNoSideJoin(thisSideRelation, otherSideRelation)) {
+                throw new RelationJoinException(manyToMany.getName(), thisSideDomain.getName(), otherSideDomain.getName());
+            }
+        }
+    }
+
+    private boolean haveBothSideOrNoSideJoin(SpringModelModuleFieldRelationDescription thisSideRelation, SpringModelModuleFieldRelationDescription otherSideRelation) {
+        return (thisSideRelation.getJoin() && otherSideRelation.getJoin()) || (!thisSideRelation.getJoin() && !otherSideRelation.getJoin());
+    }
+
+    private boolean otherSideOfRelationDoesNotExists(final SpringModelModuleDomainTypeDescription thisSideDomain, final SpringModelModuleDomainTypeDescription otherSideDomain, final SpringRelation relationType) {
+        return otherSideDomain.getRelations()
+                .stream()
+                .noneMatch(relation -> relation.getRelationType() == relationType && relation.getTo().equals(thisSideDomain.getName()));
+    }
+
+    private SpringModelModuleFieldRelationDescription findOtherSideOfRelation(final SpringModelModuleDomainTypeDescription thisSideDomain, final SpringModelModuleDomainTypeDescription otherSideDomain, final SpringRelation relationType) {
+        return otherSideDomain.getRelations()
+                .stream()
+                .filter(relation -> relation.getRelationType() == relationType && relation.getTo().equals(thisSideDomain.getName()))
+                .findAny()
+                .orElseThrow();
+    }
+
+    private SpringModelModuleFieldRelationDescription createRelationDescription(final SpringModelModuleDomainTypeDescription otherSideDomain, final SpringRelation relationType) {
+        return SpringModelModuleFieldRelationDescription.builder()
+                .to(otherSideDomain.getName())
+                .relationType(relationType)
+                .joinDataType(otherSideDomain.getIdType())
+                .build();
+    }
+
+    private Map<String, SpringModelModuleDomainTypeDescription> convertToMapOfDomainsWithName(List<SpringModelModuleTypeDescription> models) {
+        return models.stream()
+                .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
+                .collect(
+                        Collectors.toMap(
+                                SpringModelModuleTypeDescription::getName,
+                                model -> (SpringModelModuleDomainTypeDescription) model
+                        )
+                );
     }
 
     private SpringBootApplicationDescription getApplication(final ApplicationDescription applicationDescription) {
