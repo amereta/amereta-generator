@@ -5,4 +5,6 @@ public interface AbstractApplication {
     String getName();
 
     Class<?> getGenerator();
+
+    Class<?> getValidator();
 }

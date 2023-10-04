@@ -3,7 +3,7 @@ package tech.amereta.generator.service.spring;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
-import tech.amereta.generator.exception.ApplicationCannotHaveTwoDifferentDatabasesException;
+import tech.amereta.generator.exception.ApplicationHaveTwoDifferentDatabasesException;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public abstract class AbstractSpringSourceCodeGenerator {
                 .filter(module -> module instanceof SpringDBModuleDescription)
                 .toList();
         if (database.size() > 1) {
-            throw new ApplicationCannotHaveTwoDifferentDatabasesException();
+            throw new ApplicationHaveTwoDifferentDatabasesException();
         }
         return (SpringDBModuleDescription) database.get(0);
     }

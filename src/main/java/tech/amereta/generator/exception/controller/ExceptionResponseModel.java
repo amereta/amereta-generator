@@ -1,4 +1,4 @@
-package tech.amereta.generator.exception;
+package tech.amereta.generator.exception.controller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

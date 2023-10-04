@@ -13,6 +13,7 @@ import tech.amereta.generator.description.AbstractApplication;
 import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.service.spring.SpringBootApplicationGeneratorService;
+import tech.amereta.generator.service.spring.SpringBootApplicationValidatorService;
 
 import java.util.List;
 
@@ -50,4 +51,7 @@ public class SpringBootApplicationDescription implements AbstractApplication {
 
     @JsonIgnore
     private Class<?> generator = SpringBootApplicationGeneratorService.class;
+
+    @JsonIgnore
+    private Class<?> validator = SpringBootApplicationValidatorService.class;
 }

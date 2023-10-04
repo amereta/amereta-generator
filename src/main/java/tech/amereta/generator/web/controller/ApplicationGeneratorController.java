@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import tech.amereta.generator.aspect.ApplicationDescriptionValidator;
 import tech.amereta.generator.description.ApplicationDescription;
 import tech.amereta.generator.service.ApplicationGeneratorService;
 
@@ -26,7 +27,9 @@ public class ApplicationGeneratorController {
                     "application/yaml",
                     "text/yaml"
             },
-            produces = "application/zip")
+            produces = "application/zip"
+    )
+    @ApplicationDescriptionValidator
     public ResponseEntity<StreamingResponseBody> generate(@Valid @RequestBody ApplicationDescription applicationDescription) {
         return ResponseEntity
                 .ok()

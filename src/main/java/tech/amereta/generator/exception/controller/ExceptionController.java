@@ -1,10 +1,11 @@
-package tech.amereta.generator.exception;
+package tech.amereta.generator.exception.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import tech.amereta.generator.exception.AbstractBadRequestException;
 import tech.amereta.generator.util.StringFormatter;
 
 import java.util.Optional;

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 @Service
-public final class AsciiArtProviderService {
+public class AsciiArtProviderService {
 
     private static final Map<Character, String[]> CHARACTER = Map.<Character, String[]>ofEntries(
             Map.entry('A', new String[]{

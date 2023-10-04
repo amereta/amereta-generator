@@ -33,8 +33,8 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
     private AsciiArtProviderService asciiArtProviderService;
 
     @Override
-    public void generate(final ApplicationDescription springApplicationDescription, final OutputStream outputStream) {
-        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(springApplicationDescription);
+    public void generate(final ApplicationDescription applicationDescription, final OutputStream outputStream) {
+        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescription);
         JAVA_SOURCE_CODE_WRITER.writeSourceTo(
                 JavaSourceCode.builder()
                         .compilationUnits(generateCompilationUnits(springBootApplicationDescription))
@@ -174,7 +174,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 || relation.getRelationType() == SpringRelation.MANY_TO_MANY;
     }
 
-    private SpringBootApplicationDescription getApplication(final ApplicationDescription springApplicationDescription) {
-        return (SpringBootApplicationDescription) springApplicationDescription.getApplication();
+    private SpringBootApplicationDescription getApplication(final ApplicationDescription applicationDescription) {
+        return (SpringBootApplicationDescription) applicationDescription.getApplication();
     }
 }
