@@ -22,15 +22,15 @@
             {/for}
             {literal}
         </createTable>
-    </changeSet>
-    {/literal}{if length($manyToManyTables) != 0}{\n}{literal}
+    </changeSet>{/literal}
+    {if length($manyToManyTables) != 0}{\n}{literal}
     <changeSet id="{/literal}{$timestamp}{literal}_manyToMany_1" author="amereta">{/literal}
             {for $manyToManyTable in $manyToManyTables}
             {$manyToManyTable}
             {/for}{literal}
-    </changeSet>{/literal}{/if}{literal}
-    {/literal}{if length($constraints) != 0}{\n}{literal}
-    <changeSet id="{/literal}{$timestamp}{literal}_foreignKey_1" author="amereta">{/literal}
+    </changeSet>{/literal}{/if}
+    {if length($constraints) != 0}{\n}{literal}
+    <changeSet id="{/literal}{$timestamp}{literal}_foreignKey_1" runOrder="last" author="amereta">{/literal}
         {for $constraint in $constraints}
             {$constraint}
         {/for}{literal}
