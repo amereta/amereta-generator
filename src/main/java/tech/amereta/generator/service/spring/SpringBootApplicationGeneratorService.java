@@ -113,6 +113,8 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                         .port(springApplicationDescription.getPort())
                         .hasDataBase(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription))
                         .dbType(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription) ? AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getType().toString() : "")
+                        .dbUsername(AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getUsername())
+                        .dbPassword(AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getPassword())
                         .build()
         );
     }
@@ -128,7 +130,6 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                                 .relations(
                                         domain.getRelations()
                                                 .stream()
-                                                .filter(this::mustGenerateRelation)
                                                 .toList()
                                 )
                                 .build())
@@ -152,12 +153,6 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
                 .map(model -> ((SpringModelModuleDomainTypeDescription) model))
                 .toList();
-    }
-
-    private boolean mustGenerateRelation(final SpringModelModuleFieldRelationDescription relation) {
-        return (relation.getJoin() && relation.getRelationType() == SpringRelation.ONE_TO_ONE)
-                || relation.getRelationType() == SpringRelation.MANY_TO_ONE
-                || relation.getRelationType() == SpringRelation.MANY_TO_MANY;
     }
 
     private SpringBootApplicationDescription getApplication(final ApplicationDescription applicationDescription) {

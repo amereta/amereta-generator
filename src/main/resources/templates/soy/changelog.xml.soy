@@ -15,25 +15,26 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet id="{/literal}{$timestamp}{literal}-1" author="amereta">
+    <changeSet id="{/literal}{$timestamp}{literal}_1" author="amereta">
         <createTable tableName="{/literal}{$name}{literal}">{/literal}
             {for $field in $fields}
                 {$field}
             {/for}
             {literal}
-        </createTable>{/literal}
-        {if length($manyToManyTables) != 0}
-            {\n}
+        </createTable>
+    </changeSet>
+    {/literal}{if length($manyToManyTables) != 0}{\n}{literal}
+    <changeSet id="{/literal}{$timestamp}{literal}_manyToMany_1" author="amereta">{/literal}
             {for $manyToManyTable in $manyToManyTables}
-                {$manyToManyTable}
-            {/for}
-        {/if}
-        {if length($constraints) != 0}{\n}{/if}
+            {$manyToManyTable}
+            {/for}{literal}
+    </changeSet>{/literal}{/if}{literal}
+    {/literal}{if length($constraints) != 0}{\n}{literal}
+    <changeSet id="{/literal}{$timestamp}{literal}_foreignKey_1" author="amereta">{/literal}
         {for $constraint in $constraints}
             {$constraint}
-        {/for}
-        {literal}
-    </changeSet>
+        {/for}{literal}
+    </changeSet>{/literal}{/if}{literal}
 </databaseChangeLog>
 {/literal}
 {/template}

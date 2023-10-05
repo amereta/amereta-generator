@@ -83,7 +83,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
         );
         fields.addAll(
                 this.relations.stream()
-                        .filter(relation -> relation.getRelationType() != SpringRelation.MANY_TO_MANY)
+                        .filter(this::mustGenerateRelationColumns)
                         .map(this::convertRelationToField)
                         .map(this::generateField)
                         .toList()
@@ -93,6 +93,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
 
     private List<String> generateConstraints() {
         return this.relations.stream()
+                .filter(this::mustGenerateRelationConstraints)
                 .map(this::generateConstraint)
                 .toList();
     }
@@ -117,7 +118,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String generateConstraint(final SpringModelModuleFieldRelationDescription relationDescription) {
-        if (relationDescription.getJoin() && relationDescription.getRelationType() == SpringRelation.MANY_TO_MANY) {
+        if (relationDescription.getRelationType() == SpringRelation.MANY_TO_MANY) {
             return foreignKeyConstraint(
                     StringFormatter.toSnakeCase(this.name),
                     resolveManyToManyTableName(relationDescription),
@@ -159,6 +160,16 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                         .nullable(false)
                         .build()
         );
+    }
+
+    private boolean mustGenerateRelationColumns(final SpringModelModuleFieldRelationDescription relation) {
+        return (relation.getJoin() && relation.getRelationType() == SpringRelation.ONE_TO_ONE)
+                || relation.getRelationType() == SpringRelation.MANY_TO_ONE;
+    }
+
+    private boolean mustGenerateRelationConstraints(final SpringModelModuleFieldRelationDescription relation) {
+        return mustGenerateRelationColumns(relation)
+                || (relation.getJoin() && relation.getRelationType() == SpringRelation.MANY_TO_MANY);
     }
 
     private SpringModelModuleDomainTypeFieldDescription convertRelationToField(final SpringModelModuleFieldRelationDescription relationDescription) {
