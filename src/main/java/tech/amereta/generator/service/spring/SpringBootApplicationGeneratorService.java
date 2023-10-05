@@ -129,7 +129,6 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                                         domain.getRelations()
                                                 .stream()
                                                 .filter(this::mustGenerateRelation)
-                                                .peek(relation -> relation.setJoinDataType(findJoinDataType(domains, relation.getTo())))
                                                 .toList()
                                 )
                                 .build())
@@ -153,19 +152,6 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
                 .map(model -> ((SpringModelModuleDomainTypeDescription) model))
                 .toList();
-    }
-
-    private SpringDataType findJoinDataType(final List<SpringModelModuleDomainTypeDescription> domains, final String name) {
-        final SpringModelModuleDomainTypeDescription otherSideOfRelation = (SpringModelModuleDomainTypeDescription) findOtherSideOfRelation(domains, name);
-        return otherSideOfRelation.getIdType();
-    }
-
-    private SpringModelModuleTypeDescription findOtherSideOfRelation(final List<SpringModelModuleDomainTypeDescription> domains, final String name) {
-        return domains
-                .stream()
-                .filter(domain -> domain.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElseThrow();
     }
 
     private boolean mustGenerateRelation(final SpringModelModuleFieldRelationDescription relation) {

@@ -7,7 +7,10 @@ import tech.amereta.generator.description.spring.model.SpringModelModuleDescript
 import tech.amereta.generator.description.spring.model.type.*;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleEnumTypeFieldDescription;
-import tech.amereta.generator.exception.*;
+import tech.amereta.generator.exception.DuplicateAuthorizableDomainsException;
+import tech.amereta.generator.exception.DuplicateModelNameException;
+import tech.amereta.generator.exception.ModelDuplicateFieldNameException;
+import tech.amereta.generator.exception.RelationJoinException;
 import tech.amereta.generator.service.ApplicationValidator;
 
 import java.util.ArrayList;
@@ -143,7 +146,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         switch (relation.getRelationType()) {
             case ONE_TO_ONE -> validateOneToOneRelation(relation, thisSideDomain, otherSideDomain);
             case ONE_TO_MANY -> validateOneToManyRelation(thisSideDomain, otherSideDomain);
-            case MANY_TO_ONE -> validateManyToOneRelation(thisSideDomain, otherSideDomain);
+            case MANY_TO_ONE -> validateManyToOneRelation(relation, thisSideDomain, otherSideDomain);
             case MANY_TO_MANY -> validateManyToManyRelation(relation, thisSideDomain, otherSideDomain);
         }
     }
@@ -152,15 +155,24 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         final SpringRelation oneToOne = SpringRelation.ONE_TO_ONE;
 
         if (otherSideOfRelationDoesNotExists(thisSideDomain, otherSideDomain, oneToOne)) {
+            System.out.println("1: " + thisSideDomain + " " + otherSideDomain);
             otherSideDomain.getRelations().add(
                     createRelationDescription(thisSideDomain, oneToOne)
             );
             thisSideRelation.setJoin(true);
+            thisSideRelation.setJoinDataType(otherSideDomain.getIdType());
         } else {
             final SpringModelModuleFieldRelationDescription otherSideRelation = findOtherSideOfRelation(thisSideDomain, otherSideDomain, oneToOne);
 
-            if(haveBothSideOrNoSideJoin(thisSideRelation, otherSideRelation)) {
+            if (haveBothSideOrNoSideJoin(thisSideRelation, otherSideRelation)) {
                 throw new RelationJoinException(oneToOne.getName(), thisSideDomain.getName(), otherSideDomain.getName());
+            } else if (thisSideRelation.getJoin()) {
+                System.out.println("2: " + thisSideDomain + " " + otherSideDomain);
+                thisSideRelation.setJoinDataType(otherSideDomain.getIdType());
+            } else if (otherSideRelation.getJoin()) {
+                System.out.println("3: " + thisSideDomain + " " + otherSideDomain);
+
+                otherSideRelation.setJoinDataType(thisSideDomain.getIdType());
             }
         }
     }
@@ -169,14 +181,21 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         final SpringRelation manyToOne = SpringRelation.MANY_TO_ONE;
 
         if (otherSideOfRelationDoesNotExists(thisSideDomain, otherSideDomain, manyToOne)) {
-            otherSideDomain.getRelations().add(
-                    createRelationDescription(thisSideDomain, manyToOne)
-            );
+            final SpringModelModuleFieldRelationDescription otherSideRelation = createRelationDescription(thisSideDomain, manyToOne);
+
+            otherSideRelation.setJoinDataType(thisSideDomain.getIdType());
+            otherSideDomain.getRelations().add(otherSideRelation);
+        } else {
+            final SpringModelModuleFieldRelationDescription otherSideRelation = findOtherSideOfRelation(thisSideDomain, otherSideDomain, manyToOne);
+
+            otherSideRelation.setJoinDataType(thisSideDomain.getIdType());
         }
     }
 
-    private void validateManyToOneRelation(final SpringModelModuleDomainTypeDescription thisSideDomain, final SpringModelModuleDomainTypeDescription otherSideDomain) {
+    private void validateManyToOneRelation(final SpringModelModuleFieldRelationDescription thisSideRelation, final SpringModelModuleDomainTypeDescription thisSideDomain, final SpringModelModuleDomainTypeDescription otherSideDomain) {
         final SpringRelation oneToMany = SpringRelation.ONE_TO_MANY;
+
+        thisSideRelation.setJoinDataType(otherSideDomain.getIdType());
 
         if (otherSideOfRelationDoesNotExists(thisSideDomain, otherSideDomain, oneToMany)) {
             otherSideDomain.getRelations().add(
@@ -193,11 +212,16 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
                     createRelationDescription(thisSideDomain, manyToMany)
             );
             thisSideRelation.setJoin(true);
+            thisSideRelation.setJoinDataType(otherSideDomain.getIdType());
         } else {
             final SpringModelModuleFieldRelationDescription otherSideRelation = findOtherSideOfRelation(thisSideDomain, otherSideDomain, manyToMany);
 
-            if(haveBothSideOrNoSideJoin(thisSideRelation, otherSideRelation)) {
+            if (haveBothSideOrNoSideJoin(thisSideRelation, otherSideRelation)) {
                 throw new RelationJoinException(manyToMany.getName(), thisSideDomain.getName(), otherSideDomain.getName());
+            } else if (thisSideRelation.getJoin()) {
+                thisSideRelation.setJoinDataType(otherSideDomain.getIdType());
+            } else if (otherSideRelation.getJoin()) {
+                otherSideRelation.setJoinDataType(thisSideDomain.getIdType());
             }
         }
     }
@@ -224,7 +248,6 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         return SpringModelModuleFieldRelationDescription.builder()
                 .to(otherSideDomain.getName())
                 .relationType(relationType)
-                .joinDataType(otherSideDomain.getIdType())
                 .build();
     }
 
