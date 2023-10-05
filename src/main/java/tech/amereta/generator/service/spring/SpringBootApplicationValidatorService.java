@@ -155,7 +155,6 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         final SpringRelation oneToOne = SpringRelation.ONE_TO_ONE;
 
         if (otherSideOfRelationDoesNotExists(thisSideDomain, otherSideDomain, oneToOne)) {
-            System.out.println("1: " + thisSideDomain + " " + otherSideDomain);
             otherSideDomain.getRelations().add(
                     createRelationDescription(thisSideDomain, oneToOne)
             );
@@ -167,11 +166,8 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
             if (haveBothSideOrNoSideJoin(thisSideRelation, otherSideRelation)) {
                 throw new RelationJoinException(oneToOne.getName(), thisSideDomain.getName(), otherSideDomain.getName());
             } else if (thisSideRelation.getJoin()) {
-                System.out.println("2: " + thisSideDomain + " " + otherSideDomain);
                 thisSideRelation.setJoinDataType(otherSideDomain.getIdType());
             } else if (otherSideRelation.getJoin()) {
-                System.out.println("3: " + thisSideDomain + " " + otherSideDomain);
-
                 otherSideRelation.setJoinDataType(thisSideDomain.getIdType());
             }
         }

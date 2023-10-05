@@ -13,4 +13,8 @@ public abstract class SpringDBModuleTypeDescription implements SpringModuleTypeD
 
     @JsonProperty("name")
     private SpringDBModuleType type;
+
+    private String username = "username";
+
+    private String password = "password";
 }
