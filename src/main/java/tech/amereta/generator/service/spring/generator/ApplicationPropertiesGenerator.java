@@ -14,9 +14,16 @@ import java.util.Objects;
 public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
 
     private String name;
+
     private String port;
+
     private Boolean hasDataBase;
+
     private String dbType;
+
+    private String dbUsername;
+
+    private String dbPassword;
 
     @Override
     public String getName() {
@@ -44,7 +51,9 @@ public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
                 "port", port,
                 "hasDataBase", hasDataBase,
                 "dbType", dbType,
-                "dbName", name.toLowerCase()
+                "dbName", name.toLowerCase(),
+                "dbUsername", dbUsername,
+                "dbPassword", dbPassword
         );
     }
 

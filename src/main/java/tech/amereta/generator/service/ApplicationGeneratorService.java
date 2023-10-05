@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 @Service
-public final class ApplicationGeneratorService {
+public class ApplicationGeneratorService {
 
     @Autowired
     private ApplicationContext context;

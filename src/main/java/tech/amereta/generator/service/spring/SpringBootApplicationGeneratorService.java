@@ -11,6 +11,10 @@ import tech.amereta.generator.description.spring.AbstractSpringModuleDescription
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringRelation;
+import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
 import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
 import tech.amereta.generator.service.spring.generator.*;
@@ -29,8 +33,8 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
     private AsciiArtProviderService asciiArtProviderService;
 
     @Override
-    public void generate(final ApplicationDescription springApplicationDescription, final OutputStream outputStream) {
-        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(springApplicationDescription);
+    public void generate(final ApplicationDescription applicationDescription, final OutputStream outputStream) {
+        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescription);
         JAVA_SOURCE_CODE_WRITER.writeSourceTo(
                 JavaSourceCode.builder()
                         .compilationUnits(generateCompilationUnits(springBootApplicationDescription))
@@ -46,8 +50,10 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         compilationUnits.add(MainGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(ApplicationConfigurationGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(SecurityConfigurationGeneratorSpring.generate(springApplicationDescription));
-        compilationUnits.add(AbstractUserGenerator.generate(springApplicationDescription));
-        compilationUnits.add(RoleGenerator.generate(springApplicationDescription));
+        if (AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription)) {
+            compilationUnits.add(AbstractUserGenerator.generate(springApplicationDescription));
+            compilationUnits.add(RoleGenerator.generate(springApplicationDescription));
+        }
         compilationUnits.addAll(generateModules(springApplicationDescription));
         return compilationUnits;
     }
@@ -107,21 +113,25 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                         .port(springApplicationDescription.getPort())
                         .hasDataBase(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription))
                         .dbType(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription) ? AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getType().toString() : "")
+                        .dbUsername(AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getUsername())
+                        .dbPassword(AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getPassword())
                         .build()
         );
     }
 
     private List<ISoyConfiguration> generateLiquibaseFiles(final SpringBootApplicationDescription springApplicationDescription) {
+        final List<SpringModelModuleDomainTypeDescription> domains = extractDomainsFromApplicationDescription(springApplicationDescription);
         final List<ISoyConfiguration> changelogs = new ArrayList<>(
-                springApplicationDescription.getModules()
-                        .stream()
-                        .filter(module -> module instanceof SpringModelModuleDescription)
-                        .map(module -> ((SpringModelModuleDescription) module).getModels())
-                        .flatMap(List::stream)
-                        .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
-                        .map(domain -> DataBaseChangeLogGenerator.builder()
+                domains.stream()
+                        .map(domain -> LiquibaseChangeLogGenerator.builder()
                                 .name(domain.getName())
-                                .fields(((SpringModelModuleDomainTypeDescription) domain).getFields())
+                                .idType(domain.getIdType())
+                                .fields(domain.getFields())
+                                .relations(
+                                        domain.getRelations()
+                                                .stream()
+                                                .toList()
+                                )
                                 .build())
                         .toList()
         );
@@ -134,7 +144,18 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         return changelogs;
     }
 
-    private SpringBootApplicationDescription getApplication(final ApplicationDescription springApplicationDescription) {
-        return (SpringBootApplicationDescription) springApplicationDescription.getApplication();
+    private List<SpringModelModuleDomainTypeDescription> extractDomainsFromApplicationDescription(SpringBootApplicationDescription springApplicationDescription) {
+        return springApplicationDescription.getModules()
+                .stream()
+                .filter(module -> module instanceof SpringModelModuleDescription)
+                .map(module -> ((SpringModelModuleDescription) module).getModels())
+                .flatMap(List::stream)
+                .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
+                .map(model -> ((SpringModelModuleDomainTypeDescription) model))
+                .toList();
+    }
+
+    private SpringBootApplicationDescription getApplication(final ApplicationDescription applicationDescription) {
+        return (SpringBootApplicationDescription) applicationDescription.getApplication();
     }
 }

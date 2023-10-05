@@ -1,63 +1,55 @@
 package tech.amereta.generator.description.spring.model.type.field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = true)
+import java.util.LinkedList;
+import java.util.List;
+
 @Data
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SpringModelModuleDomainTypeFieldDescription extends AbstractSpringModelModuleFieldDescription {
+public final class SpringModelModuleDomainTypeFieldDescription {
 
-    private JavaFieldRelationDescription relation;
-    private Integer length;
+    @NotNull(message = "domain field's name must not be null!")
+    private String name;
+
+    @NotNull(message = "domain field's dataType must not be null!")
+    private SpringDataType dataType;
+
+    private Object defaultValue;
+
     @Builder.Default
+    private List<String> genericTypes = new LinkedList<>();
+
+    @Builder.Default
+    private List<String> modifiers = new LinkedList<>();
+
+    private Integer length;
+
     @JsonProperty("transient")
+    @Builder.Default
     private boolean isTransient = false;
+
+    @JsonIgnore
+    @Builder.Default
+    private boolean primaryKey = false;
+
     @Builder.Default
     private boolean unique = false;
+
     @Builder.Default
     private boolean nullable = true;
+
     @Builder.Default
     private boolean updatable = true;
+
     @Builder.Default
     private boolean excludeFromJson = false;
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static final class JavaFieldRelationDescription {
-
-        public enum Relation {
-
-            ONE_TO_ONE("OneToOne"),
-            ONE_TO_MANY("OneToMany"),
-            MANY_TO_ONE("ManyToOne"),
-            MANY_TO_MANY("ManyToMany");
-
-            private final String name;
-
-            Relation(String name) {
-                this.name = name;
-            }
-
-            @JsonValue
-            @Override
-            public String toString() {
-                return name;
-            }
-
-        }
-
-        private Relation type;
-        private String mappedBy;
-        @Builder.Default
-        private boolean join = false;
-
-    }
-
 }

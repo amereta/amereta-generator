@@ -6,6 +6,8 @@
 {@param hasDataBase: bool}
 {@param dbType: string}
 {@param dbName: string}
+{@param dbUsername: string}
+{@param dbPassword: string}
 
 {literal}server:
     port: {/literal}{$port}{literal}
@@ -21,8 +23,8 @@ spring:
     {literal}datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:{/literal}{if $dbType == 'POSTGRESQL'}{literal}postgresql://localhost:5432/{/literal}{elseif $dbType == 'MYSQL'}{literal}mysql://localhost:3306/{/literal}{/if}{$dbName}{if $dbType == 'MYSQL'}{literal}?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true{/literal}{/if}{literal}
-        username: username
-        password: password
+        username: {/literal}{$dbUsername}{literal}
+        password: {/literal}{$dbPassword}{literal}
         hikari:
             poolName: Hikari
             auto-commit: false
