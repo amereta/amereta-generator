@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SpringModelModuleEnumTypeDescription extends SpringModelModuleTypeDescription {
+public final class SpringModelModuleEnumTypeDescription extends AbstractSpringModelModuleTypeDescription {
 
     @NotNull(message = "enum's fields must not be null!")
     @Valid

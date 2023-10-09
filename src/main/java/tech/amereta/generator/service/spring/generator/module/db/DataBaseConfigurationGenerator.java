@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.generator;
+package tech.amereta.generator.service.spring.generator.module.db;
 
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;

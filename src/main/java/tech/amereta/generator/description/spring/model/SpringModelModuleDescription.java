@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleEnumTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.AbstractSpringModelModuleTypeDescription;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.generator.module.model.SpringModelModuleGenerator;
 
@@ -33,7 +33,7 @@ public final class SpringModelModuleDescription extends AbstractSpringModuleDesc
             @JsonSubTypes.Type(value = SpringModelModuleEnumTypeDescription.class, name = "ENUM"),
     })
     @Valid
-    private List<SpringModelModuleTypeDescription> models = new LinkedList<>();
+    private List<AbstractSpringModelModuleTypeDescription> models = new LinkedList<>();
 
     @Override
     public AbstractSpringModuleGenerator getGenerator() {

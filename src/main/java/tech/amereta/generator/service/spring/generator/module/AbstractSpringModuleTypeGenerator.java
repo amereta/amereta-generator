@@ -14,37 +14,4 @@ import java.util.List;
 public abstract class AbstractSpringModuleTypeGenerator extends AbstractSpringSourceCodeGenerator {
 
     public abstract List<JavaCompilationUnit> generate(final SpringBootApplicationDescription applicationDescription, final SpringModuleTypeDescription type);
-
-    protected JavaTypeDeclaration generateClassDeclaration(String className) {
-        return JavaTypeDeclaration.builder()
-                .type(JavaType.CLASS)
-                .name(className)
-                .modifiers(
-                        JavaModifier.builder()
-                                .type(JavaModifier.TYPE_MODIFIERS)
-                                .modifiers(Modifier.PUBLIC)
-                );
-    }
-
-    protected JavaTypeDeclaration generateEnumDeclaration(String className) {
-        return JavaTypeDeclaration.builder()
-                .type(JavaType.ENUM)
-                .name(className)
-                .modifiers(
-                        JavaModifier.builder()
-                                .type(JavaModifier.TYPE_MODIFIERS)
-                                .modifiers(Modifier.PUBLIC)
-                );
-    }
-
-    protected JavaTypeDeclaration generateInterfaceDeclaration(final String className) {
-        return JavaTypeDeclaration.builder()
-                .type(JavaType.INTERFACE)
-                .name(className)
-                .modifiers(
-                        JavaModifier.builder()
-                                .type(JavaModifier.TYPE_MODIFIERS)
-                                .modifiers(Modifier.PUBLIC)
-                );
-    }
 }

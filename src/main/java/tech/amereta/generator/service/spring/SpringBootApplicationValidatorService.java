@@ -26,13 +26,13 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
     public void validate(final ApplicationDescription applicationDescription) {
         final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescription);
 
-        final List<SpringModelModuleTypeDescription> models = extractModels(springBootApplicationDescription);
+        final List<AbstractSpringModelModuleTypeDescription> models = extractModels(springBootApplicationDescription);
 
         validateModels(models);
         validateRelations(models);
     }
 
-    private List<SpringModelModuleTypeDescription> extractModels(SpringBootApplicationDescription springBootApplicationDescription) {
+    private List<AbstractSpringModelModuleTypeDescription> extractModels(SpringBootApplicationDescription springBootApplicationDescription) {
         return springBootApplicationDescription.getModules()
                 .stream()
                 .filter(module -> module instanceof SpringModelModuleDescription)
@@ -41,7 +41,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
                 .toList();
     }
 
-    private void validateModels(final List<SpringModelModuleTypeDescription> models) {
+    private void validateModels(final List<AbstractSpringModelModuleTypeDescription> models) {
         final List<String> domainNames = new ArrayList<>();
         final List<String> enumNames = new ArrayList<>();
         final AtomicBoolean authorizableDomainExists = new AtomicBoolean(false);
@@ -51,7 +51,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
         });
     }
 
-    private void validateModel(final SpringModelModuleTypeDescription model, final AtomicBoolean authorizableDomainExists, final List<String> domainNames, final List<String> enumNames) {
+    private void validateModel(final AbstractSpringModelModuleTypeDescription model, final AtomicBoolean authorizableDomainExists, final List<String> domainNames, final List<String> enumNames) {
         switch (model.getType()) {
             case DOMAIN ->
                     validateDomain((SpringModelModuleDomainTypeDescription) model, authorizableDomainExists, domainNames);
@@ -132,7 +132,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
                 .toList();
     }
 
-    private void validateRelations(final List<SpringModelModuleTypeDescription> models) {
+    private void validateRelations(final List<AbstractSpringModelModuleTypeDescription> models) {
         final Map<String, SpringModelModuleDomainTypeDescription> domainsWithName = convertToMapOfDomainsWithName(models);
 
         domainsWithName.forEach((name, domain) -> {
@@ -247,12 +247,12 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
                 .build();
     }
 
-    private Map<String, SpringModelModuleDomainTypeDescription> convertToMapOfDomainsWithName(List<SpringModelModuleTypeDescription> models) {
+    private Map<String, SpringModelModuleDomainTypeDescription> convertToMapOfDomainsWithName(List<AbstractSpringModelModuleTypeDescription> models) {
         return models.stream()
                 .filter(model -> model instanceof SpringModelModuleDomainTypeDescription)
                 .collect(
                         Collectors.toMap(
-                                SpringModelModuleTypeDescription::getName,
+                                AbstractSpringModelModuleTypeDescription::getName,
                                 model -> (SpringModelModuleDomainTypeDescription) model
                         )
                 );

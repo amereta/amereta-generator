@@ -5,7 +5,7 @@ import tech.amereta.generator.service.spring.generator.module.AbstractSpringModu
 import tech.amereta.generator.service.spring.generator.module.db.SpringDBModulePostgreSQLTypeGenerator;
 
 @NoArgsConstructor
-public final class SpringDBModulePostgreSQLTypeDescription extends SpringDBModuleTypeDescription {
+public final class SpringDBModulePostgreSQLTypeDescription extends AbstractSpringDBModuleTypeDescription {
 
     @Override
     public AbstractSpringModuleTypeGenerator getGenerator() {

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
 import tech.amereta.generator.description.spring.db.type.SpringDBModuleMySQLTypeDescription;
 import tech.amereta.generator.description.spring.db.type.SpringDBModulePostgreSQLTypeDescription;
-import tech.amereta.generator.description.spring.db.type.SpringDBModuleTypeDescription;
+import tech.amereta.generator.description.spring.db.type.AbstractSpringDBModuleTypeDescription;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.generator.module.db.SpringDBModuleGenerator;
 
@@ -30,7 +30,7 @@ public final class SpringDBModuleDescription extends AbstractSpringModuleDescrip
             @JsonSubTypes.Type(value = SpringDBModulePostgreSQLTypeDescription.class, name = "POSTGRESQL"),
     })
     @Valid
-    private SpringDBModuleTypeDescription db;
+    private AbstractSpringDBModuleTypeDescription db;
 
     @Override
     public AbstractSpringModuleGenerator getGenerator() {

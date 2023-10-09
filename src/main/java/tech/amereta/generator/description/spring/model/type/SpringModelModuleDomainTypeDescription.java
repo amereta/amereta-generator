@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SpringModelModuleDomainTypeDescription extends SpringModelModuleTypeDescription {
+public final class SpringModelModuleDomainTypeDescription extends AbstractSpringModelModuleTypeDescription {
 
     @JsonProperty("id")
     @DataTypeValidator(values = {SpringDataType.UUID, SpringDataType.LONG})
