@@ -1,11 +1,13 @@
 {namespace amereta.generator}
 {template pom kind="text"}
 
-{@param java: string}
-{@param spring: string}
+{@param javaVersion: string}
+{@param springVersion: string}
+{@param ameretaVersion: string}
 {@param name: string}
 {@param packageName: string}
 {@param description: string}
+{@param hasSecurity: bool}
 {@param hasDataBase: bool}
 {@param dbType: string}
 
@@ -17,7 +19,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>{/literal}{$spring}{literal}</version>
+		<version>{/literal}{$springVersion}{literal}</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -29,29 +31,42 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>{/literal}{$java}{literal}</java.version>
+        <java.version>{/literal}{$javaVersion}{literal}</java.version>
+		<amereta.version>{/literal}{$ameretaVersion}{literal}</amereta.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<groupId>tech.amereta</groupId>
+			<artifactId>amereta-spring-starter</artifactId>
+			<version>${amereta.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>{/literal}{if $hasSecurity}{literal}
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>{/literal}{if $hasDataBase}{literal}
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>{/literal}{/if}{if $hasDataBase}{literal}
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>
 			<version>3.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
 		</dependency>{/literal}{if $dbType == 'POSTGRESQL'}{literal}
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -63,21 +78,6 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>{/literal}{/if}{/if}{literal}
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -96,7 +96,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
 {/literal}
 {/template}

@@ -17,11 +17,17 @@ public final class PomGenerator implements ISoyConfiguration {
 
     private String springVersion;
 
+    private String ameretaVersion;
+
     private String name;
 
     private String packageName;
 
     private String description;
+
+    private Boolean hasSecurity;
+
+    private String securityAuthenticator;
 
     private Boolean hasDataBase;
 
@@ -49,11 +55,13 @@ public final class PomGenerator implements ISoyConfiguration {
     @Override
     public Map<String, Object> getParameters() {
         return Map.of(
-                "java", javaVersion,
-                "spring", springVersion,
+                "javaVersion", javaVersion,
+                "springVersion", springVersion,
+                "ameretaVersion", ameretaVersion,
                 "name", name,
                 "packageName", packageName,
                 "description", description,
+                "hasSecurity", hasSecurity,
                 "hasDataBase", hasDataBase,
                 "dbType", dbType
         );
