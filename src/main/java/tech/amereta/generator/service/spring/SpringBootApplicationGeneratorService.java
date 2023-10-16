@@ -17,7 +17,6 @@ import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
 import tech.amereta.generator.service.spring.generator.*;
 import tech.amereta.generator.service.spring.generator.module.model.AbstractTimestampedDomainGenerator;
-import tech.amereta.generator.service.spring.generator.module.security.RoleEnumGenerator;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         final List<JavaCompilationUnit> compilationUnits = new ArrayList<>();
         compilationUnits.add(AmeretaAnnotationGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(MainGeneratorSpring.generate(springApplicationDescription));
-        compilationUnits.add(ApplicationConfigurationGeneratorSpring.generate(springApplicationDescription));
+        compilationUnits.add(ApplicationConfigurationGenerator.generate(springApplicationDescription));
         compilationUnits.addAll(generateModules(springApplicationDescription));
         return compilationUnits;
     }

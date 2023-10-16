@@ -7,11 +7,12 @@ import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
+import tech.amereta.generator.util.StringFormatter;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public final class ApplicationConfigurationGeneratorSpring extends AbstractSpringSourceCodeGenerator {
+public final class ApplicationConfigurationGenerator extends AbstractSpringSourceCodeGenerator {
 
     private static final String CLASS_NAME = "ApplicationConfiguration";
 
@@ -38,7 +39,7 @@ public final class ApplicationConfigurationGeneratorSpring extends AbstractSprin
                                                                                 JavaAnnotation.Attribute.builder()
                                                                                         .name("prefix")
                                                                                         .dataType(String.class)
-                                                                                        .values(List.of("application")),
+                                                                                        .values(List.of(StringFormatter.toKebabCase(applicationDescription.getName()))),
                                                                                 JavaAnnotation.Attribute.builder()
                                                                                         .name("ignoreUnknownFields")
                                                                                         .dataType(Boolean.class)
