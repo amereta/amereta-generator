@@ -25,6 +25,8 @@ public final class SpringModelModuleDomainTypeDescription extends AbstractSpring
 
     private Boolean authenticable = false;
 
+    private Boolean timestamped = false;
+
     @NotNull(message = "domain's fields must not be null!")
     @Valid
     private List<SpringModelModuleDomainTypeFieldDescription> fields = new ArrayList<>();

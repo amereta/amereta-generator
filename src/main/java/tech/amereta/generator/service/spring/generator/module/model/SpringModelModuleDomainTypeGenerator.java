@@ -54,9 +54,8 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
 
         domain.setImplementedClassName("java.io.Serializable");
 
-        if (domainTypeDescription.getAuthenticable()) {
+        if(domainTypeDescription.getTimestamped()) {
             domain.setExtendedClassName("AbstractTimestampedDomain");
-
             annotations.add(
                     JavaAnnotation.builder()
                             .name("lombok.EqualsAndHashCode")
@@ -68,6 +67,9 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                                     )
                             )
             );
+        }
+
+        if (domainTypeDescription.getAuthenticable()) {
             fieldDeclarations.addAll(AuthenticableDomainFieldsGenerator.generate(applicationDescription));
         }
         domain.setAnnotations(annotations);
