@@ -62,6 +62,7 @@ public final class PomGenerator implements ISoyConfiguration {
                 "packageName", packageName,
                 "description", description,
                 "hasSecurity", hasSecurity,
+                "securityAuthenticator", securityAuthenticator,
                 "hasDataBase", hasDataBase,
                 "dbType", dbType
         );

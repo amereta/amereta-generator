@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.generator;
+package tech.amereta.generator.service.spring.generator.module.security;
 
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
@@ -11,7 +11,7 @@ import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public final class RoleGenerator extends AbstractSpringSourceCodeGenerator {
+public final class RoleEnumGenerator extends AbstractSpringSourceCodeGenerator {
 
     private static final String CLASS_NAME = "Role";
 

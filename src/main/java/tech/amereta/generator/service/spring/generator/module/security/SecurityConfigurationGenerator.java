@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.generator;
+package tech.amereta.generator.service.spring.generator.module.security;
 
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
@@ -13,16 +13,17 @@ import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.security.type.SpringSecurityModuleType;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public final class SecurityConfigurationGeneratorSpring extends AbstractSpringSourceCodeGenerator {
+public final class SecurityConfigurationGenerator extends AbstractSpringSourceCodeGenerator {
 
     private static final String CLASS_NAME = "SecurityConfiguration";
 
-    public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
+    public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription, SpringSecurityModuleType springSecurityModuleType) {
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".security")
                 .name(CLASS_NAME)
