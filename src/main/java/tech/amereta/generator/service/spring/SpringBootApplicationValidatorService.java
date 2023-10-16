@@ -66,9 +66,9 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
     }
 
     private void validateAuthorizableDomain(final SpringModelModuleDomainTypeDescription domainDescription, final AtomicBoolean authorizableDomainExists) {
-        if (domainDescription.getAuthorizable() && !authorizableDomainExists.get()) {
+        if (domainDescription.getAuthenticable() && !authorizableDomainExists.get()) {
             authorizableDomainExists.set(true);
-        } else if (domainDescription.getAuthorizable()) {
+        } else if (domainDescription.getAuthenticable()) {
             throw new DuplicateAuthorizableDomainsException(domainDescription.getName());
         }
     }

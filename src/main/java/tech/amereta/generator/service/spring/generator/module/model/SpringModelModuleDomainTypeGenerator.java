@@ -4,17 +4,19 @@ import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
 import tech.amereta.core.java.declaration.AbstractJavaFieldDeclaration;
 import tech.amereta.core.java.declaration.JavaFieldDeclaration;
+import tech.amereta.core.java.declaration.JavaMethodDeclaration;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
 import tech.amereta.generator.description.spring.model.type.SpringRelation;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.exception.DomainIdDataTypeException;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
+import tech.amereta.generator.service.spring.generator.module.security.AuthenticableDomainFieldsGenerator;
 import tech.amereta.generator.util.StringFormatter;
 
 import java.lang.annotation.Annotation;
@@ -48,8 +50,13 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         final String className = StringFormatter.toPascalCase(domainTypeDescription.getName());
         final JavaTypeDeclaration domain = generateClassDeclaration(className);
         final List<JavaAnnotation> annotations = generateDBDomainAnnotations(domainTypeDescription);
+        final List<AbstractJavaFieldDeclaration> fieldDeclarations = generateDBDomainFields(domainTypeDescription);
 
-        if (domainTypeDescription.getAuthorizable()) {
+        domain.setImplementedClassName("java.io.Serializable");
+
+        if (domainTypeDescription.getAuthenticable()) {
+            domain.setExtendedClassName("AbstractTimestampedDomain");
+
             annotations.add(
                     JavaAnnotation.builder()
                             .name("lombok.EqualsAndHashCode")
@@ -61,10 +68,10 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                                     )
                             )
             );
-            domain.setExtendedClassName("AbstractUser");
+            fieldDeclarations.addAll(AuthenticableDomainFieldsGenerator.generate(applicationDescription));
         }
         domain.setAnnotations(annotations);
-        domain.setFieldDeclarations(generateDBDomainFields(domainTypeDescription));
+        domain.setFieldDeclarations(fieldDeclarations);
 
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".model.domain")
@@ -89,6 +96,48 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                         domainTypeDescription.getIdType().getDataType()
                 )
         );
+        if (domainTypeDescription.getAuthenticable()) {
+            repository.setMethodDeclarations(
+                    List.of(
+                            JavaMethodDeclaration.builder()
+                                    .isAbstract(true)
+                                    .name("findOneByEmailIgnoreCase")
+                                    .returnType("java.util.Optional")
+                                    .genericTypes(List.of(basePackage(applicationDescription) + ".model.domain." + domainName))
+                                    .parameters(
+                                            List.of(
+                                                    JavaMethodDeclaration.Parameter.builder()
+                                                            .name("email")
+                                                            .type("String")
+                                            )
+                                    ),
+                            JavaMethodDeclaration.builder()
+                                    .isAbstract(true)
+                                    .name("findOneByUsername")
+                                    .returnType("java.util.Optional")
+                                    .genericTypes(List.of(basePackage(applicationDescription) + ".model.domain." + domainName))
+                                    .parameters(
+                                            List.of(
+                                                    JavaMethodDeclaration.Parameter.builder()
+                                                            .name("username")
+                                                            .type("String")
+                                            )
+                                    ),
+                            JavaMethodDeclaration.builder()
+                                    .isAbstract(true)
+                                    .name("findOneByActivationKey")
+                                    .returnType("java.util.Optional")
+                                    .genericTypes(List.of(basePackage(applicationDescription) + ".model.domain." + domainName))
+                                    .parameters(
+                                            List.of(
+                                                    JavaMethodDeclaration.Parameter.builder()
+                                                            .name("activationKey")
+                                                            .type("java.util.UUID")
+                                            )
+                                    )
+                    )
+            );
+        }
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".repository")
                 .name(className)
@@ -322,9 +371,11 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
 
     private static JavaFieldDeclaration generateIdField(final SpringDataType idType) {
         return JavaFieldDeclaration.builder()
-                .modifiers(JavaModifier.builder()
-                        .type(JavaModifier.FIELD_MODIFIERS)
-                        .modifiers(Modifier.PRIVATE))
+                .modifiers(
+                        JavaModifier.builder()
+                                .type(JavaModifier.FIELD_MODIFIERS)
+                                .modifiers(Modifier.PRIVATE)
+                )
                 .dataType(idType.getDataType())
                 .name("id")
                 .annotations(generateIdAnnotations(idType));

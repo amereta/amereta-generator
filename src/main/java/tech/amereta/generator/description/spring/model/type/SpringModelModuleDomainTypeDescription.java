@@ -23,7 +23,7 @@ public final class SpringModelModuleDomainTypeDescription extends AbstractSpring
     @DataTypeValidator(values = {SpringDataType.UUID, SpringDataType.LONG})
     private SpringDataType idType = SpringDataType.UUID;
 
-    private Boolean authorizable = false;
+    private Boolean authenticable = false;
 
     @NotNull(message = "domain's fields must not be null!")
     @Valid
