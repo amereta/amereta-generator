@@ -560,7 +560,7 @@ public final class AuthenticableUserDetailsServiceGenerator extends AbstractSpri
                                                                                 ),
                                                                         JavaVariableExpression.builder()
                                                                                 .variable("authorities")
-                                                                        )
+                                                                )
                                                         )
                                         )
                         )

@@ -64,23 +64,24 @@ public final class MainGeneratorSpring extends AbstractSpringSourceCodeGenerator
                                                                 .statements(
                                                                         List.of(
                                                                                 JavaExpressionStatement.builder()
-                                                                                        .expression(JavaMethodInvocationExpression.builder()
-                                                                                                .target("org.springframework.boot.SpringApplication")
-                                                                                                .invokes(
-                                                                                                        List.of(
-                                                                                                                JavaMethodInvoke.builder()
-                                                                                                                        .method("run")
-                                                                                                                        .arguments(
-                                                                                                                                List.of(
-                                                                                                                                        JavaValueExpression.builder()
-                                                                                                                                                .value(className)
-                                                                                                                                                .type(Class.class),
-                                                                                                                                        JavaVariableExpression.builder()
-                                                                                                                                                .variable("args")
+                                                                                        .expression(
+                                                                                                JavaMethodInvocationExpression.builder()
+                                                                                                        .target("org.springframework.boot.SpringApplication")
+                                                                                                        .invokes(
+                                                                                                                List.of(
+                                                                                                                        JavaMethodInvoke.builder()
+                                                                                                                                .method("run")
+                                                                                                                                .arguments(
+                                                                                                                                        List.of(
+                                                                                                                                                JavaValueExpression.builder()
+                                                                                                                                                        .value(className)
+                                                                                                                                                        .type(Class.class),
+                                                                                                                                                JavaVariableExpression.builder()
+                                                                                                                                                        .variable("args")
+                                                                                                                                        )
                                                                                                                                 )
-                                                                                                                        )
+                                                                                                                )
                                                                                                         )
-                                                                                                )
                                                                                         )
                                                                         )
                                                                 )

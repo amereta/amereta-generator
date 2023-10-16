@@ -54,7 +54,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
 
         domain.setImplementedClassName("java.io.Serializable");
 
-        if(domainTypeDescription.getTimestamped()) {
+        if (domainTypeDescription.getTimestamped()) {
             domain.setExtendedClassName("AbstractTimestampedDomain");
             annotations.add(
                     JavaAnnotation.builder()
