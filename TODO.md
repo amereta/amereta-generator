@@ -1,0 +1,1 @@
+- add authenticable domain columns in liquibase changelog
