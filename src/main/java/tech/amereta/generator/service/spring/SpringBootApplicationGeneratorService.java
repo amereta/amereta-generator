@@ -128,16 +128,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         final List<SpringModelModuleDomainTypeDescription> domains = extractDomainsFromApplicationDescription(springApplicationDescription);
         final List<ISoyConfiguration> changelogs = new ArrayList<>(
                 domains.stream()
-                        .map(domain -> LiquibaseChangeLogGenerator.builder()
-                                .name(domain.getName())
-                                .idType(domain.getIdType())
-                                .fields(domain.getFields())
-                                .relations(
-                                        domain.getRelations()
-                                                .stream()
-                                                .toList()
-                                )
-                                .build())
+                        .map(LiquibaseChangeLogGenerator::new)
                         .toList()
         );
         changelogs.add(

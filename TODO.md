@@ -1,1 +1,2 @@
-- add authenticable domain columns in liquibase changelog
+- @EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware") in DatabaseConfiguration
+- SpringSecurityAuditorAware

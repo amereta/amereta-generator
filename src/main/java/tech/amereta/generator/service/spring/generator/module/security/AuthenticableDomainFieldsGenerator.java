@@ -14,47 +14,6 @@ import java.util.List;
 public final class AuthenticableDomainFieldsGenerator extends AbstractSpringSourceCodeGenerator {
 
     public static List<AbstractJavaFieldDeclaration> generate(final SpringBootApplicationDescription applicationDescription) {
-        final List<AbstractJavaFieldDeclaration> fieldDeclarations = new ArrayList<>(buildFieldDeclarations());
-        if (applicationHasSecurity(applicationDescription)) {
-            fieldDeclarations.add(
-                    JavaFieldDeclaration.builder()
-                            .modifiers(
-                                    JavaModifier.builder()
-                                            .type(JavaModifier.TYPE_MODIFIERS)
-                                            .modifiers(Modifier.PRIVATE)
-                            )
-                            .dataType("java.util.Set")
-                            .genericTypes(List.of(basePackage(applicationDescription) + ".model.enumeration.Role"))
-                            .name("roles")
-                            .annotations(
-                                    List.of(
-                                            JavaAnnotation.builder()
-                                                    .name("org.hibernate.annotations.JdbcTypeCode")
-                                                    .attributes(
-                                                            List.of(
-                                                                    JavaAnnotation.Attribute.builder()
-                                                                            .dataType(Enum.class)
-                                                                            .values(List.of("org.hibernate.type.SqlTypes.JSON"))
-                                                            )
-                                                    ),
-                                            JavaAnnotation.builder()
-                                                    .name("jakarta.persistence.Column")
-                                                    .attributes(
-                                                            List.of(
-                                                                    JavaAnnotation.Attribute.builder()
-                                                                            .name("columnDefinition")
-                                                                            .dataType(String.class)
-                                                                            .values(List.of("json"))
-                                                            )
-                                                    )
-                                    )
-                            )
-            );
-        }
-        return fieldDeclarations;
-    }
-
-    private static List<AbstractJavaFieldDeclaration> buildFieldDeclarations() {
         return List.of(
                 JavaFieldDeclaration.builder()
                         .modifiers(
@@ -195,10 +154,6 @@ public final class AuthenticableDomainFieldsGenerator extends AbstractSpringSour
                                                                         .dataType(Integer.class)
                                                                         .values(List.of("60")),
                                                                 JavaAnnotation.Attribute.builder()
-                                                                        .name("unique")
-                                                                        .dataType(Boolean.class)
-                                                                        .values(List.of("true")),
-                                                                JavaAnnotation.Attribute.builder()
                                                                         .name("nullable")
                                                                         .dataType(Boolean.class)
                                                                         .values(List.of("false"))
@@ -247,6 +202,7 @@ public final class AuthenticableDomainFieldsGenerator extends AbstractSpringSour
                         )
                         .dataType("boolean")
                         .name("activated")
+                        .value(false)
                         .annotations(
                                 List.of(
                                         JavaAnnotation.builder()
@@ -296,11 +252,39 @@ public final class AuthenticableDomainFieldsGenerator extends AbstractSpringSour
                                                                 JavaAnnotation.Attribute.builder()
                                                                         .name("name")
                                                                         .dataType(String.class)
-                                                                        .values(List.of("activation_key")),
+                                                                        .values(List.of("activation_key"))
+                                                        )
+                                                )
+                                )
+                        ),
+                JavaFieldDeclaration.builder()
+                        .modifiers(
+                                JavaModifier.builder()
+                                        .type(JavaModifier.TYPE_MODIFIERS)
+                                        .modifiers(Modifier.PRIVATE)
+                        )
+                        .dataType("java.util.Set")
+                        .genericTypes(List.of(basePackage(applicationDescription) + ".model.enumeration.Role"))
+                        .name("roles")
+                        .annotations(
+                                List.of(
+                                        JavaAnnotation.builder()
+                                                .name("org.hibernate.annotations.JdbcTypeCode")
+                                                .attributes(
+                                                        List.of(
                                                                 JavaAnnotation.Attribute.builder()
-                                                                        .name("length")
-                                                                        .dataType(Integer.class)
-                                                                        .values(List.of("36"))
+                                                                        .dataType(Enum.class)
+                                                                        .values(List.of("org.hibernate.type.SqlTypes.JSON"))
+                                                        )
+                                                ),
+                                        JavaAnnotation.builder()
+                                                .name("jakarta.persistence.Column")
+                                                .attributes(
+                                                        List.of(
+                                                                JavaAnnotation.Attribute.builder()
+                                                                        .name("columnDefinition")
+                                                                        .dataType(String.class)
+                                                                        .values(List.of("json"))
                                                         )
                                                 )
                                 )

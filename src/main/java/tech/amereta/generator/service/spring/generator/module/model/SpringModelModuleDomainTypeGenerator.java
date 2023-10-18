@@ -50,7 +50,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         final String className = StringFormatter.toPascalCase(domainTypeDescription.getName());
         final JavaTypeDeclaration domain = generateClassDeclaration(className);
         final List<JavaAnnotation> annotations = generateDBDomainAnnotations(domainTypeDescription);
-        final List<AbstractJavaFieldDeclaration> fieldDeclarations = generateDBDomainFields(domainTypeDescription);
+        final List<AbstractJavaFieldDeclaration> fieldDeclarations = generateDBDomainFields(applicationDescription, domainTypeDescription);
 
         domain.setImplementedClassName("java.io.Serializable");
 
@@ -69,9 +69,6 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
             );
         }
 
-        if (domainTypeDescription.getAuthenticable()) {
-            fieldDeclarations.addAll(AuthenticableDomainFieldsGenerator.generate(applicationDescription));
-        }
         domain.setAnnotations(annotations);
         domain.setFieldDeclarations(fieldDeclarations);
 
@@ -160,10 +157,13 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         );
     }
 
-    private List<AbstractJavaFieldDeclaration> generateDBDomainFields(final SpringModelModuleDomainTypeDescription domainTypeDescription) {
+    private List<AbstractJavaFieldDeclaration> generateDBDomainFields(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final List<AbstractJavaFieldDeclaration> fieldDeclarations = new ArrayList<>();
         final JavaFieldDeclaration idField = generateIdField(domainTypeDescription.getIdType());
         fieldDeclarations.add(idField);
+        if (applicationHasSecurity(applicationDescription) && domainTypeDescription.getAuthenticable()) {
+            fieldDeclarations.addAll(AuthenticableDomainFieldsGenerator.generate(applicationDescription));
+        }
         fieldDeclarations.addAll(
                 domainTypeDescription.getFields()
                         .stream()
