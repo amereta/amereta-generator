@@ -17,7 +17,6 @@ public final class AbstractTimestampedDomainGenerator extends AbstractSpringSour
     private static final String CLASS_NAME = "AbstractTimestampedDomain";
 
     public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
-        System.out.println("hey");
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".model.domain")
                 .name(CLASS_NAME)

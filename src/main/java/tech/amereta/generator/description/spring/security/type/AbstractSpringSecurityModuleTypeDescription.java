@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
+import tech.amereta.generator.description.spring.security.SpringSecurityEncoder;
 
 @Data
 @AllArgsConstructor
@@ -13,4 +14,6 @@ public abstract class AbstractSpringSecurityModuleTypeDescription implements Spr
 
     @JsonProperty("authenticator")
     private SpringSecurityModuleType type;
+
+    private SpringSecurityEncoder encoder = SpringSecurityEncoder.BCRYPT;
 }

@@ -2,10 +2,9 @@ package tech.amereta.generator.service.spring.generator.module.security;
 
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
+import tech.amereta.core.java.declaration.JavaFieldDeclaration;
 import tech.amereta.core.java.declaration.JavaMethodDeclaration;
-import tech.amereta.core.java.expression.JavaLambdaExpression;
-import tech.amereta.core.java.expression.JavaMethodInvocationExpression;
-import tech.amereta.core.java.expression.JavaValueExpression;
+import tech.amereta.core.java.expression.*;
 import tech.amereta.core.java.expression.util.JavaMethodInvoke;
 import tech.amereta.core.java.statement.JavaExpressionStatement;
 import tech.amereta.core.java.statement.JavaReturnStatement;
@@ -13,7 +12,7 @@ import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.security.type.SpringSecurityModuleType;
+import tech.amereta.generator.description.spring.security.type.SpringSecurityModuleJWTTypeDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 
 import java.lang.reflect.Modifier;
@@ -23,7 +22,7 @@ public final class SecurityConfigurationGenerator extends AbstractSpringSourceCo
 
     private static final String CLASS_NAME = "SecurityConfiguration";
 
-    public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription, SpringSecurityModuleType springSecurityModuleType) {
+    public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription, final SpringSecurityModuleJWTTypeDescription springSecurityModuleType) {
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".security")
                 .name(CLASS_NAME)
@@ -45,8 +44,49 @@ public final class SecurityConfigurationGenerator extends AbstractSpringSourceCo
                                                                 .name("org.springframework.context.annotation.Configuration")
                                                 )
                                         )
+                                        .fieldDeclarations(
+                                                List.of(
+                                                        JavaFieldDeclaration.builder()
+                                                                .name("jwtFilter")
+                                                                .dataType("tech.amereta.starter.jwt.JWTFilter")
+                                                                .modifiers(
+                                                                        JavaModifier.builder()
+                                                                                .type(JavaModifier.TYPE_MODIFIERS)
+                                                                                .modifiers(Modifier.PRIVATE)
+                                                                )
+                                                                .annotations(
+                                                                        List.of(
+                                                                                JavaAnnotation.builder()
+                                                                                        .name("org.springframework.beans.factory.annotation.Autowired")
+                                                                        )
+                                                                )
+                                                )
+                                        )
                                         .methodDeclarations(
                                                 List.of(
+                                                        JavaMethodDeclaration.builder()
+                                                                .name("encoder")
+                                                                .modifiers(
+                                                                        JavaModifier.builder()
+                                                                                .type(JavaModifier.METHOD_MODIFIERS)
+                                                                                .modifiers(Modifier.PUBLIC)
+                                                                )
+                                                                .returnType("org.springframework.security.crypto.password.PasswordEncoder")
+                                                                .annotations(
+                                                                        List.of(
+                                                                                JavaAnnotation.builder()
+                                                                                        .name("org.springframework.context.annotation.Bean")
+                                                                        )
+                                                                )
+                                                                .statements(
+                                                                        List.of(
+                                                                                JavaReturnStatement.builder()
+                                                                                        .expression(
+                                                                                                JavaNewInstanceExpression.builder()
+                                                                                                        .name(springSecurityModuleType.getEncoder().getClassName())
+                                                                                        )
+                                                                        )
+                                                                ),
                                                         JavaMethodDeclaration.builder()
                                                                 .name("filterChain")
                                                                 .modifiers(
@@ -82,14 +122,9 @@ public final class SecurityConfigurationGenerator extends AbstractSpringSourceCo
                                                                                                                                 .breakLine(true)
                                                                                                                                 .arguments(
                                                                                                                                         List.of(
-                                                                                                                                                JavaMethodInvocationExpression.builder()
-                                                                                                                                                        .target("org.springframework.security.config.Customizer")
-                                                                                                                                                        .invokes(
-                                                                                                                                                                List.of(
-                                                                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                                                                .method("withDefaults")
-                                                                                                                                                                )
-                                                                                                                                                        )
+                                                                                                                                                JavaLambdaMethodInvocationExpression.builder()
+                                                                                                                                                        .target("org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer")
+                                                                                                                                                        .invoke("disable")
                                                                                                                                         )
                                                                                                                                 ),
                                                                                                                         JavaMethodInvoke.builder()
@@ -117,6 +152,51 @@ public final class SecurityConfigurationGenerator extends AbstractSpringSourceCo
                                                                                                                                                                                                                                                 .type(Enum.class),
                                                                                                                                                                                                                                         JavaValueExpression.builder()
                                                                                                                                                                                                                                                 .value("/**")
+                                                                                                                                                                                                                                                .type(String.class)
+                                                                                                                                                                                                                                )
+                                                                                                                                                                                                                        ),
+                                                                                                                                                                                                                JavaMethodInvoke.builder()
+                                                                                                                                                                                                                        .method("permitAll"),
+                                                                                                                                                                                                                JavaMethodInvoke.builder()
+                                                                                                                                                                                                                        .method("requestMatchers")
+                                                                                                                                                                                                                        .breakLine(true)
+                                                                                                                                                                                                                        .arguments(
+                                                                                                                                                                                                                                List.of(
+                                                                                                                                                                                                                                        JavaValueExpression.builder()
+                                                                                                                                                                                                                                                .value("org.springframework.http.HttpMethod.POST")
+                                                                                                                                                                                                                                                .type(Enum.class),
+                                                                                                                                                                                                                                        JavaValueExpression.builder()
+                                                                                                                                                                                                                                                .value("/api/authenticate")
+                                                                                                                                                                                                                                                .type(String.class)
+                                                                                                                                                                                                                                )
+                                                                                                                                                                                                                        ),
+                                                                                                                                                                                                                JavaMethodInvoke.builder()
+                                                                                                                                                                                                                        .method("permitAll"),
+                                                                                                                                                                                                                JavaMethodInvoke.builder()
+                                                                                                                                                                                                                        .method("requestMatchers")
+                                                                                                                                                                                                                        .breakLine(true)
+                                                                                                                                                                                                                        .arguments(
+                                                                                                                                                                                                                                List.of(
+                                                                                                                                                                                                                                        JavaValueExpression.builder()
+                                                                                                                                                                                                                                                .value("org.springframework.http.HttpMethod.POST")
+                                                                                                                                                                                                                                                .type(Enum.class),
+                                                                                                                                                                                                                                        JavaValueExpression.builder()
+                                                                                                                                                                                                                                                .value("/api/register")
+                                                                                                                                                                                                                                                .type(String.class)
+                                                                                                                                                                                                                                )
+                                                                                                                                                                                                                        ),
+                                                                                                                                                                                                                JavaMethodInvoke.builder()
+                                                                                                                                                                                                                        .method("permitAll"),
+                                                                                                                                                                                                                JavaMethodInvoke.builder()
+                                                                                                                                                                                                                        .method("requestMatchers")
+                                                                                                                                                                                                                        .breakLine(true)
+                                                                                                                                                                                                                        .arguments(
+                                                                                                                                                                                                                                List.of(
+                                                                                                                                                                                                                                        JavaValueExpression.builder()
+                                                                                                                                                                                                                                                .value("org.springframework.http.HttpMethod.GET")
+                                                                                                                                                                                                                                                .type(Enum.class),
+                                                                                                                                                                                                                                        JavaValueExpression.builder()
+                                                                                                                                                                                                                                                .value("/api/activate/**")
                                                                                                                                                                                                                                                 .type(String.class)
                                                                                                                                                                                                                                 )
                                                                                                                                                                                                                         ),
@@ -163,6 +243,18 @@ public final class SecurityConfigurationGenerator extends AbstractSpringSourceCo
                                                                                                                                                                                 )
                                                                                                                                                                 )
                                                                                                                                                         )
+                                                                                                                                        )
+                                                                                                                                ),
+                                                                                                                        JavaMethodInvoke.builder()
+                                                                                                                                .method("addFilterBefore")
+                                                                                                                                .breakLine(true)
+                                                                                                                                .arguments(
+                                                                                                                                        List.of(
+                                                                                                                                                JavaVariableExpression.builder()
+                                                                                                                                                        .variable("jwtFilter"),
+                                                                                                                                                JavaValueExpression.builder()
+                                                                                                                                                        .type(Class.class)
+                                                                                                                                                        .value("org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter")
                                                                                                                                         )
                                                                                                                                 )
                                                                                                                 )
