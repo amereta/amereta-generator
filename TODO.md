@@ -1,2 +1,1 @@
-- @EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware") in DatabaseConfiguration
-- SpringSecurityAuditorAware
+- authentication controller
