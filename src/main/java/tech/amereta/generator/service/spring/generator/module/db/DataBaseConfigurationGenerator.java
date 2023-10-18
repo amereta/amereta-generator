@@ -42,16 +42,16 @@ public final class DataBaseConfigurationGenerator extends AbstractSpringSourceCo
                                                                                         .values(List.of(basePackage(applicationDescription) + ".repository"))
                                                                         )
                                                                 ),
-//                                                        JavaAnnotation.builder()
-//                                                                .name("org.springframework.data.jpa.repository.config.EnableJpaAuditing")
-//                                                                .attributes(
-//                                                                        List.of(
-//                                                                                JavaAnnotation.Attribute.builder()
-//                                                                                        .name("auditorAwareRef")
-//                                                                                        .dataType(String.class)
-//                                                                                        .values(List.of("springSecurityAuditorAware"))
-//                                                                        )
-//                                                                ), TODO: Config Security of Db
+                                                        JavaAnnotation.builder()
+                                                                .name("org.springframework.data.jpa.repository.config.EnableJpaAuditing")
+                                                                .attributes(
+                                                                        List.of(
+                                                                                JavaAnnotation.Attribute.builder()
+                                                                                        .name("auditorAwareRef")
+                                                                                        .dataType(String.class)
+                                                                                        .values(List.of("springSecurityAuditorAware"))
+                                                                        )
+                                                                ),
                                                         JavaAnnotation.builder()
                                                                 .name("org.springframework.transaction.annotation.EnableTransactionManagement")
                                                 )

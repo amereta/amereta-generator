@@ -16,6 +16,7 @@ public final class SpringSecurityModuleJWTTypeGenerator extends AbstractSpringMo
         return List.of(
                 SecurityConfigurationGenerator.generate(applicationDescription, SpringSecurityModuleType.JWT),
                 AuthenticableUserDetailsServiceGenerator.generate(applicationDescription),
+                SpringSecurityAuditorAwareGenerator.generate(applicationDescription),
                 RoleEnumGenerator.generate(applicationDescription)
         );
     }
