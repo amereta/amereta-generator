@@ -25,6 +25,7 @@ public final class SpringSecurityModuleJWTTypeGenerator extends AbstractSpringMo
                 JWTModelGenerator.generate(applicationDescription),
                 LoginViewModelGenerator.generate(applicationDescription),
                 RegisterViewModelGenerator.generate(applicationDescription),
+                AuthenticableDomainServiceGenerator.generate(applicationDescription),
                 AuthenticateControllerGenerator.generate(applicationDescription)
         );
     }
