@@ -18,7 +18,7 @@ public final class LoginViewModelGenerator extends AbstractSpringSourceCodeGener
 
     public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
         return JavaCompilationUnit.builder()
-                .packageName(basePackage(applicationDescription) + ".domain.vm")
+                .packageName(basePackage(applicationDescription) + ".model.vm")
                 .name(CLASS_NAME)
                 .typeDeclarations(
                         List.of(

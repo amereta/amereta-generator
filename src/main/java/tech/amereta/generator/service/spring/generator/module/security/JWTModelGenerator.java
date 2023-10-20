@@ -18,7 +18,7 @@ public final class JWTModelGenerator extends AbstractSpringSourceCodeGenerator {
 
     public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
         return JavaCompilationUnit.builder()
-                .packageName(basePackage(applicationDescription) + ".domain.model")
+                .packageName(basePackage(applicationDescription) + ".model")
                 .name(CLASS_NAME)
                 .typeDeclarations(
                         List.of(
