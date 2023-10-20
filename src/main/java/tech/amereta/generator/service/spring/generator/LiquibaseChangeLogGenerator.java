@@ -56,9 +56,12 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
         return Map.of(
                 "name", StringFormatter.toSnakeCase(domainTypeDescription.getName()),
                 "timestamp", timestamp,
+                "idType", resolveLoadDataFieldType(domainTypeDescription.getIdType()),
                 "fields", generateFields(),
                 "manyToManyTables", generateManyToManyTables(),
-                "constraints", generateConstraints()
+                "constraints", generateConstraints(),
+                "loadData", domainTypeDescription.getAuthenticable(),
+                "loadDataFields", generateLoadDataFields()
         );
     }
 
@@ -311,6 +314,18 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
         return "";
     }
 
+    private List<String> generateLoadDataFields() {
+        return domainTypeDescription.getFields()
+                .stream()
+                .filter(field -> !field.isNullable())
+                .map(this::generateLoadDataField)
+                .toList();
+    }
+
+    private String generateLoadDataField(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
+        return "\n\t\t\t<column name=\"" + StringFormatter.toSnakeCase(fieldDescription.getName()) +  "\" type=\"" + resolveLoadDataFieldType(fieldDescription.getDataType()) + "\"/>";
+    }
+
     private String resolveFieldType(final SpringDataType dataType, final Integer length) {
         return switch (dataType) {
             case JSON -> "json";
@@ -322,6 +337,18 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
             case FLOAT -> "${floatType}";
             case DOUBLE -> "double";
             case BIGDECIMAL -> "decimal(21,2)";
+            case ZONED_DATETIME -> "${datetimeType}";
+            case INSTANT -> "timestamp";
+        };
+    }
+
+    private String resolveLoadDataFieldType(final SpringDataType dataType) {
+        return switch (dataType) {
+            case JSON -> "other";
+            case STRING -> "string";
+            case BOOLEAN -> "boolean";
+            case UUID -> "${uuidType}";
+            case INTEGER, LONG, FLOAT, DOUBLE, BIGDECIMAL -> "numeric";
             case ZONED_DATETIME -> "${datetimeType}";
             case INSTANT -> "timestamp";
         };

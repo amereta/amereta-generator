@@ -126,18 +126,31 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
 
     private List<ISoyConfiguration> generateLiquibaseFiles(final SpringBootApplicationDescription springApplicationDescription, final Optional<SpringDBModuleDescription> dataBase) {
         final List<SpringModelModuleDomainTypeDescription> domains = extractDomainsFromApplicationDescription(springApplicationDescription);
-        final List<ISoyConfiguration> changelogs = new ArrayList<>(
+
+        final List<ISoyConfiguration> liquibaseEntities = new ArrayList<>(
                 domains.stream()
                         .map(LiquibaseChangeLogGenerator::new)
                         .toList()
         );
-        changelogs.add(
+
+        if(AbstractSpringSourceCodeGenerator.applicationHasSecurity(springApplicationDescription)) {
+            liquibaseEntities.add(
+                    LiquibaseInitialDataGenerator.builder()
+                            .owner(springApplicationDescription.getOwner())
+                            .applicationName(springApplicationDescription.getName())
+                            .domainTypeDescription(AbstractSpringSourceCodeGenerator.getAuthenticableDomain(springApplicationDescription))
+                            .build()
+            );
+        }
+
+        liquibaseEntities.add(
                 LiquibaseMasterGenerator.builder()
                         .dbType(dataBase.get().getDb().getType().toString())
-                        .changelogs(changelogs.stream().map(cl -> cl.getPath().toString().replaceAll("src/main/resources/", "")).toList())
+                        .changelogs(liquibaseEntities.stream().map(cl -> cl.getPath().toString().replaceAll("src/main/resources/", "")).toList())
                         .build()
         );
-        return changelogs;
+
+        return liquibaseEntities;
     }
 
     private List<SpringModelModuleDomainTypeDescription> extractDomainsFromApplicationDescription(SpringBootApplicationDescription springApplicationDescription) {

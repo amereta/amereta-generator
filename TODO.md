@@ -1,1 +1,4 @@
 - add constants class for default language
+- add internationalization module (LiquibaseInitialDataGenerator)
+- resolveLoadDataFieldType in LiquibaseChangeLogGenerator
+- resolveMandatoryFieldData in LiquibaseInitialDataGenerator

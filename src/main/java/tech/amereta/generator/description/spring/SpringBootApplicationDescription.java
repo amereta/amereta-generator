@@ -23,6 +23,8 @@ import java.util.List;
 @NoArgsConstructor
 public class SpringBootApplicationDescription implements AbstractApplication {
 
+    private String owner;
+
     @NotNull(message = "Application's name must not be null!")
     private String name;
 

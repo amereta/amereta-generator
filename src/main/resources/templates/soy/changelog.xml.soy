@@ -3,9 +3,12 @@
 
 {@param timestamp: string}
 {@param name: string}
+{@param idType: string}
 {@param fields: list<string>}
 {@param manyToManyTables: list<string>}
 {@param constraints: list<string>}
+{@param loadData: bool}
+{@param loadDataFields: list<string>}
 
 {literal}<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
@@ -34,6 +37,24 @@
         {for $constraint in $constraints}
             {$constraint}
         {/for}{literal}
+    </changeSet>{/literal}{/if}
+    {if $loadData}{\n}{literal}
+    <changeSet id="{/literal}{$timestamp}{literal}_loadData_1" author="amereta">
+        <loadData
+                file="db/data/{/literal}{$name}{literal}.csv"
+                tableName="{/literal}{$name}{literal}"
+                usePreparedStatements="true">
+            <column name="id" type="{/literal}{$idType}{literal}"/>
+            <column name="username" type="string"/>
+            <column name="email" type="string"/>
+            <column name="password_hash" type="string"/>
+            <column name="language" type="string"/>
+            <column name="activated" type="boolean"/>
+            <column name="roles" type="other"/>{/literal}
+            {for $field in $loadDataFields}
+                {$field}
+            {/for}{literal}
+        </loadData>
     </changeSet>{/literal}{/if}{literal}
 </databaseChangeLog>
 {/literal}
