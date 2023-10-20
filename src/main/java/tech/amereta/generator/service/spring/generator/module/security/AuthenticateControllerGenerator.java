@@ -337,7 +337,7 @@ public final class AuthenticateControllerGenerator extends AbstractSpringSourceC
                         List.of(
                                 JavaMethodDeclaration.Parameter.builder()
                                         .name("registerVM")
-                                        .type(basePackage(applicationDescription) + ".domain.vm.RegisterVM")
+                                        .type(basePackage(applicationDescription) + ".model.vm.RegisterVM")
                                         .annotations(
                                                 List.of(
                                                         JavaAnnotation.builder()
@@ -384,7 +384,7 @@ public final class AuthenticateControllerGenerator extends AbstractSpringSourceC
                                                                                         List.of(
                                                                                                 JavaValueExpression.builder()
                                                                                                         .type(String.class)
-                                                                                                        .value("request to register new customer: {}"),
+                                                                                                        .value("request to register new " + authenticableDomain.getName().toLowerCase() + ": {}"),
                                                                                                 JavaVariableExpression.builder()
                                                                                                         .variable("registerVM")
                                                                                         )
@@ -470,7 +470,7 @@ public final class AuthenticateControllerGenerator extends AbstractSpringSourceC
                                                                                         List.of(
                                                                                                 JavaValueExpression.builder()
                                                                                                         .type(String.class)
-                                                                                                        .value("request to activate customer for activation key {}"),
+                                                                                                        .value("request to activate " + authenticableDomain.getName().toLowerCase() + " for activation key {}"),
                                                                                                 JavaVariableExpression.builder()
                                                                                                         .variable("key")
                                                                                         )
@@ -494,11 +494,11 @@ public final class AuthenticateControllerGenerator extends AbstractSpringSourceC
                                                         .invokes(
                                                                 List.of(
                                                                         JavaMethodInvoke.builder()
-                                                                                .method("register")
+                                                                                .method("activate")
                                                                                 .arguments(
                                                                                         List.of(
                                                                                                 JavaVariableExpression.builder()
-                                                                                                        .variable("registerVM")
+                                                                                                        .variable("key")
                                                                                         )
                                                                                 )
                                                                 )
