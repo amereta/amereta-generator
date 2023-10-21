@@ -126,10 +126,6 @@ public final class AbstractTimestampedDomainGenerator extends AbstractSpringSour
                                                                                                                 .dataType(String.class)
                                                                                                                 .values(List.of("created_date")),
                                                                                                         JavaAnnotation.Attribute.builder()
-                                                                                                                .name("nullable")
-                                                                                                                .dataType(Boolean.class)
-                                                                                                                .values(List.of("false")),
-                                                                                                        JavaAnnotation.Attribute.builder()
                                                                                                                 .name("updatable")
                                                                                                                 .dataType(Boolean.class)
                                                                                                                 .values(List.of("false"))

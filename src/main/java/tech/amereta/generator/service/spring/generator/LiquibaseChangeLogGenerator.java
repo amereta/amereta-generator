@@ -174,7 +174,6 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                         SpringModelModuleDomainTypeFieldDescription.builder()
                                 .name("createdDate")
                                 .dataType(SpringDataType.INSTANT)
-                                .nullable(false)
                                 .updatable(false)
                                 .build()
                 ),
