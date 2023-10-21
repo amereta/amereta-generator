@@ -49,7 +49,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
     private JavaCompilationUnit generateDBDomain(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final String className = StringFormatter.toPascalCase(domainTypeDescription.getName());
         final JavaTypeDeclaration domain = generateClassDeclaration(className);
-        final List<JavaAnnotation> annotations = generateDBDomainAnnotations(domainTypeDescription);
+        final List<JavaAnnotation> annotations = generateDBDomainAnnotations(applicationDescription, domainTypeDescription);
         final List<AbstractJavaFieldDeclaration> fieldDeclarations = generateDBDomainFields(applicationDescription, domainTypeDescription);
 
         domain.setImplementedClassName("java.io.Serializable");
@@ -567,7 +567,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                 .value(field.getDefaultValue());
     }
 
-    private static List<JavaAnnotation> generateDBDomainAnnotations(final SpringModelModuleDomainTypeDescription domainTypeDescription) {
+    private static List<JavaAnnotation> generateDBDomainAnnotations(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final List<JavaAnnotation> annotations = new ArrayList<>(
                 List.of(
                         JavaAnnotation.builder()
@@ -584,6 +584,24 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                                 .name("jakarta.persistence.Entity")
                 )
         );
+        if (applicationHasSecurity(applicationDescription) && domainTypeDescription.getAuthenticable()) {
+            annotations.add(
+                    JavaAnnotation.builder()
+                            .name("org.hibernate.annotations.TypeDef")
+                            .attributes(
+                                    List.of(
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("name")
+                                                    .dataType(String.class)
+                                                    .values(List.of("json")),
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("typeClass")
+                                                    .dataType(Class.class)
+                                                    .values(List.of("com.vladmihalcea.hibernate.type.json.JsonType"))
+                                    )
+                            )
+            );
+        }
         annotations.addAll(generateSimpleDomainAnnotations());
         return annotations;
     }
