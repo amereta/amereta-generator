@@ -78,7 +78,7 @@ public final class LiquibaseInitialDataGenerator implements ISoyConfiguration {
     private String resolveEmail() {
         StringBuilder stringBuilder = new StringBuilder("@" + StringFormatter.toKebabCase(applicationName).toLowerCase() + ".email");
         if(StringUtils.hasText(owner)) {
-            return stringBuilder.insert(0, owner).toString();
+            return stringBuilder.insert(0, owner.toLowerCase()).toString();
         }
         return stringBuilder.insert(0, domainTypeDescription.getName().toLowerCase()).toString();
     }
