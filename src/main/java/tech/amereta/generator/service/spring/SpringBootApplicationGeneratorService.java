@@ -129,18 +129,22 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
 
         final List<ISoyConfiguration> liquibaseEntities = new ArrayList<>(
                 domains.stream()
-                        .map(LiquibaseChangeLogGenerator::new)
+                        .map(domain -> LiquibaseChangeLogGenerator.builder()
+                                .domainTypeDescription(domain)
+                                .dbType(dataBase.orElseThrow().getDb().getType())
+                                .build()
+                        )
                         .toList()
         );
 
         liquibaseEntities.add(
                 LiquibaseMasterGenerator.builder()
-                        .dbType(dataBase.get().getDb().getType().toString())
+                        .dbType(dataBase.orElseThrow().getDb().getType().toString())
                         .changelogs(liquibaseEntities.stream().map(cl -> cl.getPath().toString().replaceAll("src/main/resources/", "")).toList())
                         .build()
         );
 
-        if(AbstractSpringSourceCodeGenerator.applicationHasSecurity(springApplicationDescription)) {
+        if (AbstractSpringSourceCodeGenerator.applicationHasSecurity(springApplicationDescription)) {
             liquibaseEntities.add(
                     LiquibaseInitialDataGenerator.builder()
                             .owner(springApplicationDescription.getOwner())

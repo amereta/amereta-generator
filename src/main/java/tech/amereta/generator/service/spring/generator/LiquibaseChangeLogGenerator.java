@@ -1,8 +1,9 @@
 package tech.amereta.generator.service.spring.generator;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.apache.commons.io.FileUtils;
 import tech.amereta.core.soy.ISoyConfiguration;
+import tech.amereta.generator.description.spring.db.type.SpringDBModuleType;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
 import tech.amereta.generator.description.spring.model.type.SpringRelation;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@AllArgsConstructor
+@Builder
 public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
 
     private final LocalDateTime date = LocalDateTime.now();
@@ -31,6 +32,8 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
             + String.valueOf(date.getNano() / 10000);
 
     private SpringModelModuleDomainTypeDescription domainTypeDescription;
+
+    private SpringDBModuleType dbType;
 
     @Override
     public String getName() {
@@ -322,7 +325,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String generateLoadDataField(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
-        return "\n\t\t\t<column name=\"" + StringFormatter.toSnakeCase(fieldDescription.getName()) +  "\" type=\"" + resolveLoadDataFieldType(fieldDescription.getDataType()) + "\"/>";
+        return "\n\t\t\t<column name=\"" + StringFormatter.toSnakeCase(fieldDescription.getName()) + "\" type=\"" + resolveLoadDataFieldType(fieldDescription.getDataType()) + "\"/>";
     }
 
     private String resolveFieldType(final SpringDataType dataType, final Integer length) {
@@ -343,13 +346,20 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
 
     private String resolveLoadDataFieldType(final SpringDataType dataType) {
         return switch (dataType) {
-            case JSON -> "other";
+            case JSON -> resolveLoadDataJsonType();
             case STRING -> "string";
             case BOOLEAN -> "boolean";
             case UUID -> "${uuidType}";
             case INTEGER, LONG, FLOAT, DOUBLE, BIGDECIMAL -> "numeric";
             case ZONED_DATETIME -> "${datetimeType}";
             case INSTANT -> "timestamp";
+        };
+    }
+
+    private String resolveLoadDataJsonType() {
+        return switch (dbType) {
+            case POSTGRESQL -> "other";
+            case MYSQL -> "JSON";
         };
     }
 
