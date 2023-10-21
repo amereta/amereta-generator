@@ -133,6 +133,13 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                         .toList()
         );
 
+        liquibaseEntities.add(
+                LiquibaseMasterGenerator.builder()
+                        .dbType(dataBase.get().getDb().getType().toString())
+                        .changelogs(liquibaseEntities.stream().map(cl -> cl.getPath().toString().replaceAll("src/main/resources/", "")).toList())
+                        .build()
+        );
+
         if(AbstractSpringSourceCodeGenerator.applicationHasSecurity(springApplicationDescription)) {
             liquibaseEntities.add(
                     LiquibaseInitialDataGenerator.builder()
@@ -142,13 +149,6 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                             .build()
             );
         }
-
-        liquibaseEntities.add(
-                LiquibaseMasterGenerator.builder()
-                        .dbType(dataBase.get().getDb().getType().toString())
-                        .changelogs(liquibaseEntities.stream().map(cl -> cl.getPath().toString().replaceAll("src/main/resources/", "")).toList())
-                        .build()
-        );
 
         return liquibaseEntities;
     }
