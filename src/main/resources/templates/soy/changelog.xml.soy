@@ -42,6 +42,7 @@
     <changeSet id="{/literal}{$timestamp}{literal}_loadData_1" author="amereta">
         <loadData
                 file="db/data/{/literal}{$name}{literal}.csv"
+                separator=";"
                 tableName="{/literal}{$name}{literal}"
                 usePreparedStatements="true">
             <column name="id" type="{/literal}{$idType}{literal}"/>
