@@ -137,28 +137,6 @@ public final class RegisterViewModelGenerator extends AbstractSpringSourceCodeGe
                                                                         )
                                                                 ),
                                                         JavaFieldDeclaration.builder()
-                                                                .name("rememberMe")
-                                                                .dataType("boolean")
-                                                                .modifiers(
-                                                                        JavaModifier.builder()
-                                                                                .type(JavaModifier.TYPE_MODIFIERS)
-                                                                                .modifiers(Modifier.PRIVATE)
-                                                                )
-                                                                .annotations(
-                                                                        List.of(
-                                                                                JavaAnnotation.builder()
-                                                                                        .name("com.fasterxml.jackson.annotation.JsonProperty")
-                                                                                        .attributes(
-                                                                                                List.of(
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .dataType(String.class)
-                                                                                                                .values(List.of("remember_me"))
-                                                                                                )
-                                                                                        )
-
-                                                                        )
-                                                                ),
-                                                        JavaFieldDeclaration.builder()
                                                                 .name("language")
                                                                 .dataType("tech.amereta.starter.model.enumeration.Language")
                                                                 .modifiers(
