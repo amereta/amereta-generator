@@ -385,13 +385,13 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
 
     private static List<JavaAnnotation> generateIdAnnotations(final SpringDataType idType) {
         return switch (idType) {
-            case UUID -> generateUUIDAnnotations();
-            case LONG -> generateLongAnnotations();
+            case UUID -> generateUUIDIdAnnotations();
+            case LONG -> generateLongIdAnnotations();
             default -> throw new DomainIdDataTypeException("Cannot create id with " + idType);
         };
     }
 
-    private static List<JavaAnnotation> generateLongAnnotations() {
+    private static List<JavaAnnotation> generateLongIdAnnotations() {
         return List.of(
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.Id"),
@@ -402,27 +402,23 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                                         JavaAnnotation.Attribute.builder()
                                                 .name("strategy")
                                                 .dataType(Enum.class)
-                                                .values(List.of("jakarta.persistence.GenerationType.SEQUENCE")),
-                                        JavaAnnotation.Attribute.builder()
-                                                .name("generator")
-                                                .dataType(String.class)
-                                                .values(List.of("sequenceGenerator"))
+                                                .values(List.of("jakarta.persistence.GenerationType.IDENTITY"))
                                 )
                         ),
                 JavaAnnotation.builder()
-                        .name("jakarta.persistence.SequenceGenerator")
+                        .name("jakarta.persistence.Column")
                         .attributes(
                                 List.of(
                                         JavaAnnotation.Attribute.builder()
                                                 .name("name")
                                                 .dataType(String.class)
-                                                .values(List.of("sequenceGenerator"))
+                                                .values(List.of("id"))
                                 )
                         )
         );
     }
 
-    private static List<JavaAnnotation> generateUUIDAnnotations() {
+    private static List<JavaAnnotation> generateUUIDIdAnnotations() {
         return List.of(
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.Id"),
