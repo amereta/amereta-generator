@@ -60,6 +60,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                 "name", StringFormatter.toSnakeCase(domainTypeDescription.getName()),
                 "timestamp", timestamp,
                 "idType", resolveLoadDataFieldType(domainTypeDescription.getIdType()),
+                "dbType", dbType.toString(),
                 "fields", generateFields(),
                 "manyToManyTables", generateManyToManyTables(),
                 "constraints", generateConstraints(),

@@ -4,6 +4,7 @@
 {@param timestamp: string}
 {@param name: string}
 {@param idType: string}
+{@param dbType: string}
 {@param fields: list<string>}
 {@param manyToManyTables: list<string>}
 {@param constraints: list<string>}
@@ -51,7 +52,7 @@
             <column name="password_hash" type="string"/>
             <column name="language" type="string"/>
             <column name="activated" type="boolean"/>
-            <column name="roles" type="other"/>{/literal}
+            <column name="roles" type="{/literal}{if $dbType == 'MYSQL'}{literal}json{/literal}{elseif $dbType == 'POSTGRESQL'}{literal}other{/literal}{/if}{literal}"/>{/literal}
             {for $field in $loadDataFields}
                 {$field}
             {/for}{literal}
