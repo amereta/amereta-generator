@@ -15,10 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Builder
 public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
@@ -318,11 +315,14 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private List<String> generateLoadDataFields() {
-        return domainTypeDescription.getFields()
-                .stream()
-                .filter(field -> !field.isNullable())
-                .map(this::generateLoadDataField)
-                .toList();
+        if (domainTypeDescription.getAuthenticable()) {
+            return domainTypeDescription.getFields()
+                    .stream()
+                    .filter(field -> !field.isNullable())
+                    .map(this::generateLoadDataField)
+                    .toList();
+        }
+        return Collections.emptyList();
     }
 
     private String generateLoadDataField(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {

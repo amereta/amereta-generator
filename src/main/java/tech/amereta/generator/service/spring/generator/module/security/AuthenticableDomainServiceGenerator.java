@@ -15,10 +15,12 @@ import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import tech.amereta.generator.util.StringFormatter;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class AuthenticableDomainServiceGenerator extends AbstractSpringSourceCodeGenerator {
@@ -92,6 +94,14 @@ public final class AuthenticableDomainServiceGenerator extends AbstractSpringSou
     }
 
     private static JavaMethodDeclaration registerMethod(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription authenticableDomain) {
+        final List<JavaMethodInvoke> newDomainFieldsBuilder = new ArrayList<>(authenticableFieldsBuilder(applicationDescription, authenticableDomain));
+        newDomainFieldsBuilder.addAll(newDomainNotNullFieldsBuilder(authenticableDomain));
+        newDomainFieldsBuilder.add(
+                JavaMethodInvoke.builder()
+                        .method("build")
+                        .breakLine(true)
+        );
+
         return JavaMethodDeclaration.builder()
                 .name("register")
                 .returnType("void")
@@ -143,157 +153,7 @@ public final class AuthenticableDomainServiceGenerator extends AbstractSpringSou
                                         .expression(
                                                 JavaMethodInvocationExpression.builder()
                                                         .target(basePackage(applicationDescription) + ".model.domain." + StringFormatter.toPascalCase(authenticableDomain.getName()))
-                                                        .invokes(
-                                                                List.of(
-                                                                        JavaMethodInvoke.builder()
-                                                                                .method("builder"),
-                                                                        JavaMethodInvoke.builder()
-                                                                                .method("username")
-                                                                                .breakLine(true)
-                                                                                .arguments(
-                                                                                        List.of(
-                                                                                                JavaMethodInvocationExpression.builder()
-                                                                                                        .target("registerVM")
-                                                                                                        .invokes(
-                                                                                                                List.of(
-                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                .method("getUsername"),
-                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                .method("toLowerCase")
-                                                                                                                )
-                                                                                                        )
-                                                                                        )
-                                                                                ),
-                                                                        JavaMethodInvoke.builder()
-                                                                                .method("email")
-                                                                                .breakLine(true)
-                                                                                .arguments(
-                                                                                        List.of(
-                                                                                                JavaMethodInvocationExpression.builder()
-                                                                                                        .target("registerVM")
-                                                                                                        .invokes(
-                                                                                                                List.of(
-                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                .method("getEmail")
-                                                                                                                )
-                                                                                                        )
-                                                                                        )
-                                                                                ),
-                                                                        JavaMethodInvoke.builder()
-                                                                                .method("password")
-                                                                                .breakLine(true)
-                                                                                .arguments(
-                                                                                        List.of(
-                                                                                                JavaMethodInvocationExpression.builder()
-                                                                                                        .target("passwordEncoder")
-                                                                                                        .invokes(
-                                                                                                                List.of(
-                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                .method("encode")
-                                                                                                                                .arguments(
-                                                                                                                                        List.of(
-                                                                                                                                                JavaMethodInvocationExpression.builder()
-                                                                                                                                                        .target("registerVM")
-                                                                                                                                                        .invokes(
-                                                                                                                                                                List.of(
-                                                                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                                                                .method("getPassword")
-                                                                                                                                                                )
-                                                                                                                                                        )
-                                                                                                                                        )
-                                                                                                                                )
-                                                                                                                )
-                                                                                                        )
-                                                                                        )
-                                                                                ),
-                                                                        JavaMethodInvoke.builder()
-                                                                                .method("language")
-                                                                                .breakLine(true)
-                                                                                .arguments(
-                                                                                        List.of(
-                                                                                                JavaMethodInvocationExpression.builder()
-                                                                                                        .target("java.util.Optional")
-                                                                                                        .invokes(
-                                                                                                                List.of(
-                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                .method("ofNullable")
-                                                                                                                                .arguments(
-                                                                                                                                        List.of(
-                                                                                                                                                JavaMethodInvocationExpression.builder()
-                                                                                                                                                        .target("registerVM")
-                                                                                                                                                        .invokes(
-                                                                                                                                                                List.of(
-                                                                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                                                                .method("getLanguage")
-                                                                                                                                                                )
-                                                                                                                                                        )
-                                                                                                                                        )
-                                                                                                                                ),
-                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                .method("orElse")
-                                                                                                                                .arguments(
-                                                                                                                                        List.of(
-                                                                                                                                                JavaValueExpression.builder()
-                                                                                                                                                        .type(Enum.class)
-                                                                                                                                                        .value("tech.amereta.starter.Constants.DEFAULT_LANGUAGE")
-                                                                                                                                        )
-                                                                                                                                )
-                                                                                                                )
-                                                                                                        )
-                                                                                        )
-                                                                                ),
-                                                                        JavaMethodInvoke.builder()
-                                                                                .method("activated")
-                                                                                .breakLine(true)
-                                                                                .arguments(
-                                                                                        List.of(
-                                                                                                JavaValueExpression.builder()
-                                                                                                        .type(Boolean.class)
-                                                                                                        .value("false")
-                                                                                        )
-                                                                                ),
-                                                                        JavaMethodInvoke.builder()
-                                                                                .method("activationKey")
-                                                                                .breakLine(true)
-                                                                                .arguments(
-                                                                                        List.of(
-                                                                                                JavaMethodInvocationExpression.builder()
-                                                                                                        .target("java.util.UUID")
-                                                                                                        .invokes(
-                                                                                                                List.of(
-                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                .method("randomUUID")
-                                                                                                                )
-                                                                                                        )
-                                                                                        )
-                                                                                ),
-                                                                        JavaMethodInvoke.builder()
-                                                                                .method("roles")
-                                                                                .breakLine(true)
-                                                                                .arguments(
-                                                                                        List.of(
-                                                                                                JavaMethodInvocationExpression.builder()
-                                                                                                        .target("java.util.Set")
-                                                                                                        .invokes(
-                                                                                                                List.of(
-                                                                                                                        JavaMethodInvoke.builder()
-                                                                                                                                .method("of")
-                                                                                                                                .arguments(
-                                                                                                                                        List.of(
-                                                                                                                                                JavaValueExpression.builder()
-                                                                                                                                                        .type(Enum.class)
-                                                                                                                                                        .value(basePackage(applicationDescription) + ".model.enumeration.Role." + StringFormatter.toSnakeCase(authenticableDomain.getName()).toUpperCase())
-                                                                                                                                        )
-                                                                                                                                )
-                                                                                                                )
-                                                                                                        )
-                                                                                        )
-                                                                                ),
-                                                                        JavaMethodInvoke.builder()
-                                                                                .method("build")
-                                                                                .breakLine(true)
-                                                                )
-                                                        )
+                                                        .invokes(newDomainFieldsBuilder)
                                         ),
                                 JavaExpressionStatement.builder()
                                         .expression(
@@ -331,6 +191,181 @@ public final class AuthenticableDomainServiceGenerator extends AbstractSpringSou
                                                                                 )
                                                                 )
                                                         )
+                                        )
+                        )
+                );
+    }
+
+    private static List<JavaMethodInvoke> authenticableFieldsBuilder(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription authenticableDomain) {
+        return List.of(
+                JavaMethodInvoke.builder()
+                        .method("builder"),
+                JavaMethodInvoke.builder()
+                        .method("username")
+                        .breakLine(true)
+                        .arguments(
+                                List.of(
+                                        JavaMethodInvocationExpression.builder()
+                                                .target("registerVM")
+                                                .invokes(
+                                                        List.of(
+                                                                JavaMethodInvoke.builder()
+                                                                        .method("getUsername"),
+                                                                JavaMethodInvoke.builder()
+                                                                        .method("toLowerCase")
+                                                        )
+                                                )
+                                )
+                        ),
+                JavaMethodInvoke.builder()
+                        .method("email")
+                        .breakLine(true)
+                        .arguments(
+                                List.of(
+                                        JavaMethodInvocationExpression.builder()
+                                                .target("registerVM")
+                                                .invokes(
+                                                        List.of(
+                                                                JavaMethodInvoke.builder()
+                                                                        .method("getEmail")
+                                                        )
+                                                )
+                                )
+                        ),
+                JavaMethodInvoke.builder()
+                        .method("password")
+                        .breakLine(true)
+                        .arguments(
+                                List.of(
+                                        JavaMethodInvocationExpression.builder()
+                                                .target("passwordEncoder")
+                                                .invokes(
+                                                        List.of(
+                                                                JavaMethodInvoke.builder()
+                                                                        .method("encode")
+                                                                        .arguments(
+                                                                                List.of(
+                                                                                        JavaMethodInvocationExpression.builder()
+                                                                                                .target("registerVM")
+                                                                                                .invokes(
+                                                                                                        List.of(
+                                                                                                                JavaMethodInvoke.builder()
+                                                                                                                        .method("getPassword")
+                                                                                                        )
+                                                                                                )
+                                                                                )
+                                                                        )
+                                                        )
+                                                )
+                                )
+                        ),
+                JavaMethodInvoke.builder()
+                        .method("language")
+                        .breakLine(true)
+                        .arguments(
+                                List.of(
+                                        JavaMethodInvocationExpression.builder()
+                                                .target("java.util.Optional")
+                                                .invokes(
+                                                        List.of(
+                                                                JavaMethodInvoke.builder()
+                                                                        .method("ofNullable")
+                                                                        .arguments(
+                                                                                List.of(
+                                                                                        JavaMethodInvocationExpression.builder()
+                                                                                                .target("registerVM")
+                                                                                                .invokes(
+                                                                                                        List.of(
+                                                                                                                JavaMethodInvoke.builder()
+                                                                                                                        .method("getLanguage")
+                                                                                                        )
+                                                                                                )
+                                                                                )
+                                                                        ),
+                                                                JavaMethodInvoke.builder()
+                                                                        .method("orElse")
+                                                                        .arguments(
+                                                                                List.of(
+                                                                                        JavaValueExpression.builder()
+                                                                                                .type(Enum.class)
+                                                                                                .value("tech.amereta.starter.Constants.DEFAULT_LANGUAGE")
+                                                                                )
+                                                                        )
+                                                        )
+                                                )
+                                )
+                        ),
+                JavaMethodInvoke.builder()
+                        .method("activated")
+                        .breakLine(true)
+                        .arguments(
+                                List.of(
+                                        JavaValueExpression.builder()
+                                                .type(Boolean.class)
+                                                .value("false")
+                                )
+                        ),
+                JavaMethodInvoke.builder()
+                        .method("activationKey")
+                        .breakLine(true)
+                        .arguments(
+                                List.of(
+                                        JavaMethodInvocationExpression.builder()
+                                                .target("java.util.UUID")
+                                                .invokes(
+                                                        List.of(
+                                                                JavaMethodInvoke.builder()
+                                                                        .method("randomUUID")
+                                                        )
+                                                )
+                                )
+                        ),
+                JavaMethodInvoke.builder()
+                        .method("roles")
+                        .breakLine(true)
+                        .arguments(
+                                List.of(
+                                        JavaMethodInvocationExpression.builder()
+                                                .target("java.util.Set")
+                                                .invokes(
+                                                        List.of(
+                                                                JavaMethodInvoke.builder()
+                                                                        .method("of")
+                                                                        .arguments(
+                                                                                List.of(
+                                                                                        JavaValueExpression.builder()
+                                                                                                .type(Enum.class)
+                                                                                                .value(basePackage(applicationDescription) + ".model.enumeration.Role." + StringFormatter.toSnakeCase(authenticableDomain.getName()).toUpperCase())
+                                                                                )
+                                                                        )
+                                                        )
+                                                )
+                                )
+                        )
+        );
+    }
+
+    private static List<JavaMethodInvoke> newDomainNotNullFieldsBuilder(final SpringModelModuleDomainTypeDescription authenticableDomain) {
+        return authenticableDomain.getFields()
+                .stream()
+                .filter(field -> !field.isNullable())
+                .map(AuthenticableDomainServiceGenerator::newDomainNotNullFieldBuilder)
+                .toList();
+    }
+
+    private static JavaMethodInvoke newDomainNotNullFieldBuilder(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
+        return JavaMethodInvoke.builder()
+                .method(fieldDescription.getName())
+                .breakLine(true)
+                .arguments(
+                        List.of(
+                                JavaMethodInvocationExpression.builder()
+                                        .target("registerVM")
+                                        .invokes(
+                                                List.of(
+                                                        JavaMethodInvoke.builder()
+                                                                .method("get" + StringFormatter.toPascalCase(fieldDescription.getName()))
+                                                )
                                         )
                         )
                 );
