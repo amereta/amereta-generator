@@ -48,6 +48,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         final List<JavaCompilationUnit> compilationUnits = new ArrayList<>();
         compilationUnits.add(AmeretaAnnotationGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(MainGeneratorSpring.generate(springApplicationDescription));
+        compilationUnits.add(SpringBootConfigurationGenerator.generate(springApplicationDescription));
         compilationUnits.add(ApplicationPropertiesGenerator.generate(springApplicationDescription));
         if (AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription)) {
             compilationUnits.add(AbstractTimestampedDomainGenerator.generate(springApplicationDescription));
