@@ -282,8 +282,15 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String generateField(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
-        return "\n\t\t\t<column name=\"" + StringFormatter.toSnakeCase(fieldDescription.getName()) + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\"" +
+        return "\n\t\t\t<column name=\"" + StringFormatter.toSnakeCase(fieldDescription.getName()) + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\"" + resolveAutoIncrement(fieldDescription) +
                 resolveFieldConstraints(fieldDescription);
+    }
+
+    private String resolveAutoIncrement(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
+        if(fieldDescription.isPrimaryKey() && fieldDescription.getDataType() == SpringDataType.LONG) {
+            return " autoIncrement=\"true\" ";
+        }
+        return "";
     }
 
     private String resolveFieldConstraints(SpringModelModuleDomainTypeFieldDescription fieldDescription) {

@@ -10,6 +10,6 @@
 {@param language: string}
 {@param role: string}
 
-{literal}id;username;email;password_hash;language;activated;roles{/literal}{for $field in $fieldsName}{literal};{/literal}{$field}{/for}{literal};created_by{/literal}{\n}
-{$id}{literal};{/literal}{$username}{literal};{/literal}{$email}{literal};$2a$10$VLayHx4e4jm8pn2q0Fa3Oe7oZjoXxRS341bv2V6S0OVl3FDLMeyya;{/literal}{$language}{literal};true;["ADMIN","{/literal}{$role}{literal}"]{/literal}{for $field in $fieldsData}{literal};{/literal}{$field}{/for}{literal};system{/literal}{\n}
+{literal}username;email;password_hash;language;activated;roles{/literal}{for $field in $fieldsName}{literal};{/literal}{$field}{/for}{literal};created_by{/literal}{\n}
+{$username}{literal};{/literal}{$email}{literal};$2a$10$VLayHx4e4jm8pn2q0Fa3Oe7oZjoXxRS341bv2V6S0OVl3FDLMeyya;{/literal}{$language}{literal};true;["ADMIN","{/literal}{$role}{literal}"]{/literal}{for $field in $fieldsData}{literal};{/literal}{$field}{/for}{literal};system{/literal}{\n}
 {/template}

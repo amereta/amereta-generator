@@ -48,7 +48,6 @@ public final class LiquibaseInitialDataGenerator implements ISoyConfiguration {
     @Override
     public Map<String, Object> getParameters() {
         return Map.of(
-                "id", resolveId(),
                 "username", resolveUsername(),
                 "email", resolveEmail(),
                 "language", "ENGLISH",
@@ -61,14 +60,6 @@ public final class LiquibaseInitialDataGenerator implements ISoyConfiguration {
     @Override
     public Path getPath() {
         return Path.of("src/main/resources/db/data/" + domainTypeDescription.getName().toLowerCase() + ".csv");
-    }
-
-    private String resolveId() {
-        if(domainTypeDescription.getIdType() == SpringDataType.UUID) {
-            return UUID.randomUUID().toString();
-        } else {
-            return "1";
-        }
     }
 
     private String resolveUsername() {
