@@ -2,3 +2,4 @@
 - add internationalization module (LiquibaseInitialDataGenerator)
 - resolveLoadDataFieldType in LiquibaseChangeLogGenerator
 - resolveMandatoryFieldData in LiquibaseInitialDataGenerator
+- jwt configuration to provide beans of JWTProvider and JWTFilter

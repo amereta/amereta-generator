@@ -1,64 +1,54 @@
 package tech.amereta.generator.service.spring.generator;
 
-import lombok.Builder;
-import org.apache.commons.io.FileUtils;
-import tech.amereta.core.soy.ISoyConfiguration;
+import tech.amereta.core.java.JavaCompilationUnit;
+import tech.amereta.core.java.JavaTypeDeclaration;
+import tech.amereta.core.java.util.JavaAnnotation;
+import tech.amereta.core.java.util.JavaModifier;
+import tech.amereta.core.java.util.JavaType;
+import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
+import tech.amereta.generator.util.StringFormatter;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.Objects;
+import java.lang.reflect.Modifier;
+import java.util.List;
 
-@Builder
-public final class ApplicationPropertiesGenerator implements ISoyConfiguration {
+public final class ApplicationPropertiesGenerator extends AbstractSpringSourceCodeGenerator {
 
-    private String name;
+    public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
+        final String className = StringFormatter.toPascalCase(applicationDescription.getName()) + "Configuration";
 
-    private String port;
-
-    private Boolean hasDataBase;
-
-    private String dbType;
-
-    private String dbUsername;
-
-    private String dbPassword;
-
-    @Override
-    public String getName() {
-        return "amereta.generator.properties";
-    }
-
-    @Override
-    public File getFile() throws IOException {
-        File tempFile = File.createTempFile("application.yml", ".soy");
-        tempFile.deleteOnExit();
-
-        FileUtils.copyInputStreamToFile(
-                Objects.requireNonNull(
-                        getClass().getClassLoader().getResourceAsStream("templates/soy/application.yml.soy")
-                ), tempFile
-        );
-
-        return tempFile;
-    }
-
-    @Override
-    public Map<String, Object> getParameters() {
-        return Map.of(
-                "name", name,
-                "port", port,
-                "hasDataBase", hasDataBase,
-                "dbType", dbType,
-                "dbName", name.toLowerCase(),
-                "dbUsername", dbUsername,
-                "dbPassword", dbPassword
-        );
-    }
-
-    @Override
-    public Path getPath() {
-        return Path.of("src/main/resources/config/application.yml");
+        return JavaCompilationUnit.builder()
+                .packageName(basePackage(applicationDescription) + ".config")
+                .name(className)
+                .typeDeclarations(
+                        List.of(
+                                JavaTypeDeclaration.builder()
+                                        .type(JavaType.CLASS)
+                                        .name(className)
+                                        .modifiers(
+                                                JavaModifier.builder()
+                                                        .type(JavaModifier.TYPE_MODIFIERS)
+                                                        .modifiers(Modifier.PUBLIC)
+                                        )
+                                        .annotations(
+                                                List.of(
+                                                        JavaAnnotation.builder()
+                                                                .name("org.springframework.boot.context.properties.ConfigurationProperties")
+                                                                .attributes(
+                                                                        List.of(
+                                                                                JavaAnnotation.Attribute.builder()
+                                                                                        .name("prefix")
+                                                                                        .dataType(String.class)
+                                                                                        .values(List.of(StringFormatter.toKebabCase(applicationDescription.getName()))),
+                                                                                JavaAnnotation.Attribute.builder()
+                                                                                        .name("ignoreUnknownFields")
+                                                                                        .dataType(Boolean.class)
+                                                                                        .values(List.of("false"))
+                                                                        )
+                                                                )
+                                                )
+                                        )
+                        )
+                );
     }
 }

@@ -48,7 +48,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         final List<JavaCompilationUnit> compilationUnits = new ArrayList<>();
         compilationUnits.add(AmeretaAnnotationGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(MainGeneratorSpring.generate(springApplicationDescription));
-        compilationUnits.add(ApplicationConfigurationGenerator.generate(springApplicationDescription));
+        compilationUnits.add(ApplicationPropertiesGenerator.generate(springApplicationDescription));
         if (AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription)) {
             compilationUnits.add(AbstractTimestampedDomainGenerator.generate(springApplicationDescription));
         }
@@ -113,7 +113,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
 
     private List<ISoyConfiguration> generateApplicationProperties(final SpringBootApplicationDescription springApplicationDescription, final Optional<SpringDBModuleDescription> dataBase) {
         return List.of(
-                ApplicationPropertiesGenerator.builder()
+                ApplicationPropertiesYAMLGenerator.builder()
                         .name(springApplicationDescription.getName())
                         .port(springApplicationDescription.getPort())
                         .hasDataBase(dataBase.isPresent())

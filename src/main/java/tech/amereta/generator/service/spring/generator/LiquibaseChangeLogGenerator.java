@@ -359,7 +359,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     private String resolveLoadDataJsonType() {
         return switch (dbType) {
             case POSTGRESQL -> "other";
-            case MYSQL -> "JSON";
+            case MYSQL -> "json";
         };
     }
 
