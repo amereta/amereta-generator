@@ -5,6 +5,7 @@ import tech.amereta.core.java.declaration.JavaFieldDeclaration;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.db.type.SpringDBModuleType;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 
 import java.lang.reflect.Modifier;
@@ -228,34 +229,7 @@ public final class AuthenticableDomainFieldsGenerator extends AbstractSpringSour
                         .dataType("java.util.UUID")
                         .name("activationKey")
                         .annotations(
-                                List.of(
-                                        JavaAnnotation.builder()
-                                                .name("com.fasterxml.jackson.annotation.JsonIgnore"),
-                                        JavaAnnotation.builder()
-                                                .name("jakarta.validation.constraints.Size")
-                                                .attributes(
-                                                        List.of(
-                                                                JavaAnnotation.Attribute.builder()
-                                                                        .name("min")
-                                                                        .dataType(Integer.class)
-                                                                        .values(List.of("36")),
-                                                                JavaAnnotation.Attribute.builder()
-                                                                        .name("max")
-                                                                        .dataType(Integer.class)
-                                                                        .values(List.of("36"))
-                                                        )
-                                                ),
-                                        JavaAnnotation.builder()
-                                                .name("jakarta.persistence.Column")
-                                                .attributes(
-                                                        List.of(
-                                                                JavaAnnotation.Attribute.builder()
-                                                                        .name("name")
-                                                                        .dataType(String.class)
-                                                                        .values(List.of("activation_key"))
-                                                        )
-                                                )
-                                )
+                                activationKeyAnnotatins(applicationDescription)
                         ),
                 JavaFieldDeclaration.builder()
                         .modifiers(
@@ -269,15 +243,6 @@ public final class AuthenticableDomainFieldsGenerator extends AbstractSpringSour
                         .annotations(
                                 List.of(
                                         JavaAnnotation.builder()
-                                                .name("org.hibernate.annotations.JdbcTypeCode")
-                                                .attributes(
-                                                        List.of(
-                                                                JavaAnnotation.Attribute.builder()
-                                                                        .dataType(Enum.class)
-                                                                        .values(List.of("org.hibernate.type.SqlTypes.JSON"))
-                                                        )
-                                                ),
-                                        JavaAnnotation.builder()
                                                 .name("jakarta.persistence.Column")
                                                 .attributes(
                                                         List.of(
@@ -286,9 +251,69 @@ public final class AuthenticableDomainFieldsGenerator extends AbstractSpringSour
                                                                         .dataType(String.class)
                                                                         .values(List.of("json"))
                                                         )
+                                                ),
+                                        JavaAnnotation.builder()
+                                                .name("org.hibernate.annotations.JdbcTypeCode")
+                                                .attributes(
+                                                        List.of(
+                                                                JavaAnnotation.Attribute.builder()
+                                                                        .dataType(Enum.class)
+                                                                        .values(List.of("org.hibernate.type.SqlTypes.JSON"))
+                                                        )
                                                 )
                                 )
                         )
         );
+    }
+
+    private static List<JavaAnnotation> activationKeyAnnotatins(SpringBootApplicationDescription applicationDescription) {
+        final List<JavaAnnotation> annotations = new ArrayList<>(
+                List.of(
+                        JavaAnnotation.builder()
+                                .name("com.fasterxml.jackson.annotation.JsonIgnore"),
+                        JavaAnnotation.builder()
+                                .name("jakarta.validation.constraints.Size")
+                                .attributes(
+                                        List.of(
+                                                JavaAnnotation.Attribute.builder()
+                                                        .name("min")
+                                                        .dataType(Integer.class)
+                                                        .values(List.of("36")),
+                                                JavaAnnotation.Attribute.builder()
+                                                        .name("max")
+                                                        .dataType(Integer.class)
+                                                        .values(List.of("36"))
+                                        )
+                                ),
+                        JavaAnnotation.builder()
+                                .name("jakarta.persistence.Column")
+                                .attributes(
+                                        List.of(
+                                                JavaAnnotation.Attribute.builder()
+                                                        .name("name")
+                                                        .dataType(String.class)
+                                                        .values(List.of("activation_key")),
+                                                JavaAnnotation.Attribute.builder()
+                                                        .name("length")
+                                                        .dataType(Integer.class)
+                                                        .values(List.of("36"))
+                                        )
+                                )
+                )
+        );
+        if(getDataBase(applicationDescription).orElseThrow().getDb().getType() == SpringDBModuleType.MYSQL) {
+            annotations.add(
+                    JavaAnnotation.builder()
+                            .name("org.hibernate.annotations.JdbcTypeCode")
+                            .attributes(
+                                    List.of(
+                                            JavaAnnotation.Attribute.builder()
+                                                    .dataType(Enum.class)
+                                                    .values(List.of("org.hibernate.type.SqlTypes.VARCHAR"))
+                                    )
+                            )
+            );
+        }
+        return annotations;
     }
 }
