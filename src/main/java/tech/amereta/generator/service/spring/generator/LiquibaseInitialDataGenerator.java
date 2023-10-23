@@ -50,7 +50,7 @@ public final class LiquibaseInitialDataGenerator implements ISoyConfiguration {
         return Map.of(
                 "username", resolveUsername(),
                 "email", resolveEmail(),
-                "language", "ENGLISH",
+                "language", "ENGLISH", // TODO: Internationalization module
                 "role", domainTypeDescription.getName().toUpperCase(),
                 "fieldsName", resolveMandatoryFieldsName(),
                 "fieldsData", resolveMandatoryFieldsData()

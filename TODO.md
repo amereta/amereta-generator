@@ -2,4 +2,12 @@
 - add internationalization module (LiquibaseInitialDataGenerator)
 - resolveLoadDataFieldType in LiquibaseChangeLogGenerator
 - resolveMandatoryFieldData in LiquibaseInitialDataGenerator
-- jwt configuration to provide beans of JWTProvider and JWTFilter
+- checkExistenceOfAuthenticableDomain in AuthenticableDomainService must remove non-activated domain
+- Exception controller in starter
+- throw exception when request to authenticate a non-active domain in AuthenticableUserDetailsService
+- LambdaMethod invoke for single statements must not render redundant {}
+- inited password for other encryption methods(now it is only valid for BCryptEncoder)
+- layer test
+- test container
+- controllers for domains
+- unit test of authenticate controller
