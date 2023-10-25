@@ -11,41 +11,33 @@ import java.util.Map;
 import java.util.Objects;
 
 @Builder
-public final class PomGenerator implements ISoyConfiguration {
-
-    private String javaVersion;
-
-    private String springVersion;
-
-    private String ameretaVersion;
+public final class ApplicationPropertiesYAMLGenerator implements ISoyConfiguration {
 
     private String name;
 
-    private String packageName;
-
-    private String description;
-
-    private Boolean hasSecurity;
-
-    private String securityAuthenticator;
+    private String port;
 
     private Boolean hasDataBase;
 
     private String dbType;
 
+    private String dbUsername;
+
+    private String dbPassword;
+
     @Override
     public String getName() {
-        return "amereta.generator.pom";
+        return "amereta.generator.properties";
     }
 
     @Override
     public File getFile() throws IOException {
-        File tempFile = File.createTempFile("pom.xml", ".soy");
+        File tempFile = File.createTempFile("application.yml", ".soy");
         tempFile.deleteOnExit();
 
         FileUtils.copyInputStreamToFile(
                 Objects.requireNonNull(
-                        getClass().getClassLoader().getResourceAsStream("templates/soy/pom.xml.soy")
+                        getClass().getClassLoader().getResourceAsStream("templates/soy/application.yml.soy")
                 ), tempFile
         );
 
@@ -55,22 +47,18 @@ public final class PomGenerator implements ISoyConfiguration {
     @Override
     public Map<String, Object> getParameters() {
         return Map.of(
-                "javaVersion", javaVersion,
-                "springVersion", springVersion,
-                "ameretaVersion", ameretaVersion,
                 "name", name,
-                "packageName", packageName,
-                "description", description,
-                "hasSecurity", hasSecurity,
-                "securityAuthenticator", securityAuthenticator,
+                "port", port,
                 "hasDataBase", hasDataBase,
-                "dbType", dbType
+                "dbType", dbType,
+                "dbName", name.toLowerCase(),
+                "dbUsername", dbUsername,
+                "dbPassword", dbPassword
         );
     }
 
     @Override
     public Path getPath() {
-        return Path.of("pom.xml");
+        return Path.of("src/main/resources/config/application.yml");
     }
-
 }

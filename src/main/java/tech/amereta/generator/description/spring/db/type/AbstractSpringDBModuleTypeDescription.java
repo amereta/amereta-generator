@@ -9,7 +9,7 @@ import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class SpringDBModuleTypeDescription implements SpringModuleTypeDescription {
+public abstract class AbstractSpringDBModuleTypeDescription implements SpringModuleTypeDescription {
 
     @JsonProperty("name")
     private SpringDBModuleType type;

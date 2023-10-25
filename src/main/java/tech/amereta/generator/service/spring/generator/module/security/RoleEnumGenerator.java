@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.generator;
+package tech.amereta.generator.service.spring.generator.module.security;
 
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
@@ -6,16 +6,20 @@ import tech.amereta.core.java.declaration.JavaEnumFieldDeclaration;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
+import tech.amereta.generator.util.StringFormatter;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public final class RoleGenerator extends AbstractSpringSourceCodeGenerator {
+public final class RoleEnumGenerator extends AbstractSpringSourceCodeGenerator {
 
     private static final String CLASS_NAME = "Role";
 
     public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
+        final SpringModelModuleDomainTypeDescription authenticableDomain = getAuthenticableDomain(applicationDescription);
+
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".model.enumeration")
                 .name(CLASS_NAME)
@@ -32,11 +36,9 @@ public final class RoleGenerator extends AbstractSpringSourceCodeGenerator {
                                         .fieldDeclarations(
                                                 List.of(
                                                         JavaEnumFieldDeclaration.builder()
-                                                                .name("ROOT"),
-                                                        JavaEnumFieldDeclaration.builder()
                                                                 .name("ADMIN"),
                                                         JavaEnumFieldDeclaration.builder()
-                                                                .name("USER")
+                                                                .name(StringFormatter.toSnakeCase(authenticableDomain.getName()).toUpperCase())
                                                 )
                                         )
                         )

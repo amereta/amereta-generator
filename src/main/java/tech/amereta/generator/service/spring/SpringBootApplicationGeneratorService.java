@@ -9,19 +9,19 @@ import tech.amereta.core.soy.ISoyConfiguration;
 import tech.amereta.generator.description.ApplicationDescription;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringRelation;
-import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
+import tech.amereta.generator.description.spring.security.SpringSecurityModuleDescription;
 import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
 import tech.amereta.generator.service.spring.generator.*;
+import tech.amereta.generator.service.spring.generator.module.model.AbstractTimestampedDomainGenerator;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,11 +48,10 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         final List<JavaCompilationUnit> compilationUnits = new ArrayList<>();
         compilationUnits.add(AmeretaAnnotationGeneratorSpring.generate(springApplicationDescription));
         compilationUnits.add(MainGeneratorSpring.generate(springApplicationDescription));
-        compilationUnits.add(ApplicationConfigurationGeneratorSpring.generate(springApplicationDescription));
-        compilationUnits.add(SecurityConfigurationGeneratorSpring.generate(springApplicationDescription));
+        compilationUnits.add(SpringBootConfigurationGenerator.generate(springApplicationDescription));
+        compilationUnits.add(ApplicationPropertiesGenerator.generate(springApplicationDescription));
         if (AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription)) {
-            compilationUnits.add(AbstractUserGenerator.generate(springApplicationDescription));
-            compilationUnits.add(RoleGenerator.generate(springApplicationDescription));
+            compilationUnits.add(AbstractTimestampedDomainGenerator.generate(springApplicationDescription));
         }
         compilationUnits.addAll(generateModules(springApplicationDescription));
         return compilationUnits;
@@ -65,12 +64,16 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
     }
 
     private List<ISoyConfiguration> generateStaticUnits(final SpringBootApplicationDescription springApplicationDescription) {
-        List<ISoyConfiguration> units = new ArrayList<>();
-        units.add(generatePom(springApplicationDescription));
+        final Optional<SpringDBModuleDescription> dataBase = AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription);
+        final Optional<SpringSecurityModuleDescription> securityAuthenticator = AbstractSpringSourceCodeGenerator.getSecurityAuthenticator(springApplicationDescription);
+
+        final List<ISoyConfiguration> units = new ArrayList<>();
+
+        units.add(generatePom(springApplicationDescription, dataBase, securityAuthenticator));
         units.add(generateBanner(springApplicationDescription));
-        units.addAll(generateApplicationProperties(springApplicationDescription));
+        units.addAll(generateApplicationProperties(springApplicationDescription, dataBase));
         if (AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription)) {
-            units.addAll(generateLiquibaseFiles(springApplicationDescription));
+            units.addAll(generateLiquibaseFiles(springApplicationDescription, dataBase));
         }
         return units;
     }
@@ -88,15 +91,18 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
         return javaModuleDescription.getGenerator().generate(springApplicationDescription, javaModuleDescription);
     }
 
-    private ISoyConfiguration generatePom(final SpringBootApplicationDescription springApplicationDescription) {
+    private ISoyConfiguration generatePom(final SpringBootApplicationDescription springApplicationDescription, final Optional<SpringDBModuleDescription> dataBase, final Optional<SpringSecurityModuleDescription> securityAuthenticator) {
         return PomGenerator.builder()
                 .javaVersion(springApplicationDescription.getJavaVersion())
                 .springVersion(springApplicationDescription.getSpringVersion())
+                .ameretaVersion(springApplicationDescription.getAmeretaVersion())
                 .name(springApplicationDescription.getName())
                 .packageName(springApplicationDescription.getPackageName())
                 .description(springApplicationDescription.getDescription())
-                .hasDataBase(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription))
-                .dbType(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription) ? AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getType().toString() : "")
+                .hasSecurity(securityAuthenticator.isPresent())
+                .securityAuthenticator(securityAuthenticator.isPresent() ? securityAuthenticator.get().getSecurity().getType().toString() : "")
+                .hasDataBase(dataBase.isPresent())
+                .dbType(dataBase.isPresent() ? dataBase.get().getDb().getType().toString() : "")
                 .build();
     }
 
@@ -106,42 +112,50 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 .build();
     }
 
-    private List<ISoyConfiguration> generateApplicationProperties(final SpringBootApplicationDescription springApplicationDescription) {
+    private List<ISoyConfiguration> generateApplicationProperties(final SpringBootApplicationDescription springApplicationDescription, final Optional<SpringDBModuleDescription> dataBase) {
         return List.of(
-                ApplicationPropertiesGenerator.builder()
+                ApplicationPropertiesYAMLGenerator.builder()
                         .name(springApplicationDescription.getName())
                         .port(springApplicationDescription.getPort())
-                        .hasDataBase(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription))
-                        .dbType(AbstractSpringSourceCodeGenerator.applicationHasDataBase(springApplicationDescription) ? AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getType().toString() : "")
-                        .dbUsername(AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getUsername())
-                        .dbPassword(AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getPassword())
+                        .hasDataBase(dataBase.isPresent())
+                        .dbType(dataBase.isPresent() ? dataBase.get().getDb().getType().toString() : "")
+                        .dbUsername(dataBase.isPresent() ? dataBase.get().getDb().getUsername() : "")
+                        .dbPassword(dataBase.isPresent() ? dataBase.get().getDb().getPassword() : "")
                         .build()
         );
     }
 
-    private List<ISoyConfiguration> generateLiquibaseFiles(final SpringBootApplicationDescription springApplicationDescription) {
+    private List<ISoyConfiguration> generateLiquibaseFiles(final SpringBootApplicationDescription springApplicationDescription, final Optional<SpringDBModuleDescription> dataBase) {
         final List<SpringModelModuleDomainTypeDescription> domains = extractDomainsFromApplicationDescription(springApplicationDescription);
-        final List<ISoyConfiguration> changelogs = new ArrayList<>(
+
+        final List<ISoyConfiguration> liquibaseEntities = new ArrayList<>(
                 domains.stream()
                         .map(domain -> LiquibaseChangeLogGenerator.builder()
-                                .name(domain.getName())
-                                .idType(domain.getIdType())
-                                .fields(domain.getFields())
-                                .relations(
-                                        domain.getRelations()
-                                                .stream()
-                                                .toList()
-                                )
-                                .build())
+                                .domainTypeDescription(domain)
+                                .dbType(dataBase.orElseThrow().getDb().getType())
+                                .build()
+                        )
                         .toList()
         );
-        changelogs.add(
+
+        liquibaseEntities.add(
                 LiquibaseMasterGenerator.builder()
-                        .dbType(AbstractSpringSourceCodeGenerator.getDataBase(springApplicationDescription).getDb().getType().toString())
-                        .changelogs(changelogs.stream().map(cl -> cl.getPath().toString().replaceAll("src/main/resources/", "")).toList())
+                        .dbType(dataBase.orElseThrow().getDb().getType().toString())
+                        .changelogs(liquibaseEntities.stream().map(cl -> cl.getPath().toString().replaceAll("src/main/resources/", "")).toList())
                         .build()
         );
-        return changelogs;
+
+        if (AbstractSpringSourceCodeGenerator.applicationHasSecurity(springApplicationDescription)) {
+            liquibaseEntities.add(
+                    LiquibaseInitialDataGenerator.builder()
+                            .owner(springApplicationDescription.getOwner())
+                            .applicationName(springApplicationDescription.getName())
+                            .domainTypeDescription(AbstractSpringSourceCodeGenerator.getAuthenticableDomain(springApplicationDescription))
+                            .build()
+            );
+        }
+
+        return liquibaseEntities;
     }
 
     private List<SpringModelModuleDomainTypeDescription> extractDomainsFromApplicationDescription(SpringBootApplicationDescription springApplicationDescription) {

@@ -9,7 +9,7 @@ import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class SpringModelModuleTypeDescription implements SpringModuleTypeDescription {
+public abstract class AbstractSpringModelModuleTypeDescription implements SpringModuleTypeDescription {
 
     private SpringModelType type;
 

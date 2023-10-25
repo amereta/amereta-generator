@@ -34,6 +34,10 @@ public class StringFormatter {
         return string.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
     }
 
+    public static String toKebabCase(String string) {
+        return string.replaceAll("([a-z])([A-Z])", "$1-$2").toLowerCase();
+    }
+
     public static String toPlural(String string) {
         if (string.charAt(string.length() - 1) == 'y') {
             return string.substring(0, string.length() - 1) + "ies";

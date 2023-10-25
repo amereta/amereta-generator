@@ -3,7 +3,10 @@ package tech.amereta.generator.description.spring.model.type;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
@@ -17,13 +20,15 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SpringModelModuleDomainTypeDescription extends SpringModelModuleTypeDescription {
+public final class SpringModelModuleDomainTypeDescription extends AbstractSpringModelModuleTypeDescription {
 
     @JsonProperty("id")
     @DataTypeValidator(values = {SpringDataType.UUID, SpringDataType.LONG})
     private SpringDataType idType = SpringDataType.UUID;
 
-    private Boolean authorizable = false;
+    private Boolean authenticable = false;
+
+    private Boolean timestamped = false;
 
     @NotNull(message = "domain's fields must not be null!")
     @Valid

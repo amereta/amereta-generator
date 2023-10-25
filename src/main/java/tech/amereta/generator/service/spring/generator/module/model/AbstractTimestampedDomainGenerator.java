@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.generator;
+package tech.amereta.generator.service.spring.generator.module.model;
 
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
@@ -12,9 +12,9 @@ import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public final class AbstractUserGenerator extends AbstractSpringSourceCodeGenerator {
+public final class AbstractTimestampedDomainGenerator extends AbstractSpringSourceCodeGenerator {
 
-    private static final String CLASS_NAME = "AbstractUser";
+    private static final String CLASS_NAME = "AbstractTimestampedDomain";
 
     public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
         return JavaCompilationUnit.builder()
@@ -30,6 +30,7 @@ public final class AbstractUserGenerator extends AbstractSpringSourceCodeGenerat
                                                         .type(JavaModifier.TYPE_MODIFIERS)
                                                         .modifiers(Modifier.PUBLIC | Modifier.ABSTRACT)
                                         )
+                                        .implementedClassName("java.io.Serializable")
                                         .annotations(
                                                 List.of(
                                                         JavaAnnotation.builder()
@@ -37,11 +38,33 @@ public final class AbstractUserGenerator extends AbstractSpringSourceCodeGenerat
                                                         JavaAnnotation.builder()
                                                                 .name("lombok.experimental.SuperBuilder"),
                                                         JavaAnnotation.builder()
+                                                                .name("lombok.Data"),
+                                                        JavaAnnotation.builder()
                                                                 .name("lombok.NoArgsConstructor"),
                                                         JavaAnnotation.builder()
-                                                                .name("lombok.Getter"),
+                                                                .name("jakarta.persistence.EntityListeners")
+                                                                .attributes(
+                                                                        List.of(
+                                                                                JavaAnnotation.Attribute.builder()
+                                                                                        .dataType(Class.class)
+                                                                                        .values(List.of("org.springframework.data.jpa.domain.support.AuditingEntityListener"))
+                                                                        )
+                                                                ),
                                                         JavaAnnotation.builder()
-                                                                .name("lombok.Setter")
+                                                                .name("com.fasterxml.jackson.annotation.JsonIgnoreProperties")
+                                                                .attributes(
+                                                                        List.of(
+                                                                                JavaAnnotation.Attribute.builder()
+                                                                                        .name("value")
+                                                                                        .dataType(String.class)
+                                                                                        .values(List.of("createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate")),
+                                                                                JavaAnnotation.Attribute.builder()
+                                                                                        .name("allowGetters")
+                                                                                        .dataType(Boolean.class)
+                                                                                        .values(List.of("true"))
+                                                                        )
+                                                                )
+
                                                 )
                                         )
                                         .fieldDeclarations(
@@ -53,49 +76,57 @@ public final class AbstractUserGenerator extends AbstractSpringSourceCodeGenerat
                                                                                 .modifiers(Modifier.PRIVATE)
                                                                 )
                                                                 .dataType("String")
-                                                                .name("username")
+                                                                .name("createdBy")
                                                                 .annotations(
                                                                         List.of(
                                                                                 JavaAnnotation.builder()
-                                                                                        .name("jakarta.validation.constraints.NotNull"),
-                                                                                JavaAnnotation.builder()
-                                                                                        .name("jakarta.validation.constraints.Pattern")
-                                                                                        .attributes(
-                                                                                                List.of(
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("regexp")
-                                                                                                                .dataType(String.class)
-                                                                                                                .values(List.of("1"))
-                                                                                                )
-                                                                                        ),
-                                                                                JavaAnnotation.builder()
-                                                                                        .name("jakarta.validation.constraints.Size")
-                                                                                        .attributes(
-                                                                                                List.of(
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("min")
-                                                                                                                .dataType(Integer.class)
-                                                                                                                .values(List.of("1")),
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("max")
-                                                                                                                .dataType(Integer.class)
-                                                                                                                .values(List.of("50"))
-                                                                                                )
-                                                                                        ),
+                                                                                        .name("org.springframework.data.annotation.CreatedBy"),
                                                                                 JavaAnnotation.builder()
                                                                                         .name("jakarta.persistence.Column")
                                                                                         .attributes(
                                                                                                 List.of(
+                                                                                                        JavaAnnotation.Attribute.builder()
+                                                                                                                .name("name")
+                                                                                                                .dataType(String.class)
+                                                                                                                .values(List.of("created_by")),
                                                                                                         JavaAnnotation.Attribute.builder()
                                                                                                                 .name("length")
                                                                                                                 .dataType(Integer.class)
                                                                                                                 .values(List.of("50")),
                                                                                                         JavaAnnotation.Attribute.builder()
-                                                                                                                .name("unique")
-                                                                                                                .dataType(Boolean.class)
-                                                                                                                .values(List.of("true")),
-                                                                                                        JavaAnnotation.Attribute.builder()
                                                                                                                 .name("nullable")
+                                                                                                                .dataType(Boolean.class)
+                                                                                                                .values(List.of("false")),
+                                                                                                        JavaAnnotation.Attribute.builder()
+                                                                                                                .name("updatable")
+                                                                                                                .dataType(Boolean.class)
+                                                                                                                .values(List.of("false"))
+                                                                                                )
+                                                                                        )
+                                                                        )
+                                                                ),
+                                                        JavaFieldDeclaration.builder()
+                                                                .modifiers(
+                                                                        JavaModifier.builder()
+                                                                                .type(JavaModifier.TYPE_MODIFIERS)
+                                                                                .modifiers(Modifier.PRIVATE)
+                                                                )
+                                                                .dataType("java.time.Instant")
+                                                                .name("createdDate")
+                                                                .annotations(
+                                                                        List.of(
+                                                                                JavaAnnotation.builder()
+                                                                                        .name("org.springframework.data.annotation.CreatedDate"),
+                                                                                JavaAnnotation.builder()
+                                                                                        .name("jakarta.persistence.Column")
+                                                                                        .attributes(
+                                                                                                List.of(
+                                                                                                        JavaAnnotation.Attribute.builder()
+                                                                                                                .name("name")
+                                                                                                                .dataType(String.class)
+                                                                                                                .values(List.of("created_date")),
+                                                                                                        JavaAnnotation.Attribute.builder()
+                                                                                                                .name("updatable")
                                                                                                                 .dataType(Boolean.class)
                                                                                                                 .values(List.of("false"))
                                                                                                 )
@@ -109,37 +140,23 @@ public final class AbstractUserGenerator extends AbstractSpringSourceCodeGenerat
                                                                                 .modifiers(Modifier.PRIVATE)
                                                                 )
                                                                 .dataType("String")
-                                                                .name("email")
+                                                                .name("lastModifiedBy")
                                                                 .annotations(
                                                                         List.of(
                                                                                 JavaAnnotation.builder()
-                                                                                        .name("jakarta.validation.constraints.Email"),
-                                                                                JavaAnnotation.builder()
-                                                                                        .name("jakarta.validation.constraints.Size")
-                                                                                        .attributes(
-                                                                                                List.of(
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("min")
-                                                                                                                .dataType(Integer.class)
-                                                                                                                .values(List.of("5")),
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("max")
-                                                                                                                .dataType(Integer.class)
-                                                                                                                .values(List.of("254"))
-                                                                                                )
-                                                                                        ),
+                                                                                        .name("org.springframework.data.annotation.LastModifiedBy"),
                                                                                 JavaAnnotation.builder()
                                                                                         .name("jakarta.persistence.Column")
                                                                                         .attributes(
                                                                                                 List.of(
                                                                                                         JavaAnnotation.Attribute.builder()
+                                                                                                                .name("name")
+                                                                                                                .dataType(String.class)
+                                                                                                                .values(List.of("last_modified_by")),
+                                                                                                        JavaAnnotation.Attribute.builder()
                                                                                                                 .name("length")
                                                                                                                 .dataType(Integer.class)
-                                                                                                                .values(List.of("254")),
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("unique")
-                                                                                                                .dataType(Boolean.class)
-                                                                                                                .values(List.of("true"))
+                                                                                                                .values(List.of("50"))
                                                                                                 )
                                                                                         )
                                                                         )
@@ -150,44 +167,20 @@ public final class AbstractUserGenerator extends AbstractSpringSourceCodeGenerat
                                                                                 .type(JavaModifier.TYPE_MODIFIERS)
                                                                                 .modifiers(Modifier.PRIVATE)
                                                                 )
-                                                                .dataType("String")
-                                                                .name("password")
+                                                                .dataType("java.time.Instant")
+                                                                .name("lastModifiedDate")
                                                                 .annotations(
                                                                         List.of(
                                                                                 JavaAnnotation.builder()
-                                                                                        .name("com.fasterxml.jackson.annotation.JsonIgnore"),
-                                                                                JavaAnnotation.builder()
-                                                                                        .name("jakarta.validation.constraints.NotNull"),
-                                                                                JavaAnnotation.builder()
-                                                                                        .name("jakarta.validation.constraints.Size")
-                                                                                        .attributes(
-                                                                                                List.of(
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("min")
-                                                                                                                .dataType(Integer.class)
-                                                                                                                .values(List.of("60")),
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("max")
-                                                                                                                .dataType(Integer.class)
-                                                                                                                .values(List.of("60"))
-                                                                                                )
-                                                                                        ),
+                                                                                        .name("org.springframework.data.annotation.LastModifiedDate"),
                                                                                 JavaAnnotation.builder()
                                                                                         .name("jakarta.persistence.Column")
                                                                                         .attributes(
                                                                                                 List.of(
                                                                                                         JavaAnnotation.Attribute.builder()
-                                                                                                                .name("length")
-                                                                                                                .dataType(Integer.class)
-                                                                                                                .values(List.of("60")),
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("unique")
-                                                                                                                .dataType(Boolean.class)
-                                                                                                                .values(List.of("true")),
-                                                                                                        JavaAnnotation.Attribute.builder()
-                                                                                                                .name("nullable")
-                                                                                                                .dataType(Boolean.class)
-                                                                                                                .values(List.of("false"))
+                                                                                                                .name("name")
+                                                                                                                .dataType(String.class)
+                                                                                                                .values(List.of("last_modified_date"))
                                                                                                 )
                                                                                         )
                                                                         )

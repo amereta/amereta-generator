@@ -4,17 +4,19 @@ import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
 import tech.amereta.core.java.declaration.AbstractJavaFieldDeclaration;
 import tech.amereta.core.java.declaration.JavaFieldDeclaration;
+import tech.amereta.core.java.declaration.JavaMethodDeclaration;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
 import tech.amereta.generator.description.spring.model.type.SpringRelation;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.exception.DomainIdDataTypeException;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
+import tech.amereta.generator.service.spring.generator.module.security.AuthenticableDomainFieldsGenerator;
 import tech.amereta.generator.util.StringFormatter;
 
 import java.lang.annotation.Annotation;
@@ -47,9 +49,13 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
     private JavaCompilationUnit generateDBDomain(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final String className = StringFormatter.toPascalCase(domainTypeDescription.getName());
         final JavaTypeDeclaration domain = generateClassDeclaration(className);
-        final List<JavaAnnotation> annotations = generateDBDomainAnnotations(domainTypeDescription);
+        final List<JavaAnnotation> annotations = generateDBDomainAnnotations(applicationDescription, domainTypeDescription);
+        final List<AbstractJavaFieldDeclaration> fieldDeclarations = generateDBDomainFields(applicationDescription, domainTypeDescription);
 
-        if (domainTypeDescription.getAuthorizable()) {
+        domain.setImplementedClassName("java.io.Serializable");
+
+        if (domainTypeDescription.getTimestamped()) {
+            domain.setExtendedClassName("AbstractTimestampedDomain");
             annotations.add(
                     JavaAnnotation.builder()
                             .name("lombok.EqualsAndHashCode")
@@ -61,10 +67,10 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                                     )
                             )
             );
-            domain.setExtendedClassName("AbstractUser");
         }
+
         domain.setAnnotations(annotations);
-        domain.setFieldDeclarations(generateDBDomainFields(domainTypeDescription));
+        domain.setFieldDeclarations(fieldDeclarations);
 
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".model.domain")
@@ -89,6 +95,48 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                         domainTypeDescription.getIdType().getDataType()
                 )
         );
+        if (domainTypeDescription.getAuthenticable()) {
+            repository.setMethodDeclarations(
+                    List.of(
+                            JavaMethodDeclaration.builder()
+                                    .isAbstract(true)
+                                    .name("findOneByEmailIgnoreCase")
+                                    .returnType("java.util.Optional")
+                                    .genericTypes(List.of(basePackage(applicationDescription) + ".model.domain." + domainName))
+                                    .parameters(
+                                            List.of(
+                                                    JavaMethodDeclaration.Parameter.builder()
+                                                            .name("email")
+                                                            .type("String")
+                                            )
+                                    ),
+                            JavaMethodDeclaration.builder()
+                                    .isAbstract(true)
+                                    .name("findOneByUsername")
+                                    .returnType("java.util.Optional")
+                                    .genericTypes(List.of(basePackage(applicationDescription) + ".model.domain." + domainName))
+                                    .parameters(
+                                            List.of(
+                                                    JavaMethodDeclaration.Parameter.builder()
+                                                            .name("username")
+                                                            .type("String")
+                                            )
+                                    ),
+                            JavaMethodDeclaration.builder()
+                                    .isAbstract(true)
+                                    .name("findOneByActivationKey")
+                                    .returnType("java.util.Optional")
+                                    .genericTypes(List.of(basePackage(applicationDescription) + ".model.domain." + domainName))
+                                    .parameters(
+                                            List.of(
+                                                    JavaMethodDeclaration.Parameter.builder()
+                                                            .name("activationKey")
+                                                            .type("java.util.UUID")
+                                            )
+                                    )
+                    )
+            );
+        }
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".repository")
                 .name(className)
@@ -109,10 +157,13 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
         );
     }
 
-    private List<AbstractJavaFieldDeclaration> generateDBDomainFields(final SpringModelModuleDomainTypeDescription domainTypeDescription) {
+    private List<AbstractJavaFieldDeclaration> generateDBDomainFields(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final List<AbstractJavaFieldDeclaration> fieldDeclarations = new ArrayList<>();
         final JavaFieldDeclaration idField = generateIdField(domainTypeDescription.getIdType());
         fieldDeclarations.add(idField);
+        if (applicationHasSecurity(applicationDescription) && domainTypeDescription.getAuthenticable()) {
+            fieldDeclarations.addAll(AuthenticableDomainFieldsGenerator.generate(applicationDescription));
+        }
         fieldDeclarations.addAll(
                 domainTypeDescription.getFields()
                         .stream()
@@ -322,9 +373,11 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
 
     private static JavaFieldDeclaration generateIdField(final SpringDataType idType) {
         return JavaFieldDeclaration.builder()
-                .modifiers(JavaModifier.builder()
-                        .type(JavaModifier.FIELD_MODIFIERS)
-                        .modifiers(Modifier.PRIVATE))
+                .modifiers(
+                        JavaModifier.builder()
+                                .type(JavaModifier.FIELD_MODIFIERS)
+                                .modifiers(Modifier.PRIVATE)
+                )
                 .dataType(idType.getDataType())
                 .name("id")
                 .annotations(generateIdAnnotations(idType));
@@ -332,13 +385,13 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
 
     private static List<JavaAnnotation> generateIdAnnotations(final SpringDataType idType) {
         return switch (idType) {
-            case UUID -> generateUUIDAnnotations();
-            case LONG -> generateLongAnnotations();
+            case UUID -> generateUUIDIdAnnotations();
+            case LONG -> generateLongIdAnnotations();
             default -> throw new DomainIdDataTypeException("Cannot create id with " + idType);
         };
     }
 
-    private static List<JavaAnnotation> generateLongAnnotations() {
+    private static List<JavaAnnotation> generateLongIdAnnotations() {
         return List.of(
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.Id"),
@@ -349,27 +402,23 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                                         JavaAnnotation.Attribute.builder()
                                                 .name("strategy")
                                                 .dataType(Enum.class)
-                                                .values(List.of("jakarta.persistence.GenerationType.SEQUENCE")),
-                                        JavaAnnotation.Attribute.builder()
-                                                .name("generator")
-                                                .dataType(String.class)
-                                                .values(List.of("sequenceGenerator"))
+                                                .values(List.of("jakarta.persistence.GenerationType.IDENTITY"))
                                 )
                         ),
                 JavaAnnotation.builder()
-                        .name("jakarta.persistence.SequenceGenerator")
+                        .name("jakarta.persistence.Column")
                         .attributes(
                                 List.of(
                                         JavaAnnotation.Attribute.builder()
                                                 .name("name")
                                                 .dataType(String.class)
-                                                .values(List.of("sequenceGenerator"))
+                                                .values(List.of("id"))
                                 )
                         )
         );
     }
 
-    private static List<JavaAnnotation> generateUUIDAnnotations() {
+    private static List<JavaAnnotation> generateUUIDIdAnnotations() {
         return List.of(
                 JavaAnnotation.builder()
                         .name("jakarta.persistence.Id"),
@@ -514,7 +563,7 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                 .value(field.getDefaultValue());
     }
 
-    private static List<JavaAnnotation> generateDBDomainAnnotations(final SpringModelModuleDomainTypeDescription domainTypeDescription) {
+    private static List<JavaAnnotation> generateDBDomainAnnotations(final SpringBootApplicationDescription applicationDescription, final SpringModelModuleDomainTypeDescription domainTypeDescription) {
         final List<JavaAnnotation> annotations = new ArrayList<>(
                 List.of(
                         JavaAnnotation.builder()
@@ -531,6 +580,24 @@ public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringMo
                                 .name("jakarta.persistence.Entity")
                 )
         );
+        if (applicationHasSecurity(applicationDescription) && domainTypeDescription.getAuthenticable()) {
+            annotations.add(
+                    JavaAnnotation.builder()
+                            .name("org.hibernate.annotations.TypeDef")
+                            .attributes(
+                                    List.of(
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("name")
+                                                    .dataType(String.class)
+                                                    .values(List.of("json")),
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("typeClass")
+                                                    .dataType(Class.class)
+                                                    .values(List.of("com.vladmihalcea.hibernate.type.json.JsonType"))
+                                    )
+                            )
+            );
+        }
         annotations.addAll(generateSimpleDomainAnnotations());
         return annotations;
     }

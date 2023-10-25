@@ -2,14 +2,17 @@ package tech.amereta.generator.description.spring.model.type.field;
 
 public enum SpringDataType {
 
+    JSON(""),
     STRING("String"),
+    BOOLEAN("Boolean"),
     INTEGER("Integer"),
     LONG("Long"),
     FLOAT("Float"),
     DOUBLE("Double"),
     BIGDECIMAL("java.math.BigDecimal"),
     UUID("java.util.UUID"),
-    ZONED_DATETIME("java.time.ZonedDateTime");
+    ZONED_DATETIME("java.time.ZonedDateTime"),
+    INSTANT("java.time.Instant");
 
     private final String dataType;
 

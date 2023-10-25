@@ -11,18 +11,20 @@ import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-public final class DataBaseConfigurationGenerator extends AbstractSpringSourceCodeGenerator {
+public final class SpringBootConfigurationGenerator extends AbstractSpringSourceCodeGenerator {
+
+    private static final String CLASS_NAME = "SpringBootConfiguration";
 
     public static JavaCompilationUnit generate(final SpringBootApplicationDescription applicationDescription) {
-        final String className = "DatabaseConfiguration";
+
         return JavaCompilationUnit.builder()
                 .packageName(basePackage(applicationDescription) + ".config")
-                .name(className)
+                .name(CLASS_NAME)
                 .typeDeclarations(
                         List.of(
                                 JavaTypeDeclaration.builder()
                                         .type(JavaType.CLASS)
-                                        .name(className)
+                                        .name(CLASS_NAME)
                                         .modifiers(
                                                 JavaModifier.builder()
                                                         .type(JavaModifier.TYPE_MODIFIERS)
@@ -31,29 +33,16 @@ public final class DataBaseConfigurationGenerator extends AbstractSpringSourceCo
                                         .annotations(
                                                 List.of(
                                                         JavaAnnotation.builder()
-                                                                .name("org.springframework.context.annotation.Configuration"),
-                                                        JavaAnnotation.builder()
-                                                                .name("org.springframework.data.jpa.repository.config.EnableJpaRepositories")
+                                                                .name("org.springframework.context.annotation.ComponentScan")
                                                                 .attributes(
                                                                         List.of(
                                                                                 JavaAnnotation.Attribute.builder()
-                                                                                        .name("value")
                                                                                         .dataType(String.class)
-                                                                                        .values(List.of(basePackage(applicationDescription) + ".repository"))
+                                                                                        .values(List.of("tech.amereta.starter"))
                                                                         )
                                                                 ),
-//                                                        JavaAnnotation.builder()
-//                                                                .name("org.springframework.data.jpa.repository.config.EnableJpaAuditing")
-//                                                                .attributes(
-//                                                                        List.of(
-//                                                                                JavaAnnotation.Attribute.builder()
-//                                                                                        .name("auditorAwareRef")
-//                                                                                        .dataType(String.class)
-//                                                                                        .values(List.of("springSecurityAuditorAware"))
-//                                                                        )
-//                                                                ), TODO: Config Security of Db
                                                         JavaAnnotation.builder()
-                                                                .name("org.springframework.transaction.annotation.EnableTransactionManagement")
+                                                                .name("org.springframework.context.annotation.Configuration")
                                                 )
                                         )
                         )

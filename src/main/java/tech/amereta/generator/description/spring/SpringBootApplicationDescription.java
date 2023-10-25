@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.AbstractApplication;
 import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
+import tech.amereta.generator.description.spring.security.SpringSecurityModuleDescription;
 import tech.amereta.generator.service.spring.SpringBootApplicationGeneratorService;
 import tech.amereta.generator.service.spring.SpringBootApplicationValidatorService;
 
@@ -21,6 +22,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SpringBootApplicationDescription implements AbstractApplication {
+
+    private String owner;
 
     @NotNull(message = "Application's name must not be null!")
     private String name;
@@ -35,6 +38,8 @@ public class SpringBootApplicationDescription implements AbstractApplication {
 
     private String springVersion = "3.1.3";
 
+    private String ameretaVersion = "0.1.0";
+
     private String port = "8080";
 
     @JsonTypeInfo(
@@ -44,7 +49,8 @@ public class SpringBootApplicationDescription implements AbstractApplication {
     )
     @JsonSubTypes({
             @JsonSubTypes.Type(value = SpringModelModuleDescription.class, name = "MODEL"),
-            @JsonSubTypes.Type(value = SpringDBModuleDescription.class, name = "DB")
+            @JsonSubTypes.Type(value = SpringDBModuleDescription.class, name = "DB"),
+            @JsonSubTypes.Type(value = SpringSecurityModuleDescription.class, name = "SECURITY"),
     })
     @Valid
     private List<AbstractSpringModuleDescription> modules;

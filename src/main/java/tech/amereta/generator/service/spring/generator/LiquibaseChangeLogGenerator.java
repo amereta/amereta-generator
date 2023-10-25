@@ -3,6 +3,8 @@ package tech.amereta.generator.service.spring.generator;
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
 import tech.amereta.core.soy.ISoyConfiguration;
+import tech.amereta.generator.description.spring.db.type.SpringDBModuleType;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
 import tech.amereta.generator.description.spring.model.type.SpringRelation;
 import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
@@ -13,10 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Builder
 public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
@@ -29,13 +28,9 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
             + String.valueOf(date.getMinute())
             + String.valueOf(date.getNano() / 10000);
 
-    private String name;
+    private SpringModelModuleDomainTypeDescription domainTypeDescription;
 
-    private SpringDataType idType;
-
-    private List<SpringModelModuleDomainTypeFieldDescription> fields;
-
-    private List<SpringModelModuleFieldRelationDescription> relations;
+    private SpringDBModuleType dbType;
 
     @Override
     public String getName() {
@@ -59,47 +54,163 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     @Override
     public Map<String, Object> getParameters() {
         return Map.of(
-                "name", StringFormatter.toSnakeCase(name),
+                "name", StringFormatter.toSnakeCase(domainTypeDescription.getName()),
                 "timestamp", timestamp,
+                "idType", resolveLoadDataFieldType(domainTypeDescription.getIdType()),
+                "dbType", dbType.toString(),
                 "fields", generateFields(),
                 "manyToManyTables", generateManyToManyTables(),
-                "constraints", generateConstraints()
+                "constraints", generateConstraints(),
+                "loadData", domainTypeDescription.getAuthenticable(),
+                "loadDataFields", generateLoadDataFields()
         );
     }
 
     @Override
     public Path getPath() {
-        return Path.of("src/main/resources/db/changelog/" + timestamp + "_" + StringFormatter.toPascalCase(name) + ".xml");
+        return Path.of("src/main/resources/db/changelog/" + timestamp + "_" + StringFormatter.toPascalCase(domainTypeDescription.getName()) + ".xml");
     }
 
     private List<String> generateFields() {
         final List<String> fields = new ArrayList<>();
         fields.add(idField());
-        fields.addAll(
-                this.fields.stream()
-                        .filter(field -> !field.isTransient())
-                        .map(this::generateField)
-                        .toList()
-        );
-        fields.addAll(
-                this.relations.stream()
-                        .filter(this::mustGenerateRelationColumns)
-                        .map(this::convertRelationToField)
-                        .map(this::generateField)
-                        .toList()
-        );
+        if (domainTypeDescription.getAuthenticable()) {
+            fields.addAll(authenticableFields());
+        }
+        fields.addAll(domainFields());
+        if (domainTypeDescription.getTimestamped()) {
+            fields.addAll(timestampedFields());
+        }
+        fields.addAll(relationFields());
         return fields;
     }
 
+    private String idField() {
+        return generateField(
+                SpringModelModuleDomainTypeFieldDescription.builder()
+                        .name("id")
+                        .dataType(domainTypeDescription.getIdType())
+                        .primaryKey(true)
+                        .nullable(false)
+                        .build()
+        );
+    }
+
+    private List<String> authenticableFields() {
+        return List.of(
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("username")
+                                .dataType(SpringDataType.STRING)
+                                .length(50)
+                                .nullable(false)
+                                .unique(true)
+                                .build()
+                ),
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("email")
+                                .dataType(SpringDataType.STRING)
+                                .length(254)
+                                .unique(true)
+                                .build()
+                ),
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("passwordHash")
+                                .dataType(SpringDataType.STRING)
+                                .length(60)
+                                .nullable(false)
+                                .build()
+                ),
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("language")
+                                .dataType(SpringDataType.STRING)
+                                .length(10)
+                                .nullable(false)
+                                .build()
+                ),
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("activated")
+                                .dataType(SpringDataType.BOOLEAN)
+                                .nullable(false)
+                                .build()
+                ),
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("activationKey")
+                                .dataType(SpringDataType.UUID)
+                                .build()
+                ),
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("roles")
+                                .dataType(SpringDataType.JSON)
+                                .build()
+                )
+        );
+    }
+
+    private List<String> domainFields() {
+        return domainTypeDescription.getFields().stream()
+                .filter(field -> !field.isTransient())
+                .map(this::generateField)
+                .toList();
+    }
+
+    private List<String> timestampedFields() {
+        return List.of(
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("createdBy")
+                                .dataType(SpringDataType.STRING)
+                                .length(50)
+                                .nullable(false)
+                                .updatable(false)
+                                .build()
+                ),
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("createdDate")
+                                .dataType(SpringDataType.INSTANT)
+                                .updatable(false)
+                                .build()
+                ),
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("lastModifiedBy")
+                                .dataType(SpringDataType.STRING)
+                                .length(50)
+                                .build()
+                ),
+                generateField(
+                        SpringModelModuleDomainTypeFieldDescription.builder()
+                                .name("lastModifiedDate")
+                                .dataType(SpringDataType.INSTANT)
+                                .build()
+                )
+        );
+    }
+
+    private List<String> relationFields() {
+        return domainTypeDescription.getRelations().stream()
+                .filter(this::mustGenerateRelationColumns)
+                .map(this::convertRelationToField)
+                .map(this::generateField)
+                .toList();
+    }
+
     private List<String> generateConstraints() {
-        return this.relations.stream()
+        return domainTypeDescription.getRelations().stream()
                 .filter(this::mustGenerateRelationConstraints)
                 .map(this::generateConstraint)
                 .toList();
     }
 
     private List<String> generateManyToManyTables() {
-        return this.relations.stream()
+        return domainTypeDescription.getRelations().stream()
                 .filter(relation -> relation.getJoin() && relation.getRelationType() == SpringRelation.MANY_TO_MANY)
                 .map(this::generateManyToManyTable)
                 .toList();
@@ -107,23 +218,23 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
 
     private String generateManyToManyTable(final SpringModelModuleFieldRelationDescription relationDescription) {
         return "\n\t\t<createTable tableName=\"" + resolveManyToManyTableName(relationDescription) + "\">\n" +
-                "\t\t\t<column name=\"" + StringFormatter.toSnakeCase(this.name) + "_id\" type=\"" + resolveFieldType(this.idType, null) + "\">\n" +
+                "\t\t\t<column name=\"" + StringFormatter.toSnakeCase(domainTypeDescription.getName()) + "_id\" type=\"" + resolveFieldType(domainTypeDescription.getIdType(), null) + "\">\n" +
                 "\t\t\t\t<constraints nullable=\"false\"/>\n" +
                 "\t\t\t</column>\n" +
                 "\t\t\t<column name=\"" + StringFormatter.toSnakeCase(relationDescription.getTo()) + "_id\" type=\"" + resolveFieldType(relationDescription.getJoinDataType(), null) + "\">\n" +
                 "\t\t\t\t<constraints nullable=\"false\"/>\n" +
                 "\t\t\t</column>\n" +
                 "\t\t</createTable>\n" +
-                "\n\t\t<addPrimaryKey columnNames=\"" + StringFormatter.toSnakeCase(this.name) + "_id, " + StringFormatter.toSnakeCase(relationDescription.getTo()) + "_id\" tableName=\"" + resolveManyToManyTableName(relationDescription) + "\"/>";
+                "\n\t\t<addPrimaryKey columnNames=\"" + StringFormatter.toSnakeCase(domainTypeDescription.getName()) + "_id, " + StringFormatter.toSnakeCase(relationDescription.getTo()) + "_id\" tableName=\"" + resolveManyToManyTableName(relationDescription) + "\"/>";
     }
 
     private String generateConstraint(final SpringModelModuleFieldRelationDescription relationDescription) {
         if (relationDescription.getRelationType() == SpringRelation.MANY_TO_MANY) {
             return foreignKeyConstraint(
-                    StringFormatter.toSnakeCase(this.name),
+                    StringFormatter.toSnakeCase(domainTypeDescription.getName()),
                     resolveManyToManyTableName(relationDescription),
-                    resolveManyToManyTableName(relationDescription) + "__" + StringFormatter.toSnakeCase(this.name),
-                    StringFormatter.toSnakeCase(this.name)
+                    resolveManyToManyTableName(relationDescription) + "__" + StringFormatter.toSnakeCase(domainTypeDescription.getName()),
+                    StringFormatter.toSnakeCase(domainTypeDescription.getName())
             ) + foreignKeyConstraint(
                     StringFormatter.toSnakeCase(relationDescription.getTo()),
                     resolveManyToManyTableName(relationDescription),
@@ -133,8 +244,8 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
         }
         return foreignKeyConstraint(
                 StringFormatter.toSnakeCase(relationDescription.getTo()),
-                StringFormatter.toSnakeCase(this.name),
-                StringFormatter.toSnakeCase(this.name) + "__" + StringFormatter.toSnakeCase(relationDescription.getTo()),
+                StringFormatter.toSnakeCase(domainTypeDescription.getName()),
+                StringFormatter.toSnakeCase(domainTypeDescription.getName()) + "__" + StringFormatter.toSnakeCase(relationDescription.getTo()),
                 StringFormatter.toSnakeCase(relationDescription.getTo())
         );
     }
@@ -148,18 +259,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String resolveManyToManyTableName(final SpringModelModuleFieldRelationDescription relationDescription) {
-        return StringFormatter.toSnakeCase(this.name) + "__" + StringFormatter.toSnakeCase(relationDescription.getTo());
-    }
-
-    private String idField() {
-        return generateField(
-                SpringModelModuleDomainTypeFieldDescription.builder()
-                        .name("id")
-                        .dataType(idType)
-                        .primaryKey(true)
-                        .nullable(false)
-                        .build()
-        );
+        return StringFormatter.toSnakeCase(domainTypeDescription.getName()) + "__" + StringFormatter.toSnakeCase(relationDescription.getTo());
     }
 
     private boolean mustGenerateRelationColumns(final SpringModelModuleFieldRelationDescription relation) {
@@ -182,8 +282,15 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String generateField(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
-        return "\n\t\t\t<column name=\"" + StringFormatter.toSnakeCase(fieldDescription.getName()) + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\"" +
+        return "\n\t\t\t<column name=\"" + StringFormatter.toSnakeCase(fieldDescription.getName()) + "\" type=\"" + resolveFieldType(fieldDescription.getDataType(), fieldDescription.getLength()) + "\"" + resolveAutoIncrement(fieldDescription) +
                 resolveFieldConstraints(fieldDescription);
+    }
+
+    private String resolveAutoIncrement(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
+        if(fieldDescription.isPrimaryKey() && fieldDescription.getDataType() == SpringDataType.LONG) {
+            return " autoIncrement=\"true\" ";
+        }
+        return "";
     }
 
     private String resolveFieldConstraints(SpringModelModuleDomainTypeFieldDescription fieldDescription) {
@@ -209,14 +316,31 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
 
     private String resolveUnique(final Boolean isUnique, final String fieldName) {
         if (isUnique) {
-            return "unique=\"true\" uniqueConstraintName=\"ux_" + StringFormatter.toSnakeCase(this.name) + "__" + StringFormatter.toSnakeCase(fieldName) + "\" ";
+            return "unique=\"true\" uniqueConstraintName=\"ux_" + StringFormatter.toSnakeCase(domainTypeDescription.getName()) + "__" + StringFormatter.toSnakeCase(fieldName) + "\" ";
         }
         return "";
     }
 
+    private List<String> generateLoadDataFields() {
+        if (domainTypeDescription.getAuthenticable()) {
+            return domainTypeDescription.getFields()
+                    .stream()
+                    .filter(field -> !field.isNullable())
+                    .map(this::generateLoadDataField)
+                    .toList();
+        }
+        return Collections.emptyList();
+    }
+
+    private String generateLoadDataField(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
+        return "\n\t\t\t<column name=\"" + StringFormatter.toSnakeCase(fieldDescription.getName()) + "\" type=\"" + resolveLoadDataFieldType(fieldDescription.getDataType()) + "\"/>";
+    }
+
     private String resolveFieldType(final SpringDataType dataType, final Integer length) {
         return switch (dataType) {
+            case JSON -> "json";
             case STRING -> "varchar(" + resolveFieldLength(length) + ")";
+            case BOOLEAN -> "boolean";
             case UUID -> "${uuidType}";
             case INTEGER -> "integer";
             case LONG -> "bigint";
@@ -224,6 +348,26 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
             case DOUBLE -> "double";
             case BIGDECIMAL -> "decimal(21,2)";
             case ZONED_DATETIME -> "${datetimeType}";
+            case INSTANT -> "timestamp";
+        };
+    }
+
+    private String resolveLoadDataFieldType(final SpringDataType dataType) {
+        return switch (dataType) {
+            case JSON -> resolveLoadDataJsonType();
+            case STRING -> "string";
+            case BOOLEAN -> "boolean";
+            case UUID -> "${uuidType}";
+            case INTEGER, LONG, FLOAT, DOUBLE, BIGDECIMAL -> "numeric";
+            case ZONED_DATETIME -> "${datetimeType}";
+            case INSTANT -> "timestamp";
+        };
+    }
+
+    private String resolveLoadDataJsonType() {
+        return switch (dbType) {
+            case POSTGRESQL -> "other";
+            case MYSQL -> "json";
         };
     }
 
