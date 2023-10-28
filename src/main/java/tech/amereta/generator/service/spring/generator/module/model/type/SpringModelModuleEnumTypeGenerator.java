@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.generator.module.model;
+package tech.amereta.generator.service.spring.generator.module.model.type;
 
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
@@ -6,6 +6,7 @@ import tech.amereta.core.java.declaration.AbstractJavaFieldDeclaration;
 import tech.amereta.core.java.declaration.JavaEnumFieldDeclaration;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringBootEnumModelModuleGenerator;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleEnumTypeDescription;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleEnumTypeFieldDescription;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
@@ -14,6 +15,7 @@ import tech.amereta.generator.util.StringFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@SpringBootEnumModelModuleGenerator
 public final class SpringModelModuleEnumTypeGenerator extends AbstractSpringModuleTypeGenerator {
 
     @Override

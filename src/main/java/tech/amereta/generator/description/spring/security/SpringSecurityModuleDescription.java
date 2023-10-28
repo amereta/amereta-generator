@@ -1,5 +1,6 @@
 package tech.amereta.generator.description.spring.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.Valid;
@@ -8,10 +9,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
-import tech.amereta.generator.description.spring.security.type.AbstractSpringSecurityModuleTypeDescription;
 import tech.amereta.generator.description.spring.security.type.SpringSecurityModuleJWTTypeDescription;
-import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
-import tech.amereta.generator.service.spring.generator.module.security.SpringSecurityModuleGenerator;
+
+import java.lang.annotation.Annotation;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -30,8 +30,6 @@ public final class SpringSecurityModuleDescription extends AbstractSpringModuleD
     @Valid
     private AbstractSpringSecurityModuleTypeDescription security;
 
-    @Override
-    public AbstractSpringModuleGenerator getGenerator() {
-        return new SpringSecurityModuleGenerator();
-    }
+    @JsonIgnore
+    private Class<? extends Annotation> generator = SpringBootSecurityModuleGenerator.class;
 }

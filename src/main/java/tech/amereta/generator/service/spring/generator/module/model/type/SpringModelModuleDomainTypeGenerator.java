@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.generator.module.model;
+package tech.amereta.generator.service.spring.generator.module.model.type;
 
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
@@ -9,6 +9,7 @@ import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringBootDomainModelModuleGenerator;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
 import tech.amereta.generator.description.spring.model.type.SpringRelation;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SpringBootDomainModelModuleGenerator
 public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringModuleTypeGenerator {
 
     @Override

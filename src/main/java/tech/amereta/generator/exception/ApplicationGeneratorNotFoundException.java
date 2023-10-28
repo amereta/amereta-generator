@@ -5,7 +5,7 @@ import tech.amereta.generator.description.ApplicationType;
 public class ApplicationGeneratorNotFoundException extends AbstractBadRequestException {
 
     public ApplicationGeneratorNotFoundException(ApplicationType applicationType) {
-        super(String.format("couldn't find generator service for %s application type", applicationType));
+        super(String.format("couldn't find generator service for %s application", applicationType));
     }
 
     @Override

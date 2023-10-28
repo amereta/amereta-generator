@@ -1,15 +1,16 @@
 package tech.amereta.generator.description.spring.model.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import tech.amereta.generator.description.spring.model.AbstractSpringModelModuleTypeDescription;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleEnumTypeFieldDescription;
-import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
-import tech.amereta.generator.service.spring.generator.module.model.SpringModelModuleEnumTypeGenerator;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -22,8 +23,6 @@ public final class SpringModelModuleEnumTypeDescription extends AbstractSpringMo
     @Valid
     private List<SpringModelModuleEnumTypeFieldDescription> fields;
 
-    @Override
-    public AbstractSpringModuleTypeGenerator getGenerator() {
-        return new SpringModelModuleEnumTypeGenerator();
-    }
+    @JsonIgnore
+    private Class<? extends Annotation> generator = SpringBootEnumModelModuleGenerator.class;
 }

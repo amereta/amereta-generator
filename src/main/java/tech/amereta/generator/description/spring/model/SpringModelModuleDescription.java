@@ -1,5 +1,6 @@
 package tech.amereta.generator.description.spring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.Valid;
@@ -8,12 +9,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
-import tech.amereta.generator.description.spring.model.type.AbstractSpringModelModuleTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleEnumTypeDescription;
-import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
-import tech.amereta.generator.service.spring.generator.module.model.SpringModelModuleGenerator;
 
+import java.lang.annotation.Annotation;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,8 +34,6 @@ public final class SpringModelModuleDescription extends AbstractSpringModuleDesc
     @Valid
     private List<AbstractSpringModelModuleTypeDescription> models = new LinkedList<>();
 
-    @Override
-    public AbstractSpringModuleGenerator getGenerator() {
-        return new SpringModelModuleGenerator();
-    }
+    @JsonIgnore
+    private Class<? extends Annotation> generator = SpringBootModelModuleGenerator.class;
 }

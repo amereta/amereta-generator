@@ -1,10 +1,11 @@
-package tech.amereta.generator.description.spring.model.type;
+package tech.amereta.generator.description.spring.model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelType;
 
 @Data
 @AllArgsConstructor

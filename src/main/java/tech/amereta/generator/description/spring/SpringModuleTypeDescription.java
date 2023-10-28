@@ -1,8 +1,8 @@
 package tech.amereta.generator.description.spring;
 
-import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
+import java.lang.annotation.Annotation;
 
 public interface SpringModuleTypeDescription {
 
-    AbstractSpringModuleTypeGenerator getGenerator();
+    Class<? extends Annotation> getGenerator();
 }

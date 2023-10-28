@@ -1,5 +1,6 @@
 package tech.amereta.generator.description.spring.db;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.Valid;
@@ -8,11 +9,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
-import tech.amereta.generator.description.spring.db.type.AbstractSpringDBModuleTypeDescription;
 import tech.amereta.generator.description.spring.db.type.SpringDBModuleMySQLTypeDescription;
 import tech.amereta.generator.description.spring.db.type.SpringDBModulePostgreSQLTypeDescription;
-import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
-import tech.amereta.generator.service.spring.generator.module.db.SpringDBModuleGenerator;
+
+import java.lang.annotation.Annotation;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -32,8 +32,6 @@ public final class SpringDBModuleDescription extends AbstractSpringModuleDescrip
     @Valid
     private AbstractSpringDBModuleTypeDescription db;
 
-    @Override
-    public AbstractSpringModuleGenerator getGenerator() {
-        return new SpringDBModuleGenerator();
-    }
+    @JsonIgnore
+    private Class<? extends Annotation> generator = SpringBootDBModuleGenerator.class;
 }

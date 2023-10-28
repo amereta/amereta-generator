@@ -1,10 +1,11 @@
-package tech.amereta.generator.description.spring.db.type;
+package tech.amereta.generator.description.spring.db;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
+import tech.amereta.generator.description.spring.db.type.SpringDBModuleType;
 
 @Data
 @AllArgsConstructor

@@ -7,7 +7,6 @@ import tech.amereta.generator.exception.ApplicationGeneratorNotFoundException;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
 
 @Service
 public class ApplicationGeneratorService {
@@ -16,17 +15,15 @@ public class ApplicationGeneratorService {
     private BeanResolverService beanResolverService;
 
     public void generate(final ApplicationDescriptionWrapper application, final OutputStream outputStream) throws IOException {
-        final Collection<ApplicationGenerator> possibleApplicationGenerators = beanResolverService
-                .findGeneratorByAnnotation(
+        final ApplicationGenerator generator = beanResolverService
+                .findOneByTypeAndAnnotation(
                         ApplicationGenerator.class,
                         application.getApplication().getGenerator()
-                );
-
-        final ApplicationGenerator generator = possibleApplicationGenerators.stream()
-                .findFirst()
+                )
                 .orElseThrow(() ->
                         new ApplicationGeneratorNotFoundException(application.getApplicationType())
                 );
+
         generator.generate(application, outputStream);
     }
 }

@@ -3,6 +3,7 @@ package tech.amereta.generator.service.spring;
 import tech.amereta.generator.description.ApplicationDescriptionWrapper;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.SpringBootValidator;
+import tech.amereta.generator.description.spring.model.AbstractSpringModelModuleTypeDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.description.spring.model.type.*;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;

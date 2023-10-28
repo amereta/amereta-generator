@@ -13,13 +13,17 @@ import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.security.SpringSecurityModuleDescription;
+import tech.amereta.generator.exception.ModuleGeneratorNotFoundException;
 import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
+import tech.amereta.generator.service.BeanResolverService;
 import tech.amereta.generator.service.spring.generator.*;
+import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.generator.module.model.AbstractTimestampedDomainGenerator;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +32,9 @@ import java.util.stream.Collectors;
 public class SpringBootApplicationGeneratorService implements ApplicationGenerator {
 
     private static final JavaSourceCodeWriter JAVA_SOURCE_CODE_WRITER = new JavaSourceCodeWriter();
+
+    @Autowired
+    private BeanResolverService beanResolverService;
 
     @Autowired
     private AsciiArtProviderService asciiArtProviderService;
@@ -88,7 +95,15 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
 
     private List<JavaCompilationUnit> generateModule(final SpringBootApplicationDescription springApplicationDescription,
                                                      final AbstractSpringModuleDescription javaModuleDescription) {
-        return javaModuleDescription.getGenerator().generate(springApplicationDescription, javaModuleDescription);
+        final AbstractSpringModuleGenerator generator = beanResolverService
+                .findOneByTypeAndAnnotation(
+                        AbstractSpringModuleGenerator.class,
+                        javaModuleDescription.getGenerator()
+                )
+                .orElseThrow(() ->
+                        new ModuleGeneratorNotFoundException(javaModuleDescription.getType())
+                );
+        return generator.generate(springApplicationDescription, javaModuleDescription);
     }
 
     private ISoyConfiguration generatePom(final SpringBootApplicationDescription springApplicationDescription, final Optional<SpringDBModuleDescription> dataBase, final Optional<SpringSecurityModuleDescription> securityAuthenticator) {

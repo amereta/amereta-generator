@@ -7,7 +7,7 @@ import tech.amereta.generator.description.spring.AbstractSpringModuleDescription
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
-import tech.amereta.generator.description.spring.model.type.AbstractSpringModelModuleTypeDescription;
+import tech.amereta.generator.description.spring.model.AbstractSpringModelModuleTypeDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.description.spring.security.SpringSecurityModuleDescription;
 import tech.amereta.generator.exception.ApplicationHaveTwoDifferentDatabasesException;
