@@ -11,9 +11,9 @@ import tech.amereta.core.java.statement.JavaExpressionStatement;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import tech.amereta.generator.util.StringFormatter;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
 
 import java.lang.reflect.Modifier;
 import java.util.List;

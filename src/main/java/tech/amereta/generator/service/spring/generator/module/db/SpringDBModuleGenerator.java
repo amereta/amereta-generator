@@ -1,20 +1,40 @@
 package tech.amereta.generator.service.spring.generator.module.db;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import tech.amereta.core.java.JavaCompilationUnit;
-import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
+import tech.amereta.generator.exception.ModuleTypeGeneratorNotFoundException;
+import tech.amereta.generator.service.BeanResolverService;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
+import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
+import tech.amereta.lang.description.spring.AbstractSpringModuleDescription;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.db.AbstractSpringDBModuleTypeDescription;
+import tech.amereta.lang.description.spring.db.SpringBootDBModuleGenerator;
+import tech.amereta.lang.description.spring.db.SpringDBModuleDescription;
 
 import java.util.List;
 
+@SpringBootDBModuleGenerator
 public final class SpringDBModuleGenerator extends AbstractSpringModuleGenerator {
+
+    @Autowired
+    private BeanResolverService beanResolverService;
 
     @Override
     public List<JavaCompilationUnit> generate(final SpringBootApplicationDescription applicationDescription,
-                                              final AbstractSpringModuleDescription javaModuleDescription) {
-        final SpringDBModuleDescription springDBModuleDescription = (SpringDBModuleDescription) javaModuleDescription;
+                                              final AbstractSpringModuleDescription moduleDescription) {
+        final SpringDBModuleDescription springDBModuleDescription = (SpringDBModuleDescription) moduleDescription;
+        final AbstractSpringDBModuleTypeDescription dbModuleTypeDescription = springDBModuleDescription.getDb();
 
-        return springDBModuleDescription.getDb().getGenerator().generate(applicationDescription, springDBModuleDescription.getDb());
+        final AbstractSpringModuleTypeGenerator generator = beanResolverService
+                .findOneByTypeAndAnnotation(
+                        AbstractSpringModuleTypeGenerator.class,
+                        dbModuleTypeDescription.getGenerator()
+                )
+                .orElseThrow(() ->
+                        new ModuleTypeGeneratorNotFoundException(springDBModuleDescription.getType(), dbModuleTypeDescription.getType().toString())
+                );
+
+        return generator.generate(applicationDescription, dbModuleTypeDescription);
     }
 }

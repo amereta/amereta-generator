@@ -1,4 +1,4 @@
-package tech.amereta.generator.service.spring.generator.module.model;
+package tech.amereta.generator.service.spring.generator.module.model.type;
 
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaTypeDeclaration;
@@ -7,17 +7,18 @@ import tech.amereta.core.java.declaration.JavaFieldDeclaration;
 import tech.amereta.core.java.declaration.JavaMethodDeclaration;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
-import tech.amereta.generator.description.spring.model.type.SpringRelation;
-import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
-import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.exception.DomainIdDataTypeException;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
 import tech.amereta.generator.service.spring.generator.module.security.AuthenticableDomainFieldsGenerator;
 import tech.amereta.generator.util.StringFormatter;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.SpringModuleTypeDescription;
+import tech.amereta.lang.description.spring.model.type.SpringBootDomainModelModuleGenerator;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleFieldRelationDescription;
+import tech.amereta.lang.description.spring.model.type.SpringRelation;
+import tech.amereta.lang.description.spring.model.type.field.SpringDataType;
+import tech.amereta.lang.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SpringBootDomainModelModuleGenerator
 public final class SpringModelModuleDomainTypeGenerator extends AbstractSpringModuleTypeGenerator {
 
     @Override

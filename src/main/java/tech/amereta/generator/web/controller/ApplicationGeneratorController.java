@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import tech.amereta.generator.aspect.ApplicationDescriptionValidator;
-import tech.amereta.generator.description.ApplicationDescription;
 import tech.amereta.generator.service.ApplicationGeneratorService;
+import tech.amereta.lang.description.ApplicationDescriptionWrapper;
 
 @RestController
 @RequestMapping("/api")
@@ -30,10 +30,10 @@ public class ApplicationGeneratorController {
             produces = "application/zip"
     )
     @ApplicationDescriptionValidator
-    public ResponseEntity<StreamingResponseBody> generate(@Valid @RequestBody ApplicationDescription applicationDescription) {
+    public ResponseEntity<StreamingResponseBody> generate(@Valid @RequestBody ApplicationDescriptionWrapper applicationDescriptionWrapper) {
         return ResponseEntity
                 .ok()
-                .header("Content-Disposition", "attachment; filename=" + applicationDescription.getApplication().getName() + ".zip")
-                .body(out -> applicationGeneratorService.generate(applicationDescription, out));
+                .header("Content-Disposition", "attachment; filename=" + applicationDescriptionWrapper.getApplication().getName() + ".zip")
+                .body(out -> applicationGeneratorService.generate(applicationDescriptionWrapper, out));
     }
 }

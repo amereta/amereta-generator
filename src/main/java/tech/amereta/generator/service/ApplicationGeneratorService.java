@@ -1,9 +1,9 @@
 package tech.amereta.generator.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import tech.amereta.generator.description.ApplicationDescription;
+import tech.amereta.generator.exception.ApplicationGeneratorNotFoundException;
+import tech.amereta.lang.description.ApplicationDescriptionWrapper;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,10 +12,18 @@ import java.io.OutputStream;
 public class ApplicationGeneratorService {
 
     @Autowired
-    private ApplicationContext context;
+    private BeanResolverService beanResolverService;
 
-    public void generate(final ApplicationDescription application, final OutputStream outputStream) throws IOException {
-        final ApplicationGenerator generator = (ApplicationGenerator) context.getBean(application.getApplication().getGenerator());
+    public void generate(final ApplicationDescriptionWrapper application, final OutputStream outputStream) throws IOException {
+        final ApplicationGenerator generator = beanResolverService
+                .findOneByTypeAndAnnotation(
+                        ApplicationGenerator.class,
+                        application.getApplication().getGenerator()
+                )
+                .orElseThrow(() ->
+                        new ApplicationGeneratorNotFoundException(application.getApplicationType())
+                );
+
         generator.generate(application, outputStream);
     }
 }

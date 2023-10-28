@@ -7,10 +7,10 @@ import tech.amereta.core.java.declaration.JavaFieldDeclaration;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.lang.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -181,19 +181,19 @@ public final class RegisterViewModelGenerator extends AbstractSpringSourceCodeGe
         if (fieldDescription.getLength() != null) {
             annotations.add(
                     JavaAnnotation.builder()
-                    .name("jakarta.validation.constraints.Size")
-                    .attributes(
-                            List.of(
-                                    JavaAnnotation.Attribute.builder()
-                                            .name("min")
-                                            .dataType(Integer.class)
-                                            .values(List.of(fieldDescription.getLength().toString())),
-                                    JavaAnnotation.Attribute.builder()
-                                            .name("max")
-                                            .dataType(Integer.class)
-                                            .values(List.of(fieldDescription.getLength().toString()))
+                            .name("jakarta.validation.constraints.Size")
+                            .attributes(
+                                    List.of(
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("min")
+                                                    .dataType(Integer.class)
+                                                    .values(List.of(fieldDescription.getLength().toString())),
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("max")
+                                                    .dataType(Integer.class)
+                                                    .values(List.of(fieldDescription.getLength().toString()))
+                                    )
                             )
-                    )
             );
         }
         return JavaFieldDeclaration.builder()

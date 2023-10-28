@@ -4,9 +4,9 @@ import tech.amereta.core.java.declaration.AbstractJavaFieldDeclaration;
 import tech.amereta.core.java.declaration.JavaFieldDeclaration;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.db.type.SpringDBModuleType;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.db.type.SpringDBModuleType;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -301,7 +301,7 @@ public final class AuthenticableDomainFieldsGenerator extends AbstractSpringSour
                                 )
                 )
         );
-        if(getDataBase(applicationDescription).orElseThrow().getDb().getType() == SpringDBModuleType.MYSQL) {
+        if (getDataBase(applicationDescription).orElseThrow().getDb().getType() == SpringDBModuleType.MYSQL) {
             annotations.add(
                     JavaAnnotation.builder()
                             .name("org.hibernate.annotations.JdbcTypeCode")

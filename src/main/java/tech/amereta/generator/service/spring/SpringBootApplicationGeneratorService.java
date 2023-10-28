@@ -1,22 +1,25 @@
 package tech.amereta.generator.service.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaSourceCode;
 import tech.amereta.core.java.JavaSourceCodeWriter;
 import tech.amereta.core.soy.ISoyConfiguration;
-import tech.amereta.generator.description.ApplicationDescription;
-import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
-import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.security.SpringSecurityModuleDescription;
+import tech.amereta.generator.exception.ModuleGeneratorNotFoundException;
 import tech.amereta.generator.service.ApplicationGenerator;
 import tech.amereta.generator.service.AsciiArtProviderService;
+import tech.amereta.generator.service.BeanResolverService;
 import tech.amereta.generator.service.spring.generator.*;
+import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.generator.module.model.AbstractTimestampedDomainGenerator;
+import tech.amereta.lang.description.ApplicationDescriptionWrapper;
+import tech.amereta.lang.description.spring.AbstractSpringModuleDescription;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.SpringBootGenerator;
+import tech.amereta.lang.description.spring.db.SpringDBModuleDescription;
+import tech.amereta.lang.description.spring.model.SpringModelModuleDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.lang.description.spring.security.SpringSecurityModuleDescription;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -24,17 +27,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
+@SpringBootGenerator
 public class SpringBootApplicationGeneratorService implements ApplicationGenerator {
 
     private static final JavaSourceCodeWriter JAVA_SOURCE_CODE_WRITER = new JavaSourceCodeWriter();
 
     @Autowired
+    private BeanResolverService beanResolverService;
+
+    @Autowired
     private AsciiArtProviderService asciiArtProviderService;
 
     @Override
-    public void generate(final ApplicationDescription applicationDescription, final OutputStream outputStream) {
-        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescription);
+    public void generate(final ApplicationDescriptionWrapper applicationDescriptionWrapper, final OutputStream outputStream) {
+        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescriptionWrapper);
         JAVA_SOURCE_CODE_WRITER.writeSourceTo(
                 JavaSourceCode.builder()
                         .compilationUnits(generateCompilationUnits(springBootApplicationDescription))
@@ -88,7 +94,15 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
 
     private List<JavaCompilationUnit> generateModule(final SpringBootApplicationDescription springApplicationDescription,
                                                      final AbstractSpringModuleDescription javaModuleDescription) {
-        return javaModuleDescription.getGenerator().generate(springApplicationDescription, javaModuleDescription);
+        final AbstractSpringModuleGenerator generator = beanResolverService
+                .findOneByTypeAndAnnotation(
+                        AbstractSpringModuleGenerator.class,
+                        javaModuleDescription.getGenerator()
+                )
+                .orElseThrow(() ->
+                        new ModuleGeneratorNotFoundException(javaModuleDescription.getType())
+                );
+        return generator.generate(springApplicationDescription, javaModuleDescription);
     }
 
     private ISoyConfiguration generatePom(final SpringBootApplicationDescription springApplicationDescription, final Optional<SpringDBModuleDescription> dataBase, final Optional<SpringSecurityModuleDescription> securityAuthenticator) {
@@ -169,7 +183,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 .toList();
     }
 
-    private SpringBootApplicationDescription getApplication(final ApplicationDescription applicationDescription) {
-        return (SpringBootApplicationDescription) applicationDescription.getApplication();
+    private SpringBootApplicationDescription getApplication(final ApplicationDescriptionWrapper applicationDescriptionWrapper) {
+        return (SpringBootApplicationDescription) applicationDescriptionWrapper.getApplication();
     }
 }

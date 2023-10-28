@@ -1,8 +1,8 @@
 package tech.amereta.generator.service.spring.generator.module;
 
 import tech.amereta.core.java.JavaCompilationUnit;
-import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.AbstractSpringModuleDescription;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
 
 import java.util.List;
 

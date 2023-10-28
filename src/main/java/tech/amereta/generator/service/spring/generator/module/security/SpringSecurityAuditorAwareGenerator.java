@@ -10,8 +10,8 @@ import tech.amereta.core.java.statement.JavaReturnStatement;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -44,46 +44,46 @@ public final class SpringSecurityAuditorAwareGenerator extends AbstractSpringSou
                                         )
                                         .methodDeclarations(
                                                 List.of(
-                                                    JavaMethodDeclaration.builder()
-                                                            .name("getCurrentAuditor")
-                                                            .returnType("java.util.Optional")
-                                                            .genericTypes(List.of("String"))
-                                                            .modifiers(
-                                                                    JavaModifier.builder()
-                                                                            .type(JavaModifier.TYPE_MODIFIERS)
-                                                                            .modifiers(Modifier.PUBLIC)
-                                                            )
-                                                            .annotations(
-                                                                    List.of(
-                                                                            JavaAnnotation.builder()
-                                                                                    .name("Override"),
-                                                                            JavaAnnotation.builder()
-                                                                                    .name("jakarta.annotation.Nonnull")
-                                                                    )
-                                                            )
-                                                            .statements(
-                                                                    List.of(
-                                                                            JavaReturnStatement.builder()
-                                                                                    .expression(
-                                                                                            JavaMethodInvocationExpression.builder()
-                                                                                                    .target("java.util.Optional")
-                                                                                                    .invokes(
-                                                                                                            List.of(
-                                                                                                                    JavaMethodInvoke.builder()
-                                                                                                                            .method("of")
-                                                                                                                            .arguments(
-                                                                                                                                    List.of(
-                                                                                                                                            JavaValueExpression.builder()
-                                                                                                                                                    .type(Enum.class)
-                                                                                                                                                    .value("tech.amereta.starter.Constants.SYSTEM")
-                                                                                                                                    )
-                                                                                                                            )
+                                                        JavaMethodDeclaration.builder()
+                                                                .name("getCurrentAuditor")
+                                                                .returnType("java.util.Optional")
+                                                                .genericTypes(List.of("String"))
+                                                                .modifiers(
+                                                                        JavaModifier.builder()
+                                                                                .type(JavaModifier.TYPE_MODIFIERS)
+                                                                                .modifiers(Modifier.PUBLIC)
+                                                                )
+                                                                .annotations(
+                                                                        List.of(
+                                                                                JavaAnnotation.builder()
+                                                                                        .name("Override"),
+                                                                                JavaAnnotation.builder()
+                                                                                        .name("jakarta.annotation.Nonnull")
+                                                                        )
+                                                                )
+                                                                .statements(
+                                                                        List.of(
+                                                                                JavaReturnStatement.builder()
+                                                                                        .expression(
+                                                                                                JavaMethodInvocationExpression.builder()
+                                                                                                        .target("java.util.Optional")
+                                                                                                        .invokes(
+                                                                                                                List.of(
+                                                                                                                        JavaMethodInvoke.builder()
+                                                                                                                                .method("of")
+                                                                                                                                .arguments(
+                                                                                                                                        List.of(
+                                                                                                                                                JavaValueExpression.builder()
+                                                                                                                                                        .type(Enum.class)
+                                                                                                                                                        .value("tech.amereta.starter.Constants.SYSTEM")
+                                                                                                                                        )
+                                                                                                                                )
 
-                                                                                                            )
-                                                                                                    )
-                                                                                    )
-                                                                    )
-                                                            )
+                                                                                                                )
+                                                                                                        )
+                                                                                        )
+                                                                        )
+                                                                )
                                                 )
                                         )
                         )

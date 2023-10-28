@@ -13,10 +13,10 @@ import tech.amereta.core.java.statement.JavaReturnStatement;
 import tech.amereta.core.java.util.JavaAnnotation;
 import tech.amereta.core.java.util.JavaModifier;
 import tech.amereta.core.java.util.JavaType;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 import tech.amereta.generator.service.spring.AbstractSpringSourceCodeGenerator;
 import tech.amereta.generator.util.StringFormatter;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleDomainTypeDescription;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -350,15 +350,15 @@ public final class AuthenticateControllerGenerator extends AbstractSpringSourceC
                 )
                 .annotations(
                         List.of(
-                            JavaAnnotation.builder()
-                                    .name("org.springframework.web.bind.annotation.PostMapping")
-                                    .attributes(
-                                            List.of(
-                                                    JavaAnnotation.Attribute.builder()
-                                                            .dataType(String.class)
-                                                            .values(List.of("/register"))
-                                            )
-                                    ),
+                                JavaAnnotation.builder()
+                                        .name("org.springframework.web.bind.annotation.PostMapping")
+                                        .attributes(
+                                                List.of(
+                                                        JavaAnnotation.Attribute.builder()
+                                                                .dataType(String.class)
+                                                                .values(List.of("/register"))
+                                                )
+                                        ),
                                 JavaAnnotation.builder()
                                         .name("org.springframework.web.bind.annotation.ResponseStatus")
                                         .attributes(

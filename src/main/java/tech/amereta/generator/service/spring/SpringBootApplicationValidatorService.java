@@ -1,17 +1,21 @@
 package tech.amereta.generator.service.spring;
 
-import org.springframework.stereotype.Service;
-import tech.amereta.generator.description.ApplicationDescription;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
-import tech.amereta.generator.description.spring.model.type.*;
-import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
-import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleEnumTypeFieldDescription;
 import tech.amereta.generator.exception.DuplicateAuthorizableDomainsException;
 import tech.amereta.generator.exception.DuplicateModelNameException;
 import tech.amereta.generator.exception.ModelDuplicateFieldNameException;
 import tech.amereta.generator.exception.RelationJoinException;
 import tech.amereta.generator.service.ApplicationValidator;
+import tech.amereta.lang.description.ApplicationDescriptionWrapper;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.SpringBootValidator;
+import tech.amereta.lang.description.spring.model.AbstractSpringModelModuleTypeDescription;
+import tech.amereta.lang.description.spring.model.SpringModelModuleDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleEnumTypeDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleFieldRelationDescription;
+import tech.amereta.lang.description.spring.model.type.SpringRelation;
+import tech.amereta.lang.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
+import tech.amereta.lang.description.spring.model.type.field.SpringModelModuleEnumTypeFieldDescription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +23,12 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-@Service
+@SpringBootValidator
 public class SpringBootApplicationValidatorService implements ApplicationValidator {
 
     @Override
-    public void validate(final ApplicationDescription applicationDescription) {
-        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescription);
+    public void validate(final ApplicationDescriptionWrapper applicationDescriptionWrapper) {
+        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescriptionWrapper);
 
         final List<AbstractSpringModelModuleTypeDescription> models = extractModels(springBootApplicationDescription);
 
@@ -244,8 +248,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
     private SpringModelModuleFieldRelationDescription createRelationDescription(final SpringModelModuleDomainTypeDescription otherSideDomain, final SpringRelation relationType) {
         return SpringModelModuleFieldRelationDescription.builder()
                 .to(otherSideDomain.getName())
-                .relationType(relationType)
-                .build();
+                .relationType(relationType);
     }
 
     private Map<String, SpringModelModuleDomainTypeDescription> convertToMapOfDomainsWithName(List<AbstractSpringModelModuleTypeDescription> models) {
@@ -259,7 +262,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
                 );
     }
 
-    private SpringBootApplicationDescription getApplication(final ApplicationDescription applicationDescription) {
-        return (SpringBootApplicationDescription) applicationDescription.getApplication();
+    private SpringBootApplicationDescription getApplication(final ApplicationDescriptionWrapper applicationDescriptionWrapper) {
+        return (SpringBootApplicationDescription) applicationDescriptionWrapper.getApplication();
     }
 }

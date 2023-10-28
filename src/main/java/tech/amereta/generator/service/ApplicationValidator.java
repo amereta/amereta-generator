@@ -1,8 +1,8 @@
 package tech.amereta.generator.service;
 
-import tech.amereta.generator.description.ApplicationDescription;
+import tech.amereta.lang.description.ApplicationDescriptionWrapper;
 
 public interface ApplicationValidator {
 
-    void validate(ApplicationDescription application);
+    void validate(ApplicationDescriptionWrapper application);
 }

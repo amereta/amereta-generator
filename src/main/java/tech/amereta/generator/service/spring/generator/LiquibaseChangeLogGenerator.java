@@ -3,13 +3,13 @@ package tech.amereta.generator.service.spring.generator;
 import lombok.Builder;
 import org.apache.commons.io.FileUtils;
 import tech.amereta.core.soy.ISoyConfiguration;
-import tech.amereta.generator.description.spring.db.type.SpringDBModuleType;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
-import tech.amereta.generator.description.spring.model.type.SpringRelation;
-import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
-import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.util.StringFormatter;
+import tech.amereta.lang.description.spring.db.type.SpringDBModuleType;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleFieldRelationDescription;
+import tech.amereta.lang.description.spring.model.type.SpringRelation;
+import tech.amereta.lang.description.spring.model.type.field.SpringDataType;
+import tech.amereta.lang.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,7 +92,6 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                         .dataType(domainTypeDescription.getIdType())
                         .primaryKey(true)
                         .nullable(false)
-                        .build()
         );
     }
 
@@ -105,7 +104,6 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                                 .length(50)
                                 .nullable(false)
                                 .unique(true)
-                                .build()
                 ),
                 generateField(
                         SpringModelModuleDomainTypeFieldDescription.builder()
@@ -113,7 +111,6 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                                 .dataType(SpringDataType.STRING)
                                 .length(254)
                                 .unique(true)
-                                .build()
                 ),
                 generateField(
                         SpringModelModuleDomainTypeFieldDescription.builder()
@@ -121,7 +118,6 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                                 .dataType(SpringDataType.STRING)
                                 .length(60)
                                 .nullable(false)
-                                .build()
                 ),
                 generateField(
                         SpringModelModuleDomainTypeFieldDescription.builder()
@@ -129,26 +125,22 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                                 .dataType(SpringDataType.STRING)
                                 .length(10)
                                 .nullable(false)
-                                .build()
                 ),
                 generateField(
                         SpringModelModuleDomainTypeFieldDescription.builder()
                                 .name("activated")
                                 .dataType(SpringDataType.BOOLEAN)
                                 .nullable(false)
-                                .build()
                 ),
                 generateField(
                         SpringModelModuleDomainTypeFieldDescription.builder()
                                 .name("activationKey")
                                 .dataType(SpringDataType.UUID)
-                                .build()
                 ),
                 generateField(
                         SpringModelModuleDomainTypeFieldDescription.builder()
                                 .name("roles")
                                 .dataType(SpringDataType.JSON)
-                                .build()
                 )
         );
     }
@@ -169,27 +161,23 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                                 .length(50)
                                 .nullable(false)
                                 .updatable(false)
-                                .build()
                 ),
                 generateField(
                         SpringModelModuleDomainTypeFieldDescription.builder()
                                 .name("createdDate")
                                 .dataType(SpringDataType.INSTANT)
                                 .updatable(false)
-                                .build()
                 ),
                 generateField(
                         SpringModelModuleDomainTypeFieldDescription.builder()
                                 .name("lastModifiedBy")
                                 .dataType(SpringDataType.STRING)
                                 .length(50)
-                                .build()
                 ),
                 generateField(
                         SpringModelModuleDomainTypeFieldDescription.builder()
                                 .name("lastModifiedDate")
                                 .dataType(SpringDataType.INSTANT)
-                                .build()
                 )
         );
     }
@@ -277,8 +265,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
                 .name(relationDescription.getTo() + "Id")
                 .dataType(relationDescription.getJoinDataType())
                 .unique(relationDescription.getRelationType() == SpringRelation.ONE_TO_ONE)
-                .nullable(true)
-                .build();
+                .nullable(true);
     }
 
     private String generateField(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
@@ -287,7 +274,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String resolveAutoIncrement(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
-        if(fieldDescription.isPrimaryKey() && fieldDescription.getDataType() == SpringDataType.LONG) {
+        if (fieldDescription.isPrimaryKey() && fieldDescription.getDataType() == SpringDataType.LONG) {
             return " autoIncrement=\"true\" ";
         }
         return "";
