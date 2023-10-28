@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.SpringModuleTypeDescription;
-import tech.amereta.generator.description.spring.security.SpringSecurityEncoder;
 import tech.amereta.generator.description.spring.security.type.SpringSecurityModuleType;
 
 @Data

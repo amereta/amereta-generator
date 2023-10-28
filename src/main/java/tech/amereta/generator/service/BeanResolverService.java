@@ -3,7 +3,6 @@ package tech.amereta.generator.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;

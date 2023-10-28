@@ -23,7 +23,6 @@ import tech.amereta.generator.service.spring.generator.module.model.AbstractTime
 
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

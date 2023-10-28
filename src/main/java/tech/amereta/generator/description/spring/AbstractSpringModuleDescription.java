@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
 
 import java.lang.annotation.Annotation;
 

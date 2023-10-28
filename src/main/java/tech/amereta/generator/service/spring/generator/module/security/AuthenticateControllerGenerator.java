@@ -350,15 +350,15 @@ public final class AuthenticateControllerGenerator extends AbstractSpringSourceC
                 )
                 .annotations(
                         List.of(
-                            JavaAnnotation.builder()
-                                    .name("org.springframework.web.bind.annotation.PostMapping")
-                                    .attributes(
-                                            List.of(
-                                                    JavaAnnotation.Attribute.builder()
-                                                            .dataType(String.class)
-                                                            .values(List.of("/register"))
-                                            )
-                                    ),
+                                JavaAnnotation.builder()
+                                        .name("org.springframework.web.bind.annotation.PostMapping")
+                                        .attributes(
+                                                List.of(
+                                                        JavaAnnotation.Attribute.builder()
+                                                                .dataType(String.class)
+                                                                .values(List.of("/register"))
+                                                )
+                                        ),
                                 JavaAnnotation.builder()
                                         .name("org.springframework.web.bind.annotation.ResponseStatus")
                                         .attributes(

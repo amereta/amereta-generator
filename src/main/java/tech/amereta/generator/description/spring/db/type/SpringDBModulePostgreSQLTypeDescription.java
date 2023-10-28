@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import tech.amereta.generator.description.spring.db.AbstractSpringDBModuleTypeDescription;
-import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
-import tech.amereta.generator.service.spring.generator.module.db.type.SpringDBModulePostgreSQLTypeGenerator;
 
 import java.lang.annotation.Annotation;
 

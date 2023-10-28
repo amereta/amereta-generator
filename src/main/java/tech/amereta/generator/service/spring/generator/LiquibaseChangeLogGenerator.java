@@ -287,7 +287,7 @@ public final class LiquibaseChangeLogGenerator implements ISoyConfiguration {
     }
 
     private String resolveAutoIncrement(final SpringModelModuleDomainTypeFieldDescription fieldDescription) {
-        if(fieldDescription.isPrimaryKey() && fieldDescription.getDataType() == SpringDataType.LONG) {
+        if (fieldDescription.isPrimaryKey() && fieldDescription.getDataType() == SpringDataType.LONG) {
             return " autoIncrement=\"true\" ";
         }
         return "";

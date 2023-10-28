@@ -5,7 +5,10 @@ import tech.amereta.generator.description.spring.SpringBootApplicationDescriptio
 import tech.amereta.generator.description.spring.SpringBootValidator;
 import tech.amereta.generator.description.spring.model.AbstractSpringModelModuleTypeDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
-import tech.amereta.generator.description.spring.model.type.*;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleEnumTypeDescription;
+import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
+import tech.amereta.generator.description.spring.model.type.SpringRelation;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleEnumTypeFieldDescription;
 import tech.amereta.generator.exception.DuplicateAuthorizableDomainsException;

@@ -13,6 +13,6 @@ public enum SpringSecurityEncoder {
     final String className;
 
     SpringSecurityEncoder(String className) {
-        this.className= className;
+        this.className = className;
     }
 }

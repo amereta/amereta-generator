@@ -7,13 +7,11 @@ import tech.amereta.generator.description.spring.SpringBootApplicationDescriptio
 import tech.amereta.generator.description.spring.security.AbstractSpringSecurityModuleTypeDescription;
 import tech.amereta.generator.description.spring.security.SpringBootSecurityModuleGenerator;
 import tech.amereta.generator.description.spring.security.SpringSecurityModuleDescription;
-import tech.amereta.generator.exception.ModuleGeneratorNotFoundException;
 import tech.amereta.generator.exception.ModuleTypeGeneratorNotFoundException;
 import tech.amereta.generator.service.BeanResolverService;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
 
-import java.util.Collection;
 import java.util.List;
 
 @SpringBootSecurityModuleGenerator

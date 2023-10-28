@@ -181,19 +181,19 @@ public final class RegisterViewModelGenerator extends AbstractSpringSourceCodeGe
         if (fieldDescription.getLength() != null) {
             annotations.add(
                     JavaAnnotation.builder()
-                    .name("jakarta.validation.constraints.Size")
-                    .attributes(
-                            List.of(
-                                    JavaAnnotation.Attribute.builder()
-                                            .name("min")
-                                            .dataType(Integer.class)
-                                            .values(List.of(fieldDescription.getLength().toString())),
-                                    JavaAnnotation.Attribute.builder()
-                                            .name("max")
-                                            .dataType(Integer.class)
-                                            .values(List.of(fieldDescription.getLength().toString()))
+                            .name("jakarta.validation.constraints.Size")
+                            .attributes(
+                                    List.of(
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("min")
+                                                    .dataType(Integer.class)
+                                                    .values(List.of(fieldDescription.getLength().toString())),
+                                            JavaAnnotation.Attribute.builder()
+                                                    .name("max")
+                                                    .dataType(Integer.class)
+                                                    .values(List.of(fieldDescription.getLength().toString()))
+                                    )
                             )
-                    )
             );
         }
         return JavaFieldDeclaration.builder()

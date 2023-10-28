@@ -5,7 +5,6 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.util.StringUtils;
 import tech.amereta.core.soy.ISoyConfiguration;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.model.type.field.SpringDataType;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.util.StringFormatter;
 
@@ -68,7 +67,7 @@ public final class LiquibaseInitialDataGenerator implements ISoyConfiguration {
 
     private String resolveEmail() {
         StringBuilder stringBuilder = new StringBuilder("@" + StringFormatter.toKebabCase(applicationName).toLowerCase() + ".email");
-        if(StringUtils.hasText(owner)) {
+        if (StringUtils.hasText(owner)) {
             return stringBuilder.insert(0, owner.toLowerCase()).toString();
         }
         return stringBuilder.insert(0, domainTypeDescription.getName().toLowerCase()).toString();

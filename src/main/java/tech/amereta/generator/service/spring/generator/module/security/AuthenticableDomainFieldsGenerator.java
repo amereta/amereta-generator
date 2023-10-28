@@ -301,7 +301,7 @@ public final class AuthenticableDomainFieldsGenerator extends AbstractSpringSour
                                 )
                 )
         );
-        if(getDataBase(applicationDescription).orElseThrow().getDb().getType() == SpringDBModuleType.MYSQL) {
+        if (getDataBase(applicationDescription).orElseThrow().getDb().getType() == SpringDBModuleType.MYSQL) {
             annotations.add(
                     JavaAnnotation.builder()
                             .name("org.hibernate.annotations.JdbcTypeCode")
