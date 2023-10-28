@@ -1,21 +1,21 @@
 package tech.amereta.generator.service.spring;
 
-import tech.amereta.generator.description.ApplicationDescriptionWrapper;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.SpringBootValidator;
-import tech.amereta.generator.description.spring.model.AbstractSpringModelModuleTypeDescription;
-import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleEnumTypeDescription;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleFieldRelationDescription;
-import tech.amereta.generator.description.spring.model.type.SpringRelation;
-import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
-import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleEnumTypeFieldDescription;
 import tech.amereta.generator.exception.DuplicateAuthorizableDomainsException;
 import tech.amereta.generator.exception.DuplicateModelNameException;
 import tech.amereta.generator.exception.ModelDuplicateFieldNameException;
 import tech.amereta.generator.exception.RelationJoinException;
 import tech.amereta.generator.service.ApplicationValidator;
+import tech.amereta.lang.description.ApplicationDescriptionWrapper;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.SpringBootValidator;
+import tech.amereta.lang.description.spring.model.AbstractSpringModelModuleTypeDescription;
+import tech.amereta.lang.description.spring.model.SpringModelModuleDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleEnumTypeDescription;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleFieldRelationDescription;
+import tech.amereta.lang.description.spring.model.type.SpringRelation;
+import tech.amereta.lang.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
+import tech.amereta.lang.description.spring.model.type.field.SpringModelModuleEnumTypeFieldDescription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -248,8 +248,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
     private SpringModelModuleFieldRelationDescription createRelationDescription(final SpringModelModuleDomainTypeDescription otherSideDomain, final SpringRelation relationType) {
         return SpringModelModuleFieldRelationDescription.builder()
                 .to(otherSideDomain.getName())
-                .relationType(relationType)
-                .build();
+                .relationType(relationType);
     }
 
     private Map<String, SpringModelModuleDomainTypeDescription> convertToMapOfDomainsWithName(List<AbstractSpringModelModuleTypeDescription> models) {

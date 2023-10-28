@@ -1,6 +1,6 @@
 package tech.amereta.generator.exception;
 
-import tech.amereta.generator.description.spring.SpringModuleType;
+import tech.amereta.lang.description.spring.SpringModuleType;
 
 public class ModuleGeneratorNotFoundException extends AbstractBadRequestException {
 

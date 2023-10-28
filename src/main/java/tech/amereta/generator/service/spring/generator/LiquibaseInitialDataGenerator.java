@@ -4,9 +4,9 @@ import lombok.Builder;
 import org.apache.commons.io.FileUtils;
 import org.springframework.util.StringUtils;
 import tech.amereta.core.soy.ISoyConfiguration;
-import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
-import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 import tech.amereta.generator.util.StringFormatter;
+import tech.amereta.lang.description.spring.model.type.SpringModelModuleDomainTypeDescription;
+import tech.amereta.lang.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
 
 import java.io.File;
 import java.io.IOException;

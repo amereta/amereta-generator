@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import tech.amereta.generator.aspect.ApplicationDescriptionValidator;
-import tech.amereta.generator.description.ApplicationDescriptionWrapper;
 import tech.amereta.generator.service.ApplicationGeneratorService;
+import tech.amereta.lang.description.ApplicationDescriptionWrapper;
 
 @RestController
 @RequestMapping("/api")

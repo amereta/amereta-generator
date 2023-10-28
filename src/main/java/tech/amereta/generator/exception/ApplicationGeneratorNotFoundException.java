@@ -1,6 +1,6 @@
 package tech.amereta.generator.exception;
 
-import tech.amereta.generator.description.ApplicationType;
+import tech.amereta.lang.description.ApplicationType;
 
 public class ApplicationGeneratorNotFoundException extends AbstractBadRequestException {
 

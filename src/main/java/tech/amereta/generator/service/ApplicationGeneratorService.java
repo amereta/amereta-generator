@@ -2,8 +2,8 @@ package tech.amereta.generator.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tech.amereta.generator.description.ApplicationDescriptionWrapper;
 import tech.amereta.generator.exception.ApplicationGeneratorNotFoundException;
+import tech.amereta.lang.description.ApplicationDescriptionWrapper;
 
 import java.io.IOException;
 import java.io.OutputStream;

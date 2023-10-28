@@ -2,15 +2,15 @@ package tech.amereta.generator.service.spring.generator.module.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.amereta.core.java.JavaCompilationUnit;
-import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.security.AbstractSpringSecurityModuleTypeDescription;
-import tech.amereta.generator.description.spring.security.SpringBootSecurityModuleGenerator;
-import tech.amereta.generator.description.spring.security.SpringSecurityModuleDescription;
 import tech.amereta.generator.exception.ModuleTypeGeneratorNotFoundException;
 import tech.amereta.generator.service.BeanResolverService;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
+import tech.amereta.lang.description.spring.AbstractSpringModuleDescription;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.security.AbstractSpringSecurityModuleTypeDescription;
+import tech.amereta.lang.description.spring.security.SpringBootSecurityModuleGenerator;
+import tech.amereta.lang.description.spring.security.SpringSecurityModuleDescription;
 
 import java.util.List;
 

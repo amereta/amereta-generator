@@ -2,16 +2,16 @@ package tech.amereta.generator.service.spring.generator.module.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.amereta.core.java.JavaCompilationUnit;
-import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
-import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
-import tech.amereta.generator.description.spring.SpringModuleType;
-import tech.amereta.generator.description.spring.model.AbstractSpringModelModuleTypeDescription;
-import tech.amereta.generator.description.spring.model.SpringBootModelModuleGenerator;
-import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.exception.ModuleTypeGeneratorNotFoundException;
 import tech.amereta.generator.service.BeanResolverService;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleGenerator;
 import tech.amereta.generator.service.spring.generator.module.AbstractSpringModuleTypeGenerator;
+import tech.amereta.lang.description.spring.AbstractSpringModuleDescription;
+import tech.amereta.lang.description.spring.SpringBootApplicationDescription;
+import tech.amereta.lang.description.spring.SpringModuleType;
+import tech.amereta.lang.description.spring.model.AbstractSpringModelModuleTypeDescription;
+import tech.amereta.lang.description.spring.model.SpringBootModelModuleGenerator;
+import tech.amereta.lang.description.spring.model.SpringModelModuleDescription;
 
 import java.util.List;
 import java.util.stream.Collectors;
