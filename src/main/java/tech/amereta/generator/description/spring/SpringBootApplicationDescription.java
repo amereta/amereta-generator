@@ -16,6 +16,7 @@ import tech.amereta.generator.description.spring.security.SpringSecurityModuleDe
 import tech.amereta.generator.service.spring.SpringBootApplicationGeneratorService;
 import tech.amereta.generator.service.spring.SpringBootApplicationValidatorService;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 @Data
@@ -56,8 +57,8 @@ public class SpringBootApplicationDescription implements AbstractApplication {
     private List<AbstractSpringModuleDescription> modules;
 
     @JsonIgnore
-    private Class<?> generator = SpringBootApplicationGeneratorService.class;
+    private Class<? extends Annotation> generator = SpringBootGenerator.class;
 
     @JsonIgnore
-    private Class<?> validator = SpringBootApplicationValidatorService.class;
+    private Class<? extends Annotation> validator = SpringBootValidator.class;
 }

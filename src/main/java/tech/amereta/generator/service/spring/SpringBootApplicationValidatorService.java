@@ -1,8 +1,8 @@
 package tech.amereta.generator.service.spring;
 
-import org.springframework.stereotype.Service;
-import tech.amereta.generator.description.ApplicationDescription;
+import tech.amereta.generator.description.ApplicationDescriptionWrapper;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.SpringBootValidator;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.description.spring.model.type.*;
 import tech.amereta.generator.description.spring.model.type.field.SpringModelModuleDomainTypeFieldDescription;
@@ -19,12 +19,12 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-@Service
+@SpringBootValidator
 public class SpringBootApplicationValidatorService implements ApplicationValidator {
 
     @Override
-    public void validate(final ApplicationDescription applicationDescription) {
-        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescription);
+    public void validate(final ApplicationDescriptionWrapper applicationDescriptionWrapper) {
+        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescriptionWrapper);
 
         final List<AbstractSpringModelModuleTypeDescription> models = extractModels(springBootApplicationDescription);
 
@@ -259,7 +259,7 @@ public class SpringBootApplicationValidatorService implements ApplicationValidat
                 );
     }
 
-    private SpringBootApplicationDescription getApplication(final ApplicationDescription applicationDescription) {
-        return (SpringBootApplicationDescription) applicationDescription.getApplication();
+    private SpringBootApplicationDescription getApplication(final ApplicationDescriptionWrapper applicationDescriptionWrapper) {
+        return (SpringBootApplicationDescription) applicationDescriptionWrapper.getApplication();
     }
 }

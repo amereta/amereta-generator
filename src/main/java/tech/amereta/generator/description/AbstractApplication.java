@@ -1,12 +1,14 @@
 package tech.amereta.generator.description;
 
+import java.lang.annotation.Annotation;
+
 public interface AbstractApplication {
 
     String getOwner();
 
     String getName();
 
-    Class<?> getGenerator();
+    Class<? extends Annotation> getGenerator();
 
-    Class<?> getValidator();
+    Class<? extends Annotation> getValidator();
 }

@@ -1,14 +1,14 @@
 package tech.amereta.generator.service.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import tech.amereta.core.java.JavaCompilationUnit;
 import tech.amereta.core.java.JavaSourceCode;
 import tech.amereta.core.java.JavaSourceCodeWriter;
 import tech.amereta.core.soy.ISoyConfiguration;
-import tech.amereta.generator.description.ApplicationDescription;
+import tech.amereta.generator.description.ApplicationDescriptionWrapper;
 import tech.amereta.generator.description.spring.AbstractSpringModuleDescription;
 import tech.amereta.generator.description.spring.SpringBootApplicationDescription;
+import tech.amereta.generator.description.spring.SpringBootGenerator;
 import tech.amereta.generator.description.spring.db.SpringDBModuleDescription;
 import tech.amereta.generator.description.spring.model.SpringModelModuleDescription;
 import tech.amereta.generator.description.spring.model.type.SpringModelModuleDomainTypeDescription;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
+@SpringBootGenerator
 public class SpringBootApplicationGeneratorService implements ApplicationGenerator {
 
     private static final JavaSourceCodeWriter JAVA_SOURCE_CODE_WRITER = new JavaSourceCodeWriter();
@@ -33,8 +33,8 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
     private AsciiArtProviderService asciiArtProviderService;
 
     @Override
-    public void generate(final ApplicationDescription applicationDescription, final OutputStream outputStream) {
-        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescription);
+    public void generate(final ApplicationDescriptionWrapper applicationDescriptionWrapper, final OutputStream outputStream) {
+        final SpringBootApplicationDescription springBootApplicationDescription = getApplication(applicationDescriptionWrapper);
         JAVA_SOURCE_CODE_WRITER.writeSourceTo(
                 JavaSourceCode.builder()
                         .compilationUnits(generateCompilationUnits(springBootApplicationDescription))
@@ -169,7 +169,7 @@ public class SpringBootApplicationGeneratorService implements ApplicationGenerat
                 .toList();
     }
 
-    private SpringBootApplicationDescription getApplication(final ApplicationDescription applicationDescription) {
-        return (SpringBootApplicationDescription) applicationDescription.getApplication();
+    private SpringBootApplicationDescription getApplication(final ApplicationDescriptionWrapper applicationDescriptionWrapper) {
+        return (SpringBootApplicationDescription) applicationDescriptionWrapper.getApplication();
     }
 }

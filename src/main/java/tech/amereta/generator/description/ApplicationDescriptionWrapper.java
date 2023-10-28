@@ -11,7 +11,9 @@ import tech.amereta.generator.description.spring.SpringBootApplicationDescriptio
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationDescription {
+public class ApplicationDescriptionWrapper {
+
+    private ApplicationType applicationType;
 
     @JsonTypeInfo(
             use = JsonTypeInfo.Id.NAME,
